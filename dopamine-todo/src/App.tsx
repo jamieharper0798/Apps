@@ -9,6 +9,8 @@ import { ProgressRing } from './components/ProgressRing';
 import { CelebrationToast } from './components/CelebrationToast';
 import type { ToastData } from './components/CelebrationToast';
 import { LevelUpOverlay } from './components/LevelUpOverlay';
+import { InstallButton } from './components/InstallButton';
+import { UpdateToast } from './components/UpdateToast';
 import { burstConfetti, burstLevelUp } from './lib/celebrate';
 import { playComplete, playDelete, playLevelUp } from './lib/sound';
 import { randomHype } from './lib/gamify';
@@ -67,6 +69,7 @@ function App() {
     <div className="bg-aurora min-h-screen">
       <CelebrationToast toast={toast} />
       <LevelUpOverlay level={levelUp} onClose={() => setLevelUp(null)} />
+      <UpdateToast />
 
       <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-16 pt-8 sm:px-6">
         <header className="mb-8 flex flex-col gap-6">
@@ -75,14 +78,17 @@ function App() {
               <span className="text-2xl">⚡</span>
               <h1 className="font-display text-xl font-bold text-white">Flow</h1>
             </div>
-            <button
-              onClick={() => setMuted((m) => !m)}
-              className="rounded-full p-2 text-white/50 transition hover:bg-white/10 hover:text-white"
-              aria-label={muted ? 'Unmute sound' : 'Mute sound'}
-              title={muted ? 'Unmute' : 'Mute'}
-            >
-              {muted ? '🔇' : '🔊'}
-            </button>
+            <div className="flex items-center gap-2">
+              <InstallButton />
+              <button
+                onClick={() => setMuted((m) => !m)}
+                className="rounded-full p-2 text-white/50 transition hover:bg-white/10 hover:text-white"
+                aria-label={muted ? 'Unmute sound' : 'Mute sound'}
+                title={muted ? 'Unmute' : 'Mute'}
+              >
+                {muted ? '🔇' : '🔊'}
+              </button>
+            </div>
           </div>
 
           <div className="glass flex items-center justify-between gap-4 rounded-2xl p-4">
