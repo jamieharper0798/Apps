@@ -21,3 +21,9 @@ export interface AppState {
   tasks: Task[];
   dopamine: DopamineState;
 }
+
+export interface Branding {
+  name: string;
+  icon192: string | null;
+  icon512: string | null;
+}

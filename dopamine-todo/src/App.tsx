@@ -11,16 +11,22 @@ import type { ToastData } from './components/CelebrationToast';
 import { LevelUpOverlay } from './components/LevelUpOverlay';
 import { InstallButton } from './components/InstallButton';
 import { UpdateToast } from './components/UpdateToast';
+import { BrandingEditor } from './components/BrandingEditor';
+import { useBranding } from './hooks/useBranding';
+import { useBrandingMeta } from './hooks/useBrandingMeta';
 import { burstConfetti, burstLevelUp } from './lib/celebrate';
 import { playComplete, playDelete, playLevelUp } from './lib/sound';
 import { randomHype } from './lib/gamify';
 
 function App() {
   const { tasks, dopamine, levelInfo, addTask, deleteTask, toggleTask, clearCompleted } = useTodos();
+  const { branding, setName, setIconFromFile, resetIcon } = useBranding();
+  useBrandingMeta(branding);
   const [filter, setFilter] = useState<Filter>('all');
   const [toast, setToast] = useState<ToastData | null>(null);
   const [levelUp, setLevelUp] = useState<number | null>(null);
   const [muted, setMuted] = useState(false);
+  const [editingBrand, setEditingBrand] = useState(false);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => () => {
@@ -70,14 +76,43 @@ function App() {
       <CelebrationToast toast={toast} />
       <LevelUpOverlay level={levelUp} onClose={() => setLevelUp(null)} />
       <UpdateToast />
+      <BrandingEditor
+        open={editingBrand}
+        branding={branding}
+        onClose={() => setEditingBrand(false)}
+        onSaveName={setName}
+        onUploadIcon={setIconFromFile}
+        onResetIcon={resetIcon}
+      />
 
       <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-16 pt-8 sm:px-6">
         <header className="mb-8 flex flex-col gap-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">⚡</span>
-              <h1 className="font-display text-xl font-bold text-white">Flow</h1>
-            </div>
+            <button
+              onClick={() => setEditingBrand(true)}
+              className="group flex items-center gap-2 rounded-lg py-1 pr-2 transition hover:bg-white/5"
+              title="Customize name and icon"
+            >
+              {branding.icon192 ? (
+                <img src={branding.icon192} alt="" className="h-7 w-7 rounded-lg object-cover" />
+              ) : (
+                <span className="text-2xl">⚡</span>
+              )}
+              <h1 className="font-display text-xl font-bold text-white">{branding.name}</h1>
+              <svg
+                viewBox="0 0 24 24"
+                className="h-3.5 w-3.5 text-white/0 transition group-hover:text-white/40"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5m-1.5-9.5a2.121 2.121 0 0 1 3 3L12 16l-4 1 1-4 9.5-9.5Z"
+                />
+              </svg>
+            </button>
             <div className="flex items-center gap-2">
               <InstallButton />
               <button

@@ -15,6 +15,7 @@ A modern, intuitive to-do list built to make finishing tasks feel rewarding: XP 
 - Persisted to `localStorage` — no backend required
 - Responsive, dark, glassmorphic UI
 - Installable PWA: manifest, offline-capable service worker, an in-app "Install App" button, and an update toast when a new version is deployed
+- Editable branding: click the app name in the header to rename the app and upload your own icon image — updates the header, browser tab title/favicon, and the PWA install icon, and persists across reloads
 
 ## Getting started
 
