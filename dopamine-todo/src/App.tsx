@@ -1,0 +1,137 @@
+import { useEffect, useRef, useState } from 'react';
+import { useTodos } from './hooks/useTodos';
+import { AddTaskForm } from './components/AddTaskForm';
+import { TaskList } from './components/TaskList';
+import type { Filter } from './components/TaskList';
+import { XPBar } from './components/XPBar';
+import { StreakBadge } from './components/StreakBadge';
+import { ProgressRing } from './components/ProgressRing';
+import { CelebrationToast } from './components/CelebrationToast';
+import type { ToastData } from './components/CelebrationToast';
+import { LevelUpOverlay } from './components/LevelUpOverlay';
+import { burstConfetti, burstLevelUp } from './lib/celebrate';
+import { playComplete, playDelete, playLevelUp } from './lib/sound';
+import { randomHype } from './lib/gamify';
+
+function App() {
+  const { tasks, dopamine, levelInfo, addTask, deleteTask, toggleTask, clearCompleted } = useTodos();
+  const [filter, setFilter] = useState<Filter>('all');
+  const [toast, setToast] = useState<ToastData | null>(null);
+  const [levelUp, setLevelUp] = useState<number | null>(null);
+  const [muted, setMuted] = useState(false);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+  }, []);
+
+  const total = tasks.length;
+  const completed = tasks.filter((t) => t.done).length;
+  const progress = total === 0 ? 0 : completed / total;
+  const activeCount = total - completed;
+
+  const handleToggle = (id: string) => {
+    const result = toggleTask(id);
+    if (!result) return;
+
+    if (!muted) {
+      if (result.leveledUp) playLevelUp();
+      else playComplete();
+    }
+    burstConfetti(0.5, 0.4);
+
+    setToast({ id: Date.now(), message: randomHype(), xp: result.xpGained });
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 2200);
+
+    if (result.leveledUp) {
+      setTimeout(() => {
+        setLevelUp(result.newLevel);
+        burstLevelUp();
+      }, 250);
+    }
+  };
+
+  const handleDelete = (id: string) => {
+    if (!muted) playDelete();
+    deleteTask(id);
+  };
+
+  const FILTERS: { value: Filter; label: string }[] = [
+    { value: 'all', label: 'All' },
+    { value: 'active', label: 'Active' },
+    { value: 'done', label: 'Done' },
+  ];
+
+  return (
+    <div className="bg-aurora min-h-screen">
+      <CelebrationToast toast={toast} />
+      <LevelUpOverlay level={levelUp} onClose={() => setLevelUp(null)} />
+
+      <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-16 pt-8 sm:px-6">
+        <header className="mb-8 flex flex-col gap-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">⚡</span>
+              <h1 className="font-display text-xl font-bold text-white">Flow</h1>
+            </div>
+            <button
+              onClick={() => setMuted((m) => !m)}
+              className="rounded-full p-2 text-white/50 transition hover:bg-white/10 hover:text-white"
+              aria-label={muted ? 'Unmute sound' : 'Mute sound'}
+              title={muted ? 'Unmute' : 'Mute'}
+            >
+              {muted ? '🔇' : '🔊'}
+            </button>
+          </div>
+
+          <div className="glass flex items-center justify-between gap-4 rounded-2xl p-4">
+            <XPBar level={levelInfo.level} xpIntoLevel={levelInfo.xpIntoLevel} xpForNextLevel={levelInfo.xpForNextLevel} />
+            <div className="flex items-center gap-3">
+              <StreakBadge streak={dopamine.streak} />
+              <ProgressRing progress={progress} />
+            </div>
+          </div>
+        </header>
+
+        <main className="flex flex-1 flex-col gap-5">
+          <AddTaskForm onAdd={addTask} />
+
+          <div className="flex items-center justify-between">
+            <div className="flex gap-1 rounded-xl bg-white/5 p-1">
+              {FILTERS.map((f) => (
+                <button
+                  key={f.value}
+                  onClick={() => setFilter(f.value)}
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                    filter === f.value ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/70'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-3 text-xs text-white/40">
+              <span>{activeCount} left</span>
+              {completed > 0 && (
+                <button onClick={clearCompleted} className="font-medium text-white/40 hover:text-red-400">
+                  Clear done
+                </button>
+              )}
+            </div>
+          </div>
+
+          <TaskList tasks={tasks} filter={filter} onToggle={handleToggle} onDelete={handleDelete} />
+        </main>
+
+        <footer className="mt-10 text-center text-xs text-white/25">
+          {dopamine.totalCompleted > 0
+            ? `${dopamine.totalCompleted} task${dopamine.totalCompleted === 1 ? '' : 's'} completed all-time · keep the streak alive`
+            : 'Complete your first task to start earning XP'}
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+export default App;
