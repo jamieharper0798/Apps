@@ -1,17 +1,12 @@
 import { motion } from 'framer-motion';
 import type { Task } from '../types';
+import { PRIORITY_STYLES } from '../lib/priority';
 
 interface TaskItemProps {
   task: Task;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
 }
-
-const PRIORITY_STYLES: Record<Task['priority'], string> = {
-  low: 'bg-cyan-400',
-  medium: 'bg-amber-400',
-  high: 'bg-pink-500',
-};
 
 export function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
   return (
