@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import type { ChangeEvent, KeyboardEvent } from 'react';
 import type { Priority, Task } from '../types';
 import { dueDateColor } from '../lib/dueDate';
+import { ownerFieldClasses } from '../lib/ownerColor';
 import { OWNER_COL, DUE_COL } from '../lib/taskColumns';
 import { PriorityPicker } from './PriorityPicker';
 
@@ -28,6 +29,7 @@ export function TaskItem({
   const owner = task.owner ?? '';
   const dueDate = task.dueDate ?? null;
   const dueColor = dueDateColor(dueDate, task.done);
+  const ownerClasses = ownerFieldClasses(owner);
 
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(task.text);
@@ -137,7 +139,7 @@ export function TaskItem({
           value={owner}
           onChange={(e) => onOwnerChange(task.id, e.target.value)}
           placeholder="Owner"
-          className={`hidden ${OWNER_COL} shrink-0 truncate rounded-lg bg-white/5 px-2 py-1 text-xs text-white/70 placeholder-white/25 outline-none ring-1 ring-transparent transition focus:bg-white/10 focus:ring-purple-400/40 sm:block`}
+          className={`hidden ${OWNER_COL} shrink-0 truncate rounded-lg px-2 py-1 text-xs placeholder-white/25 outline-none ring-1 ring-transparent transition sm:block ${ownerClasses}`}
         />
 
         <input
@@ -164,7 +166,7 @@ export function TaskItem({
           value={owner}
           onChange={(e) => onOwnerChange(task.id, e.target.value)}
           placeholder="Owner"
-          className="min-w-0 flex-1 truncate rounded-lg bg-white/5 px-2 py-1 text-xs text-white/70 placeholder-white/25 outline-none ring-1 ring-transparent transition focus:bg-white/10 focus:ring-purple-400/40"
+          className={`min-w-0 flex-1 truncate rounded-lg px-2 py-1 text-xs placeholder-white/25 outline-none ring-1 ring-transparent transition ${ownerClasses}`}
         />
         <input
           type="date"
