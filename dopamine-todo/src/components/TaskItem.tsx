@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import type { ChangeEvent, KeyboardEvent } from 'react';
-import type { Task } from '../types';
-import { PRIORITY_STYLES } from '../lib/priority';
+import type { Priority, Task } from '../types';
 import { dueDateColor } from '../lib/dueDate';
 import { OWNER_COL, DUE_COL } from '../lib/taskColumns';
+import { PriorityPicker } from './PriorityPicker';
 
 interface TaskItemProps {
   task: Task;
@@ -13,9 +13,18 @@ interface TaskItemProps {
   onEdit: (id: string, text: string) => void;
   onOwnerChange: (id: string, owner: string) => void;
   onDueDateChange: (id: string, dueDate: string | null) => void;
+  onPriorityChange: (id: string, priority: Priority) => void;
 }
 
-export function TaskItem({ task, onToggle, onDelete, onEdit, onOwnerChange, onDueDateChange }: TaskItemProps) {
+export function TaskItem({
+  task,
+  onToggle,
+  onDelete,
+  onEdit,
+  onOwnerChange,
+  onDueDateChange,
+  onPriorityChange,
+}: TaskItemProps) {
   const owner = task.owner ?? '';
   const dueDate = task.dueDate ?? null;
   const dueColor = dueDateColor(dueDate, task.done);
@@ -100,7 +109,7 @@ export function TaskItem({ task, onToggle, onDelete, onEdit, onOwnerChange, onDu
           )}
         </button>
 
-        <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${PRIORITY_STYLES[task.priority]}`} />
+        <PriorityPicker priority={task.priority} onChange={(p) => onPriorityChange(task.id, p)} />
 
         {editing ? (
           <input

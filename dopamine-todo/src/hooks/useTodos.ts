@@ -61,6 +61,16 @@ export function useTodos() {
     [setState],
   );
 
+  const setPriority = useCallback(
+    (id: string, priority: Priority) => {
+      setState((prev) => ({
+        ...prev,
+        tasks: prev.tasks.map((t) => (t.id === id ? { ...t, priority } : t)),
+      }));
+    },
+    [setState],
+  );
+
   const setOwner = useCallback(
     (id: string, owner: string) => {
       setState((prev) => ({
@@ -157,6 +167,7 @@ export function useTodos() {
     deleteTask,
     editTask,
     toggleTask,
+    setPriority,
     setOwner,
     setDueDate,
     clearCompleted,

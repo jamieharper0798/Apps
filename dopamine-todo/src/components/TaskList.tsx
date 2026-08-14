@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import type { Task } from '../types';
+import type { Priority, Task } from '../types';
 import { TaskItem } from './TaskItem';
-import { PRIORITY_STYLES } from '../lib/priority';
+import { PRIORITY_ORDER, PRIORITY_STYLES } from '../lib/priority';
 import { CHECKBOX_COL, DOT_COL, OWNER_COL, DUE_COL, DELETE_COL } from '../lib/taskColumns';
 
 export type Filter = 'all' | 'active' | 'done';
@@ -14,9 +14,8 @@ interface TaskListProps {
   onEdit: (id: string, text: string) => void;
   onOwnerChange: (id: string, owner: string) => void;
   onDueDateChange: (id: string, dueDate: string | null) => void;
+  onPriorityChange: (id: string, priority: Priority) => void;
 }
-
-const PRIORITY_ORDER: Task['priority'][] = ['high', 'medium', 'low'];
 
 const PRIORITY_LABELS: Record<Task['priority'], string> = {
   high: 'High priority',
@@ -24,7 +23,16 @@ const PRIORITY_LABELS: Record<Task['priority'], string> = {
   low: 'Low priority',
 };
 
-export function TaskList({ tasks, filter, onToggle, onDelete, onEdit, onOwnerChange, onDueDateChange }: TaskListProps) {
+export function TaskList({
+  tasks,
+  filter,
+  onToggle,
+  onDelete,
+  onEdit,
+  onOwnerChange,
+  onDueDateChange,
+  onPriorityChange,
+}: TaskListProps) {
   const filtered = tasks.filter((t) => {
     if (filter === 'active') return !t.done;
     if (filter === 'done') return t.done;
@@ -86,6 +94,7 @@ export function TaskList({ tasks, filter, onToggle, onDelete, onEdit, onOwnerCha
                     onEdit={onEdit}
                     onOwnerChange={onOwnerChange}
                     onDueDateChange={onDueDateChange}
+                    onPriorityChange={onPriorityChange}
                   />
                 ))}
               </AnimatePresence>
