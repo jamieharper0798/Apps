@@ -19,7 +19,8 @@ import { playComplete, playDelete, playLevelUp } from './lib/sound';
 import { randomHype } from './lib/gamify';
 
 function App() {
-  const { tasks, dopamine, levelInfo, addTask, deleteTask, toggleTask, clearCompleted } = useTodos();
+  const { tasks, dopamine, levelInfo, addTask, deleteTask, toggleTask, setOwner, setDueDate, clearCompleted } =
+    useTodos();
   const { branding, setName, setIconFromFile, resetIcon } = useBranding();
   useBrandingMeta(branding);
   const [filter, setFilter] = useState<Filter>('all');
@@ -162,7 +163,14 @@ function App() {
             </div>
           </div>
 
-          <TaskList tasks={tasks} filter={filter} onToggle={handleToggle} onDelete={handleDelete} />
+          <TaskList
+            tasks={tasks}
+            filter={filter}
+            onToggle={handleToggle}
+            onDelete={handleDelete}
+            onOwnerChange={setOwner}
+            onDueDateChange={setDueDate}
+          />
         </main>
 
         <footer className="mt-10 text-center text-xs text-white/25">

@@ -5,6 +5,9 @@ export interface Task {
   text: string;
   done: boolean;
   priority: Priority;
+  owner: string;
+  /** ISO date string 'YYYY-MM-DD', or null if no due date is set. */
+  dueDate: string | null;
   createdAt: number;
   completedAt: number | null;
 }

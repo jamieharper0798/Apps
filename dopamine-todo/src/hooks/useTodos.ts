@@ -34,6 +34,8 @@ export function useTodos() {
         text: trimmed,
         done: false,
         priority,
+        owner: '',
+        dueDate: null,
         createdAt: Date.now(),
         completedAt: null,
       };
@@ -54,6 +56,26 @@ export function useTodos() {
       setState((prev) => ({
         ...prev,
         tasks: prev.tasks.map((t) => (t.id === id ? { ...t, text } : t)),
+      }));
+    },
+    [setState],
+  );
+
+  const setOwner = useCallback(
+    (id: string, owner: string) => {
+      setState((prev) => ({
+        ...prev,
+        tasks: prev.tasks.map((t) => (t.id === id ? { ...t, owner: owner.slice(0, 40) } : t)),
+      }));
+    },
+    [setState],
+  );
+
+  const setDueDate = useCallback(
+    (id: string, dueDate: string | null) => {
+      setState((prev) => ({
+        ...prev,
+        tasks: prev.tasks.map((t) => (t.id === id ? { ...t, dueDate } : t)),
       }));
     },
     [setState],
@@ -135,6 +157,8 @@ export function useTodos() {
     deleteTask,
     editTask,
     toggleTask,
+    setOwner,
+    setDueDate,
     clearCompleted,
   };
 }
