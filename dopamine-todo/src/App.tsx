@@ -19,7 +19,7 @@ import { playComplete, playDelete, playLevelUp } from './lib/sound';
 import { randomHype } from './lib/gamify';
 
 function App() {
-  const { tasks, dopamine, levelInfo, addTask, deleteTask, toggleTask, setOwner, setDueDate, clearCompleted } =
+  const { tasks, dopamine, levelInfo, addTask, deleteTask, editTask, toggleTask, setOwner, setDueDate, clearCompleted } =
     useTodos();
   const { branding, setName, setIconFromFile, resetIcon } = useBranding();
   useBrandingMeta(branding);
@@ -168,6 +168,7 @@ function App() {
             filter={filter}
             onToggle={handleToggle}
             onDelete={handleDelete}
+            onEdit={editTask}
             onOwnerChange={setOwner}
             onDueDateChange={setDueDate}
           />

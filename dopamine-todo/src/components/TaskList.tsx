@@ -11,6 +11,7 @@ interface TaskListProps {
   filter: Filter;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
+  onEdit: (id: string, text: string) => void;
   onOwnerChange: (id: string, owner: string) => void;
   onDueDateChange: (id: string, dueDate: string | null) => void;
 }
@@ -23,7 +24,7 @@ const PRIORITY_LABELS: Record<Task['priority'], string> = {
   low: 'Low priority',
 };
 
-export function TaskList({ tasks, filter, onToggle, onDelete, onOwnerChange, onDueDateChange }: TaskListProps) {
+export function TaskList({ tasks, filter, onToggle, onDelete, onEdit, onOwnerChange, onDueDateChange }: TaskListProps) {
   const filtered = tasks.filter((t) => {
     if (filter === 'active') return !t.done;
     if (filter === 'done') return t.done;
@@ -82,6 +83,7 @@ export function TaskList({ tasks, filter, onToggle, onDelete, onOwnerChange, onD
                     task={task}
                     onToggle={onToggle}
                     onDelete={onDelete}
+                    onEdit={onEdit}
                     onOwnerChange={onOwnerChange}
                     onDueDateChange={onDueDateChange}
                   />

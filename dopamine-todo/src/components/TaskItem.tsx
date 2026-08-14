@@ -1,5 +1,6 @@
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, KeyboardEvent } from 'react';
 import type { Task } from '../types';
 import { PRIORITY_STYLES } from '../lib/priority';
 import { dueDateColor } from '../lib/dueDate';
@@ -9,14 +10,54 @@ interface TaskItemProps {
   task: Task;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
+  onEdit: (id: string, text: string) => void;
   onOwnerChange: (id: string, owner: string) => void;
   onDueDateChange: (id: string, dueDate: string | null) => void;
 }
 
-export function TaskItem({ task, onToggle, onDelete, onOwnerChange, onDueDateChange }: TaskItemProps) {
+export function TaskItem({ task, onToggle, onDelete, onEdit, onOwnerChange, onDueDateChange }: TaskItemProps) {
   const owner = task.owner ?? '';
   const dueDate = task.dueDate ?? null;
   const dueColor = dueDateColor(dueDate, task.done);
+
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(task.text);
+  const textInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editing) {
+      textInputRef.current?.focus();
+      textInputRef.current?.select();
+    }
+  }, [editing]);
+
+  const startEditing = () => {
+    setDraft(task.text);
+    setEditing(true);
+  };
+
+  const commitEdit = () => {
+    const trimmed = draft.trim();
+    if (trimmed && trimmed !== task.text) {
+      onEdit(task.id, trimmed);
+    }
+    setEditing(false);
+  };
+
+  const cancelEdit = () => {
+    setDraft(task.text);
+    setEditing(false);
+  };
+
+  const handleTextKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      commitEdit();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      cancelEdit();
+    }
+  };
 
   const handleDueDate = (e: ChangeEvent<HTMLInputElement>) => {
     onDueDateChange(task.id, e.target.value || null);
@@ -61,13 +102,27 @@ export function TaskItem({ task, onToggle, onDelete, onOwnerChange, onDueDateCha
 
         <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${PRIORITY_STYLES[task.priority]}`} />
 
-        <span
-          className={`flex-1 truncate text-left text-[15px] transition-colors ${
-            task.done ? 'text-white/35 line-through' : 'text-white/90'
-          }`}
-        >
-          {task.text}
-        </span>
+        {editing ? (
+          <input
+            ref={textInputRef}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onBlur={commitEdit}
+            onKeyDown={handleTextKeyDown}
+            maxLength={200}
+            className="min-w-0 flex-1 rounded-lg bg-white/5 px-2 py-1 text-[15px] text-white outline-none ring-1 ring-purple-400/50"
+          />
+        ) : (
+          <span
+            onClick={startEditing}
+            title="Click to rename"
+            className={`flex-1 min-w-0 cursor-text truncate rounded-lg px-2 py-1 text-left text-[15px] transition-colors hover:bg-white/5 ${
+              task.done ? 'text-white/35 line-through' : 'text-white/90'
+            }`}
+          >
+            {task.text}
+          </span>
+        )}
 
         <input
           value={owner}
