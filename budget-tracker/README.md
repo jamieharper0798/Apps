@@ -4,6 +4,7 @@ Track every subscription and recurring bill in one place: what it costs, which a
 
 ## Features
 
+- Enter your income (any frequency) and see what's left over each month after all active bills
 - Add subscriptions and bills with amount, frequency, account, category, and notes
 - Flexible billing cycles: weekly, every 2 weeks, monthly, every 3 months, yearly, or a custom number of days — the app computes each bill's next due date automatically
 - Dashboard with monthly total, yearly total, what's due in the next 7 days, and active bill count
@@ -34,3 +35,14 @@ npm run dev
 ### Icons
 
 App icons are generated from `scripts/icon.svg` / `scripts/icon-maskable.svg` via `node scripts/gen-icons.mjs` (requires `sharp`, installed on demand: `npm install -D sharp`). Output lands in `public/icons/`.
+
+## Deployment (GitHub Pages)
+
+`.github/workflows/deploy-pages.yml` builds this app and deploys it to GitHub Pages on every push to `main`. It sets `VITE_BASE_PATH` from the repository name so asset paths resolve correctly under `https://<owner>.github.io/<repo>/`.
+
+One-time setup in the repo's Settings:
+1. **Settings → Pages → Build and deployment → Source** — set to "GitHub Actions".
+
+After that, every push to `main` redeploys automatically. Live at: https://jamieharper0798.github.io/budget-tracker/
+
+To build for a different base path locally: `VITE_BASE_PATH=/your-path/ npm run build`.
