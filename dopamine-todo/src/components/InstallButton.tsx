@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useInstallPrompt } from '../hooks/useInstallPrompt';
 
-export function InstallButton() {
+interface InstallButtonProps {
+  appName: string;
+}
+
+export function InstallButton({ appName }: InstallButtonProps) {
   const { canInstall, iosHint, promptInstall } = useInstallPrompt();
   const [showIosHint, setShowIosHint] = useState(false);
 
@@ -31,7 +35,7 @@ export function InstallButton() {
             className="glass absolute right-0 top-full z-10 mt-2 w-56 rounded-xl p-3 text-left text-xs text-white/70"
           >
             Tap the Share icon <span className="text-white">⬆️</span> then{' '}
-            <span className="font-semibold text-white">Add to Home Screen</span> to install Flow.
+            <span className="font-semibold text-white">Add to Home Screen</span> to install {appName}.
           </motion.div>
         )}
       </AnimatePresence>

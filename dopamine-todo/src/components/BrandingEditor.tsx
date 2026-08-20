@@ -79,7 +79,7 @@ export function BrandingEditor({
                 {branding.icon512 ? (
                   <img src={branding.icon512} alt="" className="h-full w-full object-cover" />
                 ) : (
-                  <span className="text-2xl">⚡</span>
+                  <span className="text-2xl">📝</span>
                 )}
                 <span className="absolute inset-0 flex items-center justify-center bg-black/50 text-[10px] font-semibold text-white opacity-0 transition group-hover:opacity-100">
                   {uploading ? '...' : 'Change'}
@@ -117,7 +117,7 @@ export function BrandingEditor({
               value={name}
               onChange={(e) => setName(e.target.value)}
               maxLength={24}
-              placeholder="Flow"
+              placeholder="JH To Do List"
               className="mt-1.5 w-full rounded-xl bg-white/5 px-3 py-2 text-sm text-white placeholder-white/30 outline-none ring-1 ring-white/10 focus:ring-purple-400/50"
             />
 

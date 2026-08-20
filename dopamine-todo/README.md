@@ -1,4 +1,4 @@
-# Flow — Dopamine To-Do
+# JH To Do List — Dopamine To-Do
 
 A modern, intuitive to-do list built to make finishing tasks feel rewarding: XP and levels, daily streaks, confetti bursts, satisfying sound effects, and smooth micro-animations on every action.
 
