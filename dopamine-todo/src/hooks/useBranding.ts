@@ -4,7 +4,7 @@ import { useLocalStorage } from './useLocalStorage';
 import { readImageFile, toIconDataUrls } from '../lib/image';
 
 export const DEFAULT_BRANDING: Branding = {
-  name: 'Flow',
+  name: 'JH To Do List',
   icon192: null,
   icon512: null,
 };

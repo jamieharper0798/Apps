@@ -14,8 +14,8 @@ export default defineConfig({
       includeAssets: ['icons/apple-touch-icon.png'],
       manifest: {
         id: '.',
-        name: 'Flow — Dopamine To-Do',
-        short_name: 'Flow',
+        name: 'JH To Do List — Dopamine To-Do',
+        short_name: 'JH To Do List',
         description: 'A modern to-do list that rewards you for getting things done: XP, streaks, and confetti on every task.',
         theme_color: '#0b0a14',
         background_color: '#0b0a14',
