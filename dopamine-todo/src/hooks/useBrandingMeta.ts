@@ -6,7 +6,10 @@ const APP_DESCRIPTION =
   'A modern to-do list that rewards you for getting things done: XP, streaks, and confetti on every task.';
 
 function absoluteIconUrl(path: string) {
-  return `${window.location.origin}${import.meta.env.BASE_URL}${path}`;
+  // Cache-bust the default icons: browsers (and installed PWAs) cache icon URLs
+  // aggressively, so a content-hash query param is what forces a refetch when
+  // the underlying image changes even though the path stays the same.
+  return `${window.location.origin}${import.meta.env.BASE_URL}${path}?v=${import.meta.env.VITE_ICON_VERSION}`;
 }
 
 /** Keeps the document title, favicon, and PWA manifest in sync with user branding. */
