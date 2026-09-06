@@ -1,6 +1,6 @@
 import { doc, increment, runTransaction, serverTimestamp } from 'firebase/firestore';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { db, storage, SUBMISSION_MILESTONE } from './firebase';
+import { uploadToCloudinary } from './cloudinary';
+import { db, SUBMISSION_MILESTONE } from './firebase';
 
 export class VideoRequiredError extends Error {
   sequenceNumber: number;
@@ -18,19 +18,9 @@ interface SubmitBeerArgs {
   videoFile: File | null;
 }
 
-export async function uploadSubmissionMedia(uid: string, photoFile: File, videoFile: File | null) {
-  const submissionId = crypto.randomUUID();
-  const photoRef = ref(storage, `photos/${uid}/${submissionId}-${photoFile.name}`);
-  await uploadBytes(photoRef, photoFile);
-  const photoURL = await getDownloadURL(photoRef);
-
-  let videoURL: string | null = null;
-  if (videoFile) {
-    const videoRef = ref(storage, `videos/${uid}/${submissionId}-${videoFile.name}`);
-    await uploadBytes(videoRef, videoFile);
-    videoURL = await getDownloadURL(videoRef);
-  }
-
+export async function uploadSubmissionMedia(photoFile: File, videoFile: File | null) {
+  const photoURL = await uploadToCloudinary(photoFile, 'image');
+  const videoURL = videoFile ? await uploadToCloudinary(videoFile, 'video') : null;
   return { photoURL, videoURL };
 }
 
@@ -41,7 +31,7 @@ export async function uploadSubmissionMedia(uid: string, photoFile: File, videoF
  * a video without losing the already-uploaded photo.
  */
 export async function submitBeer({ uid, displayName, photoFile, videoFile }: SubmitBeerArgs) {
-  const { photoURL, videoURL } = await uploadSubmissionMedia(uid, photoFile, videoFile);
+  const { photoURL, videoURL } = await uploadSubmissionMedia(photoFile, videoFile);
 
   const counterRef = doc(db, 'meta', 'counter');
   const userRef = doc(db, 'users', uid);

@@ -9,6 +9,7 @@ import { useGroupTotal } from './hooks/useGroupTotal';
 import { useLeaderboard } from './hooks/useLeaderboard';
 import { useSubmissions } from './hooks/useSubmissions';
 import { firebaseConfigured } from './lib/firebase';
+import { cloudinaryConfigured } from './lib/cloudinary';
 
 function Dashboard() {
   const { user } = useAuth();
@@ -32,15 +33,21 @@ function Dashboard() {
 }
 
 function ConfigWarning() {
+  const missing = [
+    !firebaseConfigured && 'a Firebase project (login + database)',
+    !cloudinaryConfigured && 'a Cloudinary account (photo/video uploads)',
+  ].filter(Boolean);
+
   return (
     <div className="mx-auto max-w-lg px-4 py-16 text-center text-amber-100/80">
       <h1 className="mb-3 font-[var(--font-display)] text-2xl font-bold text-amber-400">
-        🍺 Beer Tracker needs a Firebase project
+        🍺 Beer Tracker needs setup
       </h1>
       <p className="text-sm">
-        Copy <code className="rounded bg-black/30 px-1">.env.example</code> to{' '}
-        <code className="rounded bg-black/30 px-1">.env</code>, fill in your Firebase project's config, and
-        restart the dev server. See the README for step-by-step setup.
+        Missing configuration for {missing.join(' and ')}. Copy{' '}
+        <code className="rounded bg-black/30 px-1">.env.example</code> to{' '}
+        <code className="rounded bg-black/30 px-1">.env</code>, fill in the values, and restart the dev
+        server. See the README for step-by-step setup.
       </p>
     </div>
   );
@@ -55,7 +62,7 @@ function Gate() {
 }
 
 function App() {
-  if (!firebaseConfigured) return <ConfigWarning />;
+  if (!firebaseConfigured || !cloudinaryConfigured) return <ConfigWarning />;
   return (
     <AuthProvider>
       <Gate />
