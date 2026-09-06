@@ -47,8 +47,14 @@ export function useBrandingMeta(branding: Branding) {
           { src: absoluteIconUrl('icons/icon-maskable-512.png'), sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ];
 
+    // The manifest is served from a blob: URL below, and Chrome does not reliably
+    // resolve relative/root-relative fields (start_url, scope, id) against a
+    // blob: base — it silently rejects them as invalid, which blocks install
+    // eligibility entirely. Using fully-qualified absolute URLs sidesteps that.
+    const rootUrl = `${window.location.origin}${import.meta.env.BASE_URL}`;
+
     const manifest = {
-      id: import.meta.env.BASE_URL,
+      id: rootUrl,
       name: `${branding.name} — ${APP_TAGLINE}`,
       short_name: branding.name,
       description: APP_DESCRIPTION,
@@ -56,8 +62,8 @@ export function useBrandingMeta(branding: Branding) {
       background_color: '#0b0a14',
       display: 'standalone',
       orientation: 'portrait',
-      start_url: import.meta.env.BASE_URL,
-      scope: import.meta.env.BASE_URL,
+      start_url: rootUrl,
+      scope: rootUrl,
       icons,
     };
 
