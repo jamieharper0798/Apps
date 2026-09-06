@@ -79,7 +79,7 @@ export function BrandingEditor({
                 {branding.icon512 ? (
                   <img src={branding.icon512} alt="" className="h-full w-full object-cover" />
                 ) : (
-                  <span className="text-2xl">📝</span>
+                  <span className="text-2xl">✅</span>
                 )}
                 <span className="absolute inset-0 flex items-center justify-center bg-black/50 text-[10px] font-semibold text-white opacity-0 transition group-hover:opacity-100">
                   {uploading ? '...' : 'Change'}

@@ -108,7 +108,7 @@ function App() {
               {branding.icon192 ? (
                 <img src={branding.icon192} alt="" className="h-7 w-7 rounded-lg object-cover" />
               ) : (
-                <span className="text-2xl">📝</span>
+                <span className="text-2xl">✅</span>
               )}
               <h1 className="font-display text-xl font-bold text-white">{branding.name}</h1>
               <svg
