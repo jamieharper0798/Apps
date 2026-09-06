@@ -5,8 +5,11 @@ on:
     branches:
       - main
       - claude/dopamine-todo-app-4l3sr3
+      - claude/beer-tracking-app-vpsuu0
     paths:
       - "dopamine-todo/**"
+      - "beer-tracker/**"
+      - "pages/**"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
@@ -29,23 +32,48 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: dopamine-todo/package-lock.json
+          cache-dependency-path: |
+            dopamine-todo/package-lock.json
+            beer-tracker/package-lock.json
 
-      - name: Install dependencies
+      - name: Install dopamine-todo dependencies
         working-directory: dopamine-todo
         run: npm ci
 
-      - name: Build
+      - name: Build dopamine-todo
         working-directory: dopamine-todo
         run: npm run build
         env:
-          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/dopamine-todo/
+
+      - name: Install beer-tracker dependencies
+        working-directory: beer-tracker
+        run: npm ci
+
+      - name: Build beer-tracker
+        working-directory: beer-tracker
+        run: npm run build
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/beer-tracker/
+          VITE_FIREBASE_API_KEY: ${{ secrets.BEER_TRACKER_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.BEER_TRACKER_FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.BEER_TRACKER_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.BEER_TRACKER_FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.BEER_TRACKER_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.BEER_TRACKER_FIREBASE_APP_ID }}
+
+      - name: Assemble Pages site
+        run: |
+          mkdir -p site
+          cp pages/index.html site/index.html
+          cp -r dopamine-todo/dist site/dopamine-todo
+          cp -r beer-tracker/dist site/beer-tracker
 
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dopamine-todo/dist
+          path: site
 
   deploy:
     needs: build

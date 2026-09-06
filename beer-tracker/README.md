@@ -50,6 +50,29 @@ database, and file storage (GitHub Pages, where these apps are deployed, only se
 Anyone who signs up through the app becomes part of the same shared group — the group total and
 leaderboard are shared across all users of the same Firebase project.
 
+## Deployment (GitHub Pages)
+
+`.github/workflows/deploy-pages.yml` builds this app alongside the other apps in this repo and
+publishes it to `https://<owner>.github.io/<repo>/beer-tracker/` (with a landing page at the site
+root linking to each app — see `pages/index.html`).
+
+Since Firebase config is baked into the build, add these as **repository secrets** (Settings →
+Secrets and variables → Actions → New repository secret), using the same values as your `.env`:
+
+- `BEER_TRACKER_FIREBASE_API_KEY`
+- `BEER_TRACKER_FIREBASE_AUTH_DOMAIN`
+- `BEER_TRACKER_FIREBASE_PROJECT_ID`
+- `BEER_TRACKER_FIREBASE_STORAGE_BUCKET`
+- `BEER_TRACKER_FIREBASE_MESSAGING_SENDER_ID`
+- `BEER_TRACKER_FIREBASE_APP_ID`
+
+Then in the Firebase console under **Authentication → Settings → Authorized domains**, add
+`<owner>.github.io` — otherwise login will fail on the deployed site with an unauthorized-domain
+error (Firebase only allows sign-in from domains you've explicitly listed).
+
+One-time repo setup (same as the other apps): **Settings → Pages → Build and deployment → Source**
+must be set to "GitHub Actions", and the repo must be public unless you're on a paid GitHub plan.
+
 ## Scripts
 
 - `npm run dev` — start the dev server
