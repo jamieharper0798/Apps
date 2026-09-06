@@ -45,4 +45,4 @@ To build for a different base path locally: `VITE_BASE_PATH=/your-path/ npm run 
 
 ### Icons
 
-App icons are generated from `scripts/icon.svg` / `scripts/icon-maskable.svg` via `node scripts/gen-icons.mjs` (requires `sharp`, installed on demand: `npm install -D sharp`). Output lands in `public/icons/`.
+App icons are generated from the source image `scripts/icon-source.webp` via `node scripts/gen-icons.mjs` (requires `sharp`, installed on demand: `npm install -D sharp`). It produces the regular icon sizes as-is, plus maskable variants inset on the app's background color so OS icon masks don't crop the artwork. Output lands in `public/icons/`. Replace `icon-source.webp` with a new square image and re-run the script to change the default icon.
