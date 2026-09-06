@@ -25,6 +25,14 @@ export function useBrandingMeta(branding: Branding) {
     }
     faviconLink.href = branding.icon192 ?? absoluteIconUrl('icons/icon-192.png');
 
+    let appleTouchIconLink = document.querySelector<HTMLLinkElement>('link[rel="apple-touch-icon"]');
+    if (!appleTouchIconLink) {
+      appleTouchIconLink = document.createElement('link');
+      appleTouchIconLink.rel = 'apple-touch-icon';
+      document.head.appendChild(appleTouchIconLink);
+    }
+    appleTouchIconLink.href = branding.icon192 ?? absoluteIconUrl('icons/apple-touch-icon.png');
+
     const hasCustomIcon = branding.icon192 && branding.icon512;
     const icons = hasCustomIcon
       ? [

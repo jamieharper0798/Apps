@@ -23,6 +23,10 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icons/apple-touch-icon.png'],
+      // Hash the manifest filename itself so a cached copy of manifest.webmanifest
+      // (browser HTTP cache, or a stale installed PWA) can never keep pointing at
+      // old icon references — the URL changes whenever the icon does.
+      manifestFilename: `manifest.${iconVersion}.webmanifest`,
       manifest: {
         id: '.',
         name: 'JH To Do List — Dopamine To-Do',
