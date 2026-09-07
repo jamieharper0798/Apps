@@ -12,8 +12,12 @@ import { LevelUpOverlay } from './components/LevelUpOverlay';
 import { InstallButton } from './components/InstallButton';
 import { UpdateToast } from './components/UpdateToast';
 import { BrandingEditor } from './components/BrandingEditor';
+import { AccountButton } from './components/AccountButton';
+import { AuthModal } from './components/AuthModal';
 import { useBranding } from './hooks/useBranding';
 import { useBrandingMeta } from './hooks/useBrandingMeta';
+import { useAuth } from './hooks/useAuth';
+import { isFirebaseConfigured } from './lib/firebase';
 import { burstConfetti, burstLevelUp } from './lib/celebrate';
 import { playComplete, playDelete, playLevelUp } from './lib/sound';
 import { randomHype } from './lib/gamify';
@@ -23,6 +27,7 @@ function App() {
     tasks,
     dopamine,
     levelInfo,
+    syncing,
     addTask,
     deleteTask,
     editTask,
@@ -34,11 +39,13 @@ function App() {
   } = useTodos();
   const { branding, setName, setIconFromFile, resetIcon } = useBranding();
   useBrandingMeta(branding);
+  const { user, signIn, signUp, signOutUser } = useAuth();
   const [filter, setFilter] = useState<Filter>('all');
   const [toast, setToast] = useState<ToastData | null>(null);
   const [levelUp, setLevelUp] = useState<number | null>(null);
   const [muted, setMuted] = useState(false);
   const [editingBrand, setEditingBrand] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => () => {
@@ -96,6 +103,14 @@ function App() {
         onUploadIcon={setIconFromFile}
         onResetIcon={resetIcon}
       />
+      {isFirebaseConfigured && (
+        <AuthModal
+          open={authModalOpen}
+          onClose={() => setAuthModalOpen(false)}
+          onSignIn={signIn}
+          onSignUp={signUp}
+        />
+      )}
 
       <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-16 pt-8 sm:px-6">
         <header className="mb-8 flex flex-col gap-6">
@@ -126,6 +141,14 @@ function App() {
               </svg>
             </button>
             <div className="flex items-center gap-2">
+              {isFirebaseConfigured && (
+                <AccountButton
+                  user={user}
+                  syncing={syncing}
+                  onSignInClick={() => setAuthModalOpen(true)}
+                  onSignOut={signOutUser}
+                />
+              )}
               <InstallButton appName={branding.name} />
               <button
                 onClick={() => setMuted((m) => !m)}
