@@ -9,6 +9,7 @@ export type Filter = 'all' | 'active' | 'done';
 interface TaskListProps {
   tasks: Task[];
   filter: Filter;
+  listLabel: string;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
   onEdit: (id: string, text: string) => void;
@@ -26,6 +27,7 @@ const PRIORITY_LABELS: Record<Task['priority'], string> = {
 export function TaskList({
   tasks,
   filter,
+  listLabel,
   onToggle,
   onDelete,
   onEdit,
@@ -48,7 +50,7 @@ export function TaskList({
       >
         <span className="text-4xl">{filter === 'done' ? '🏁' : '✨'}</span>
         <p className="font-display text-lg font-medium text-white/70">
-          {filter === 'done' ? 'Nothing completed yet' : filter === 'active' ? "You're all caught up" : 'A blank slate'}
+          {filter === 'done' ? 'Nothing completed yet' : filter === 'active' ? "You're all caught up" : `No ${listLabel.toLowerCase()} tasks yet`}
         </p>
         <p className="max-w-xs text-sm text-white/35">
           {filter === 'active'

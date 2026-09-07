@@ -1,11 +1,14 @@
 export type Priority = 'low' | 'medium' | 'high';
 
+export type ListId = 'personal' | 'work';
+
 export interface Task {
   id: string;
   text: string;
   done: boolean;
   priority: Priority;
   owner: string;
+  list: ListId;
   /** ISO date string 'YYYY-MM-DD', or null if no due date is set. */
   dueDate: string | null;
   createdAt: number;

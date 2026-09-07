@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import type { AppState, Priority, Task } from '../types';
+import type { AppState, ListId, Priority, Task } from '../types';
 import { useAppState } from './useAppState';
 import { XP_BY_PRIORITY, dayKey, isYesterday, levelFromTotalXp } from '../lib/gamify';
 
@@ -26,7 +26,7 @@ export function useTodos() {
   const [state, setState, { syncing }] = useAppState(INITIAL_STATE);
 
   const addTask = useCallback(
-    (text: string, priority: Priority) => {
+    (text: string, priority: Priority, list: ListId) => {
       const trimmed = text.trim();
       if (!trimmed) return;
       const task: Task = {
@@ -35,6 +35,7 @@ export function useTodos() {
         done: false,
         priority,
         owner: '',
+        list,
         dueDate: null,
         createdAt: Date.now(),
         completedAt: null,
@@ -91,9 +92,15 @@ export function useTodos() {
     [setState],
   );
 
-  const clearCompleted = useCallback(() => {
-    setState((prev) => ({ ...prev, tasks: prev.tasks.filter((t) => !t.done) }));
-  }, [setState]);
+  const clearCompleted = useCallback(
+    (list: ListId) => {
+      setState((prev) => ({
+        ...prev,
+        tasks: prev.tasks.filter((t) => !(t.done && (t.list ?? 'personal') === list)),
+      }));
+    },
+    [setState],
+  );
 
   /** Toggles a task and returns gamification info synchronously so the UI can celebrate. */
   const toggleTask = useCallback(
@@ -159,8 +166,11 @@ export function useTodos() {
 
   const levelInfo = levelFromTotalXp(state.dopamine.xp);
 
+  // Tasks created before per-list support existed have no `list` field — default them to personal.
+  const tasks: Task[] = state.tasks.map((t) => (t.list ? t : { ...t, list: 'personal' }));
+
   return {
-    tasks: state.tasks,
+    tasks,
     dopamine: state.dopamine,
     levelInfo,
     syncing,
