@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import type { AppState, Priority, Task } from '../types';
-import { useLocalStorage } from './useLocalStorage';
+import { useAppState } from './useAppState';
 import { XP_BY_PRIORITY, dayKey, isYesterday, levelFromTotalXp } from '../lib/gamify';
 
 const INITIAL_STATE: AppState = {
@@ -23,7 +23,7 @@ export interface CompleteResult {
 }
 
 export function useTodos() {
-  const [state, setState] = useLocalStorage<AppState>('dopamine-todo:v1', INITIAL_STATE);
+  const [state, setState, { syncing }] = useAppState(INITIAL_STATE);
 
   const addTask = useCallback(
     (text: string, priority: Priority) => {
@@ -163,6 +163,7 @@ export function useTodos() {
     tasks: state.tasks,
     dopamine: state.dopamine,
     levelInfo,
+    syncing,
     addTask,
     deleteTask,
     editTask,
