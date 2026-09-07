@@ -4,6 +4,7 @@ import type { Priority } from '../types';
 
 interface AddTaskFormProps {
   onAdd: (text: string, priority: Priority) => void;
+  listLabel: string;
 }
 
 const PRIORITIES: { value: Priority; label: string; dot: string }[] = [
@@ -12,7 +13,7 @@ const PRIORITIES: { value: Priority; label: string; dot: string }[] = [
   { value: 'high', label: 'High · +35xp', dot: 'bg-pink-500' },
 ];
 
-export function AddTaskForm({ onAdd }: AddTaskFormProps) {
+export function AddTaskForm({ onAdd, listLabel }: AddTaskFormProps) {
   const [text, setText] = useState('');
   const [priority, setPriority] = useState<Priority>('medium');
 
@@ -28,7 +29,7 @@ export function AddTaskForm({ onAdd }: AddTaskFormProps) {
       <input
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="What do you want to get done?"
+        placeholder={`Add a ${listLabel.toLowerCase()} task…`}
         className="flex-1 bg-transparent py-2 text-[15px] text-white placeholder-white/35 outline-none"
         maxLength={200}
       />

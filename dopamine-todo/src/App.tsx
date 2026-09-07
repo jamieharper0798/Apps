@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTodos } from './hooks/useTodos';
+import { useLocalStorage } from './hooks/useLocalStorage';
+import type { ListId } from './types';
+import { LIST_META } from './lib/lists';
 import { AddTaskForm } from './components/AddTaskForm';
 import { TaskList } from './components/TaskList';
 import type { Filter } from './components/TaskList';
+import { ListToggle } from './components/ListToggle';
 import { XPBar } from './components/XPBar';
 import { StreakBadge } from './components/StreakBadge';
 import { ProgressRing } from './components/ProgressRing';
@@ -40,6 +44,7 @@ function App() {
   const { branding, setName, setIconFromFile, resetIcon } = useBranding();
   useBrandingMeta(branding);
   const { user, signIn, signUp, signOutUser } = useAuth();
+  const [activeList, setActiveList] = useLocalStorage<ListId>('dopamine-todo:activeList', 'personal');
   const [filter, setFilter] = useState<Filter>('all');
   const [toast, setToast] = useState<ToastData | null>(null);
   const [levelUp, setLevelUp] = useState<number | null>(null);
@@ -52,8 +57,9 @@ function App() {
     if (toastTimer.current) clearTimeout(toastTimer.current);
   }, []);
 
-  const total = tasks.length;
-  const completed = tasks.filter((t) => t.done).length;
+  const listTasks = tasks.filter((t) => t.list === activeList);
+  const total = listTasks.length;
+  const completed = listTasks.filter((t) => t.done).length;
   const progress = total === 0 ? 0 : completed / total;
   const activeCount = total - completed;
 
@@ -161,6 +167,8 @@ function App() {
             </div>
           </div>
 
+          <ListToggle active={activeList} onChange={setActiveList} />
+
           <div className="glass flex items-center justify-between gap-4 rounded-2xl p-4">
             <XPBar level={levelInfo.level} xpIntoLevel={levelInfo.xpIntoLevel} xpForNextLevel={levelInfo.xpForNextLevel} />
             <div className="flex items-center gap-3">
@@ -171,7 +179,10 @@ function App() {
         </header>
 
         <main className="flex flex-1 flex-col gap-5">
-          <AddTaskForm onAdd={addTask} />
+          <AddTaskForm
+            onAdd={(text, priority) => addTask(text, priority, activeList)}
+            listLabel={LIST_META[activeList].label}
+          />
 
           <div className="flex items-center justify-between">
             <div className="flex gap-1 rounded-xl bg-white/5 p-1">
@@ -190,7 +201,10 @@ function App() {
             <div className="flex items-center gap-3 text-xs text-white/40">
               <span>{activeCount} left</span>
               {completed > 0 && (
-                <button onClick={clearCompleted} className="font-medium text-white/40 hover:text-red-400">
+                <button
+                  onClick={() => clearCompleted(activeList)}
+                  className="font-medium text-white/40 hover:text-red-400"
+                >
                   Clear done
                 </button>
               )}
@@ -198,8 +212,9 @@ function App() {
           </div>
 
           <TaskList
-            tasks={tasks}
+            tasks={listTasks}
             filter={filter}
+            listLabel={LIST_META[activeList].label}
             onToggle={handleToggle}
             onDelete={handleDelete}
             onEdit={editTask}
