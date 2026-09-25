@@ -12,12 +12,15 @@ import { LeadForm } from './components/LeadForm';
 import { LogContactForm } from './components/LogContactForm';
 import { InstallButton } from './components/InstallButton';
 import { UpdateToast } from './components/UpdateToast';
+import { AccountButton } from './components/AccountButton';
+import { AuthForm } from './components/AuthForm';
+import { isFirebaseConfigured } from './lib/firebase';
 import { inputClass } from './components/fields';
 
 type View = 'follow-ups' | 'all';
 type Sort = 'recent' | 'follow-up' | 'value' | 'name';
 
-type Dialog = { kind: 'add' } | { kind: 'edit'; id: string } | { kind: 'contact'; id: string } | null;
+type Dialog = { kind: 'add' } | { kind: 'auth' } | { kind: 'edit'; id: string } | { kind: 'contact'; id: string } | null;
 
 function Section({ title, tone, leads, render }: { title: string; tone: string; leads: Lead[]; render: (l: Lead) => React.ReactNode }) {
   if (leads.length === 0) return null;
@@ -46,7 +49,22 @@ function EmptyState({ title, body, action }: { title: string; body: string; acti
 const byFollowUp = (a: Lead, b: Lead) => (a.nextFollowUp ?? '9999').localeCompare(b.nextFollowUp ?? '9999');
 
 function App() {
-  const { leads, addLead, editLead, logContact, addNote, snooze, deleteLead } = useLeads();
+  const {
+    leads,
+    addLead,
+    editLead,
+    logContact,
+    addNote,
+    snooze,
+    deleteLead,
+    sync,
+    syncError,
+    dismissSyncError,
+    user,
+    signIn,
+    signUp,
+    signOut,
+  } = useLeads();
   const [view, setView] = useLocalStorage<View>('lead-tracker:view', 'follow-ups');
   const [sort, setSort] = useLocalStorage<Sort>('lead-tracker:sort', 'recent');
   const [statusFilter, setStatusFilter] = useState<LeadStatus | 'all'>('all');
@@ -84,7 +102,7 @@ function App() {
     return list.sort(sorters[sort]);
   }, [leads, query, statusFilter, sort]);
 
-  const dialogLead = dialog && dialog.kind !== 'add' ? leads.find((l) => l.id === dialog.id) : undefined;
+  const dialogLead = dialog && 'id' in dialog ? leads.find((l) => l.id === dialog.id) : undefined;
   const closeDialog = () => setDialog(null);
 
   const renderLead = (lead: Lead) => (
@@ -125,9 +143,21 @@ function App() {
         </div>
         <div className="flex items-center gap-2">
           <InstallButton />
+          {isFirebaseConfigured && (
+            <AccountButton user={user} sync={sync} onSignInClick={() => setDialog({ kind: 'auth' })} onSignOut={signOut} />
+          )}
           <div className="hidden sm:block">{addButton}</div>
         </div>
       </header>
+
+      {syncError && (
+        <div className="mb-4 flex items-start gap-3 rounded-2xl border border-rose-400/20 bg-rose-500/[0.07] px-4 py-3 text-sm text-rose-200/90">
+          <span className="flex-1">{syncError}</span>
+          <button onClick={dismissSyncError} className="text-rose-200/50 hover:text-rose-100" aria-label="Dismiss">
+            ✕
+          </button>
+        </div>
+      )}
 
       <Stats leads={leads} />
 
@@ -161,7 +191,9 @@ function App() {
       </nav>
 
       <main className="mt-5">
-        {leads.length === 0 ? (
+        {sync === 'loading' && leads.length === 0 ? (
+          <p className="py-16 text-center text-sm text-white/40">Loading your leads…</p>
+        ) : leads.length === 0 ? (
           <EmptyState
             title="Track your first lead"
             body="Add anyone you've found who could become a customer. Set a reminder and they'll show up here when it's time to reach back out."
@@ -253,6 +285,11 @@ function App() {
               closeDialog();
             }}
           />
+        </Modal>
+      )}
+      {dialog?.kind === 'auth' && (
+        <Modal title="Sync across devices" onClose={closeDialog}>
+          <AuthForm onSignIn={signIn} onSignUp={signUp} onDone={closeDialog} />
         </Modal>
       )}
       {dialog?.kind === 'edit' && dialogLead && (

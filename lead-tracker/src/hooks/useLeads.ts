@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useLayoutEffect, useRef } from 'react';
 import type { Activity, ActivityKind, Lead, LeadDraft, LeadStatus } from '../types';
-import { useLocalStorage } from './useLocalStorage';
+import { useLeadStore } from './useLeadStore';
 import { STATUS_META, isOpen } from '../lib/status';
 
 function uid() {
@@ -18,28 +18,33 @@ export interface ContactLog {
 }
 
 export function useLeads() {
-  const [leads, setLeads] = useLocalStorage<Lead[]>('lead-tracker:v1', []);
+  const { leads, putLead, removeLead, ...account } = useLeadStore();
+  const leadsRef = useRef(leads);
+  useLayoutEffect(() => {
+    leadsRef.current = leads;
+  }, [leads]);
 
   const update = useCallback(
-    (id: string, fn: (lead: Lead) => Lead) =>
-      setLeads((prev) => prev.map((l) => (l.id === id ? { ...fn(l), updatedAt: new Date().toISOString() } : l))),
-    [setLeads],
+    (id: string, fn: (lead: Lead) => Lead) => {
+      const lead = leadsRef.current.find((l) => l.id === id);
+      if (lead) putLead({ ...fn(lead), updatedAt: new Date().toISOString() });
+    },
+    [putLead],
   );
 
   const addLead = useCallback(
     (draft: LeadDraft) => {
       const now = new Date().toISOString();
-      const lead: Lead = {
+      putLead({
         ...draft,
         id: uid(),
         createdAt: now,
         updatedAt: now,
         lastContactedAt: null,
         activity: [activity('created', draft.source ? `Lead added (source: ${draft.source})` : 'Lead added')],
-      };
-      setLeads((prev) => [lead, ...prev]);
+      });
     },
-    [setLeads],
+    [putLead],
   );
 
   const editLead = useCallback(
@@ -82,7 +87,5 @@ export function useLeads() {
     [update],
   );
 
-  const deleteLead = useCallback((id: string) => setLeads((prev) => prev.filter((l) => l.id !== id)), [setLeads]);
-
-  return { leads, addLead, editLead, logContact, addNote, snooze, deleteLead };
+  return { leads, addLead, editLead, logContact, addNote, snooze, deleteLead: removeLead, ...account };
 }
