@@ -48,6 +48,8 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
         navigateFallback: 'index.html',
+        // The lead tracker is deployed under /leads/ on the same site — don't serve this app's shell there.
+        navigateFallbackDenylist: [/\/leads(\/|$)/],
       },
     }),
   ],
