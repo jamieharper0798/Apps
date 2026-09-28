@@ -91,7 +91,7 @@ function App() {
     const list = leads.filter(
       (l) =>
         (statusFilter === 'all' || l.status === statusFilter) &&
-        (!q || [l.name, l.company, l.email, l.phone, l.source, l.notes].some((f) => f.toLowerCase().includes(q))),
+        (!q || [l.name, l.jobTitle, l.company, l.email, l.linkedin, l.phone, l.source, l.notes].some((f) => f.toLowerCase().includes(q))),
     );
     const sorters: Record<Sort, (a: Lead, b: Lead) => number> = {
       recent: (a, b) => b.createdAt.localeCompare(a.createdAt),
@@ -218,7 +218,7 @@ function App() {
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search name, company, notes…"
+                placeholder="Search name, title, company, notes…"
                 className={inputClass}
               />
               <div className="flex gap-2">

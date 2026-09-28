@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { collection, deleteDoc, doc, onSnapshot, setDoc, writeBatch } from 'firebase/firestore';
 import type { Lead } from '../types';
 import { db, isFirebaseConfigured } from '../lib/firebase';
 import { useLocalStorage } from './useLocalStorage';
 import { useAuth } from './useAuth';
+import { normalizeLead } from '../lib/channel';
 
 export type SyncState = 'local' | 'loading' | 'synced' | 'error';
 
@@ -50,7 +51,7 @@ export function useLeadStore() {
     return onSnapshot(
       leadsCollection(uid),
       (snap) => {
-        const leads = snap.docs.map((d) => d.data() as Lead);
+        const leads = snap.docs.map((d) => normalizeLead(d.data() as Lead));
         setCloud({ uid, leads });
 
         // Move this device's guest leads into the account, once per sign-in, after the server has answered.
@@ -118,7 +119,8 @@ export function useLeadStore() {
   else if (uid && cloudLeads === null) sync = 'loading';
   else if (uid) sync = 'synced';
 
-  const leads = useCloud ? (cloudLeads ?? []) : localLeads;
+  const normalizedLocal = useMemo(() => localLeads.map(normalizeLead), [localLeads]);
+  const leads = useCloud ? (cloudLeads ?? []) : normalizedLocal;
 
   return {
     leads,

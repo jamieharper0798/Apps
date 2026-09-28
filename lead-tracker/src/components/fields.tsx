@@ -12,6 +12,16 @@ export function Field({ label, children, className = '' }: { label: string; chil
   );
 }
 
+/** For button groups: a <label> would forward clicks on its text to the first button. */
+export function FieldGroup({ label, children, className = '' }: { label: string; children: ReactNode; className?: string }) {
+  return (
+    <div role="group" aria-label={label} className={`block ${className}`}>
+      <span className="mb-1.5 block text-xs font-medium text-white/50">{label}</span>
+      {children}
+    </div>
+  );
+}
+
 export function TextInput(props: InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={`${inputClass} ${props.className ?? ''}`} />;
 }

@@ -2,9 +2,10 @@ import { useState, type FormEvent } from 'react';
 import type { LeadDraft } from '../types';
 import { addDays, todayKey } from '../lib/dates';
 import { isOpen } from '../lib/status';
-import { Field, TextArea, TextInput } from './fields';
+import { Field, FieldGroup, TextArea, TextInput } from './fields';
 import { StatusPicker } from './StatusPicker';
 import { FollowUpPicker } from './FollowUpPicker';
+import { ChannelPicker } from './ChannelPicker';
 
 interface LeadFormProps {
   initial?: LeadDraft;
@@ -16,8 +17,11 @@ interface LeadFormProps {
 function emptyDraft(): LeadDraft {
   return {
     name: '',
+    jobTitle: '',
     company: '',
+    channel: 'email',
     email: '',
+    linkedin: '',
     phone: '',
     source: '',
     value: null,
@@ -37,8 +41,10 @@ export function LeadForm({ initial, submitLabel, onSubmit, onCancel }: LeadFormP
     onSubmit({
       ...draft,
       name: draft.name.trim(),
+      jobTitle: draft.jobTitle.trim(),
       company: draft.company.trim(),
       email: draft.email.trim(),
+      linkedin: draft.linkedin.trim(),
       phone: draft.phone.trim(),
       source: draft.source.trim(),
       notes: draft.notes.trim(),
@@ -51,12 +57,34 @@ export function LeadForm({ initial, submitLabel, onSubmit, onCancel }: LeadFormP
         <Field label="Name *">
           <TextInput autoFocus required value={draft.name} onChange={(e) => set('name', e.target.value)} placeholder="Jane Smith" />
         </Field>
-        <Field label="Company">
+        <Field label="Job title">
+          <TextInput value={draft.jobTitle} onChange={(e) => set('jobTitle', e.target.value)} placeholder="Head of Operations" />
+        </Field>
+        <Field label="Company" className="sm:col-span-2">
           <TextInput value={draft.company} onChange={(e) => set('company', e.target.value)} placeholder="Acme Ltd" />
         </Field>
-        <Field label="Email">
-          <TextInput type="email" inputMode="email" value={draft.email} onChange={(e) => set('email', e.target.value)} placeholder="jane@acme.com" />
-        </Field>
+      </div>
+
+      <FieldGroup label="How you're contacting them">
+        <ChannelPicker value={draft.channel} onChange={(c) => set('channel', c)} />
+      </FieldGroup>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        {draft.channel === 'linkedin' ? (
+          <Field label="LinkedIn profile">
+            <TextInput
+              inputMode="url"
+              autoCapitalize="none"
+              value={draft.linkedin}
+              onChange={(e) => set('linkedin', e.target.value)}
+              placeholder="linkedin.com/in/janesmith"
+            />
+          </Field>
+        ) : (
+          <Field label="Email">
+            <TextInput type="email" inputMode="email" value={draft.email} onChange={(e) => set('email', e.target.value)} placeholder="jane@acme.com" />
+          </Field>
+        )}
         <Field label="Phone">
           <TextInput type="tel" inputMode="tel" value={draft.phone} onChange={(e) => set('phone', e.target.value)} placeholder="+44 7700 900123" />
         </Field>
@@ -80,14 +108,14 @@ export function LeadForm({ initial, submitLabel, onSubmit, onCancel }: LeadFormP
         </Field>
       </div>
 
-      <Field label="Status">
+      <FieldGroup label="Status">
         <StatusPicker value={draft.status} onChange={(s) => set('status', s)} />
-      </Field>
+      </FieldGroup>
 
       {isOpen(draft.status) && (
-        <Field label="Remind me to reach out">
+        <FieldGroup label="Remind me to reach out">
           <FollowUpPicker value={draft.nextFollowUp} onChange={(k) => set('nextFollowUp', k)} />
-        </Field>
+        </FieldGroup>
       )}
 
       <Field label="Notes">
