@@ -1,5 +1,6 @@
 import { useCallback, useLayoutEffect, useRef } from 'react';
-import type { Activity, ActivityKind, Lead, LeadDraft, LeadStatus } from '../types';
+import type { Activity, ActivityKind, Channel, Lead, LeadDraft, LeadStatus } from '../types';
+import { CHANNEL_LABEL } from '../lib/channel';
 import { useLeadStore } from './useLeadStore';
 import { STATUS_META, isOpen } from '../lib/status';
 
@@ -15,6 +16,7 @@ export interface ContactLog {
   note: string;
   nextFollowUp: string | null;
   status: LeadStatus;
+  channel: Channel;
 }
 
 export function useLeads() {
@@ -62,13 +64,15 @@ export function useLeads() {
   );
 
   const logContact = useCallback(
-    (id: string, { note, nextFollowUp, status }: ContactLog) =>
+    (id: string, { note, nextFollowUp, status, channel }: ContactLog) =>
       update(id, (l) => {
-        const entries = [activity('contacted', note.trim() || 'Reached out')];
+        const via = `Reached out on ${CHANNEL_LABEL[channel]}`;
+        const entries = [activity('contacted', note.trim() ? `${via}: ${note.trim()}` : via)];
         if (status !== l.status) entries.unshift(activity('status', `Status changed to ${STATUS_META[status].label}`));
         return {
           ...l,
           status,
+          channel,
           nextFollowUp: isOpen(status) ? nextFollowUp : null,
           lastContactedAt: new Date().toISOString(),
           activity: [...entries, ...l.activity],

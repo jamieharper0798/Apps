@@ -1,5 +1,8 @@
 export type LeadStatus = 'new' | 'contacted' | 'follow-up' | 'qualified' | 'won' | 'lost';
 
+/** How you're talking to this lead. */
+export type Channel = 'email' | 'linkedin';
+
 export type ActivityKind = 'created' | 'contacted' | 'note' | 'status';
 
 export interface Activity {
@@ -13,8 +16,12 @@ export interface Activity {
 export interface Lead {
   id: string;
   name: string;
+  jobTitle: string;
   company: string;
+  channel: Channel;
   email: string;
+  /** LinkedIn profile URL. */
+  linkedin: string;
   phone: string;
   source: string;
   /** Estimated deal value, in whole currency units. */
@@ -31,5 +38,5 @@ export interface Lead {
 
 export type LeadDraft = Pick<
   Lead,
-  'name' | 'company' | 'email' | 'phone' | 'source' | 'value' | 'status' | 'nextFollowUp' | 'notes'
+  'name' | 'jobTitle' | 'company' | 'channel' | 'email' | 'linkedin' | 'phone' | 'source' | 'value' | 'status' | 'nextFollowUp' | 'notes'
 >;

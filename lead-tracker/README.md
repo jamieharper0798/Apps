@@ -5,10 +5,11 @@ A simple sales app for keeping track of new leads and making sure you reach back
 ## Features
 
 - **Follow-ups view**: leads you need to contact, grouped into Overdue, Today, Coming up this week, and No reminder set
-- **Add a lead** with name, company, email, phone, where you found them, estimated value, status, notes, and a reminder date (quick picks: tomorrow / 3 days / 1 week / 2 weeks / 1 month, or any date)
+- **Add a lead** with name, job title, company, how you're contacting them (**Email** or **LinkedIn**, with their email address or LinkedIn profile), phone, where you found them, estimated value, status, notes, and a reminder date (quick picks: tomorrow / 3 days / 1 week / 2 weeks / 1 month, or any date)
 - **"I reached out"** logs the contact with a note, updates the status, and sets the next reminder in one step
 - **Snooze** a reminder by a day or a week
-- One-tap **call** and **email** buttons
+- One-tap **call**, **email** and **LinkedIn profile** buttons
+- Each logged contact records whether it was by email or LinkedIn
 - Per-lead **activity history** (contacts, notes, status changes) and quick notes
 - **All leads** view with search, status filters (New → Contacted → Follow-up → Qualified → Won / Lost), and sorting
 - Stats: leads due, open leads, pipeline value, deals won

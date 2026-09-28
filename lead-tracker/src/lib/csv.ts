@@ -1,5 +1,6 @@
 import type { Lead } from '../types';
 import { STATUS_META } from './status';
+import { CHANNEL_LABEL } from './channel';
 
 function cell(value: string | number | null) {
   const s = value == null ? '' : String(value);
@@ -7,11 +8,14 @@ function cell(value: string | number | null) {
 }
 
 export function leadsToCsv(leads: Lead[]) {
-  const header = ['Name', 'Company', 'Email', 'Phone', 'Source', 'Status', 'Value', 'Next follow-up', 'Last contacted', 'Added', 'Notes'];
+  const header = ['Name', 'Job title', 'Company', 'Channel', 'Email', 'LinkedIn', 'Phone', 'Source', 'Status', 'Value', 'Next follow-up', 'Last contacted', 'Added', 'Notes'];
   const rows = leads.map((l) => [
     l.name,
+    l.jobTitle,
     l.company,
+    CHANNEL_LABEL[l.channel],
     l.email,
+    l.linkedin,
     l.phone,
     l.source,
     STATUS_META[l.status].label,

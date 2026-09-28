@@ -4,6 +4,8 @@ import { STATUS_META, isOpen } from '../lib/status';
 import { addDays, diffDays, followUpLabel, timeAgo, todayKey } from '../lib/dates';
 import { formatMoney, initials } from '../lib/format';
 import { inputClass } from './fields';
+import { ChannelIcon } from './ChannelIcon';
+import { CHANNEL_LABEL, linkedinHref } from '../lib/channel';
 
 interface LeadCardProps {
   lead: Lead;
@@ -28,10 +30,11 @@ function followUpTone(key: string) {
   return 'bg-white/5 text-white/55 ring-white/10';
 }
 
-function IconLink({ href, label, children }: { href: string; label: string; children: ReactNode }) {
+function IconLink({ href, label, external, children }: { href: string; label: string; external?: boolean; children: ReactNode }) {
   return (
     <a
       href={href}
+      {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
       onClick={(e) => e.stopPropagation()}
       aria-label={label}
       title={label}
@@ -76,9 +79,17 @@ export function LeadCard({ lead, onLogContact, onEdit, onDelete, onSnooze, onAdd
             <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ${status.pill}`}>{status.label}</span>
           </div>
           <p className="mt-0.5 truncate text-sm text-white/45">
-            {[lead.company, lead.source && `via ${lead.source}`].filter(Boolean).join(' · ') || 'No company'}
+            {[lead.jobTitle, lead.company].filter(Boolean).join(' at ') || 'No job title or company'}
           </p>
           <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px]">
+            <span
+              className={`flex items-center gap-1 rounded-full px-2 py-0.5 font-medium ring-1 ${
+                lead.channel === 'linkedin' ? 'bg-sky-500/10 text-sky-300 ring-sky-400/25' : 'bg-white/5 text-white/60 ring-white/10'
+              }`}
+            >
+              <ChannelIcon channel={lead.channel} className="h-3 w-3" />
+              {CHANNEL_LABEL[lead.channel]}
+            </span>
             {open && lead.nextFollowUp && (
               <span className={`rounded-full px-2 py-0.5 font-medium ring-1 ${followUpTone(lead.nextFollowUp)}`}>
                 ⏰ {followUpLabel(lead.nextFollowUp)}
@@ -102,12 +113,14 @@ export function LeadCard({ lead, onLogContact, onEdit, onDelete, onSnooze, onAdd
               </svg>
             </IconLink>
           )}
+          {lead.linkedin && (
+            <IconLink href={linkedinHref(lead.linkedin)} label={`Open ${lead.name}'s LinkedIn`} external>
+              <ChannelIcon channel="linkedin" />
+            </IconLink>
+          )}
           {lead.email && (
             <IconLink href={`mailto:${lead.email}`} label={`Email ${lead.name}`}>
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
-                <rect x="3" y="5" width="18" height="14" rx="2" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="m3 7 9 6 9-6" />
-              </svg>
+              <ChannelIcon channel="email" />
             </IconLink>
           )}
         </div>
@@ -147,7 +160,7 @@ export function LeadCard({ lead, onLogContact, onEdit, onDelete, onSnooze, onAdd
 
       {expanded && (
         <div className="animate-fade space-y-4 border-t border-white/[0.06] px-4 py-4">
-          {(lead.email || lead.phone) && (
+          {(lead.email || lead.phone || lead.linkedin || lead.source) && (
             <dl className="grid gap-2 text-sm sm:grid-cols-2">
               {lead.email && (
                 <div>
@@ -155,10 +168,26 @@ export function LeadCard({ lead, onLogContact, onEdit, onDelete, onSnooze, onAdd
                   <dd className="truncate text-white/80">{lead.email}</dd>
                 </div>
               )}
+              {lead.linkedin && (
+                <div>
+                  <dt className="text-[11px] uppercase tracking-wide text-white/35">LinkedIn</dt>
+                  <dd className="truncate">
+                    <a href={linkedinHref(lead.linkedin)} target="_blank" rel="noopener noreferrer" className="text-sky-300 hover:underline">
+                      {lead.linkedin.replace(/^https?:\/\/(www\.)?/i, '')}
+                    </a>
+                  </dd>
+                </div>
+              )}
               {lead.phone && (
                 <div>
                   <dt className="text-[11px] uppercase tracking-wide text-white/35">Phone</dt>
                   <dd className="text-white/80">{lead.phone}</dd>
+                </div>
+              )}
+              {lead.source && (
+                <div>
+                  <dt className="text-[11px] uppercase tracking-wide text-white/35">Found via</dt>
+                  <dd className="text-white/80">{lead.source}</dd>
                 </div>
               )}
             </dl>
