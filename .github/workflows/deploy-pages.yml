@@ -8,6 +8,7 @@ on:
     paths:
       - "dopamine-todo/**"
       - "lead-tracker/**"
+      - "wedding/**"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
@@ -33,6 +34,7 @@ jobs:
           cache-dependency-path: |
             dopamine-todo/package-lock.json
             lead-tracker/package-lock.json
+            wedding/package-lock.json
 
       - name: Install dependencies
         working-directory: dopamine-todo
@@ -55,8 +57,21 @@ jobs:
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/leads/
 
+      - name: Install dependencies (wedding)
+        working-directory: wedding
+        run: npm ci
+
+      # Served from the same Pages site, under /<repo>/wedding/
+      - name: Build (wedding)
+        working-directory: wedding
+        run: npm run build
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/wedding/
+
       - name: Combine sites
-        run: cp -r lead-tracker/dist dopamine-todo/dist/leads
+        run: |
+          cp -r lead-tracker/dist dopamine-todo/dist/leads
+          cp -r wedding/dist dopamine-todo/dist/wedding
 
       - uses: actions/configure-pages@v5
 

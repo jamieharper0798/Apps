@@ -1,0 +1,20 @@
+// Paste inside `match /databases/{database}/documents { … }`, next to your existing rules.
+match /weddingRsvps/{rsvpId} {
+  // Anyone with the link can send a reply, but only in the shape the RSVP form sends.
+  allow create: if request.resource.data.keys().hasOnly(
+                     ['name', 'email', 'attending', 'partySize', 'guestNames', 'dietary', 'song', 'message', 'createdAt'])
+                && request.resource.data.name is string
+                && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 120
+                && request.resource.data.email is string && request.resource.data.email.size() <= 200
+                && request.resource.data.attending is bool
+                && request.resource.data.partySize is int
+                && request.resource.data.partySize >= 0 && request.resource.data.partySize <= 6
+                && request.resource.data.guestNames is string && request.resource.data.guestNames.size() <= 300
+                && request.resource.data.dietary is string && request.resource.data.dietary.size() <= 300
+                && request.resource.data.song is string && request.resource.data.song.size() <= 200
+                && request.resource.data.message is string && request.resource.data.message.size() <= 1000
+                && request.resource.data.createdAt == request.time;
+  // Only the two of you can read or tidy up replies. Replace with the account IDs shown on the #guests page.
+  allow read, update, delete: if request.auth != null
+                              && request.auth.uid in ['PASTE_ACCOUNT_ID_HERE'];
+}
