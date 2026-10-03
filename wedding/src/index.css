@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/* Layout: a single centred invitation column, set like printed stationery, with the RSVP card as the one raised object. */
+@theme {
+  --color-paper: #f3f4ee;
+  --color-card: #fbfbf8;
+  --color-ink: #1f3329;
+  --color-ink-soft: #4d5e55;
+  --color-rule: #d5d9cc;
+  --color-gold: #a8864a;
+  --color-gold-soft: #e9dfc8;
+  --font-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --font-body: "Jost", "Futura", "Century Gothic", system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
