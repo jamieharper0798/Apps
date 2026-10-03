@@ -4,33 +4,33 @@
 export const wedding = {
   couple: ['Jamie', 'Hannah'] as const,
   // Local time of the ceremony. Used for the date line and the countdown.
-  date: '2027-06-12T15:00:00', // TODO
+  date: '2027-06-12T13:00:00', // TODO: the day is a placeholder, the 1pm time is real
   rsvpBy: '2027-04-30', // TODO
-  town: 'Town, County', // TODO
+  town: 'Wokingham, Berkshire',
 
   venue: {
-    name: 'Venue name', // TODO
-    address: ['Street address', 'Town', 'Postcode'], // TODO
+    name: 'Cantley House Hotel',
+    address: ['Milton Road', 'Wokingham', 'RG40 1JY'],
     notes: 'Free parking on site. The ceremony and reception are in the same place, so there is no travelling in between.',
   },
 
   schedule: [
-    { time: '2:30pm', title: 'Guests arrive', detail: 'Find a seat and say hello.' },
-    { time: '3:00pm', title: 'Ceremony', detail: 'Please be seated by ten to three.' },
-    { time: '3:45pm', title: 'Drinks and canapés', detail: 'Photos on the lawn, weather permitting.' },
-    { time: '5:30pm', title: 'Dinner and speeches', detail: 'Three courses. Tell us about dietary needs in your RSVP.' },
-    { time: '8:00pm', title: 'First dance and party', detail: 'Bring your dancing shoes.' },
+    { time: '12:30pm', title: 'Guests arrive', detail: 'Find a seat and say hello.' },
+    { time: '1:00pm', title: 'Ceremony', detail: 'Please be seated by ten to one.' },
+    { time: '1:45pm', title: 'Drinks and canapés', detail: 'Photos on the lawn, weather permitting.' },
+    { time: '3:30pm', title: 'Dinner and speeches', detail: 'Three courses. Tell us about dietary needs in your RSVP.' },
+    { time: '7:00pm', title: 'First dance and party', detail: 'Bring your dancing shoes.' },
     { time: '12:00am', title: 'Carriages', detail: 'Taxis can be booked in advance. See Travel.' },
   ],
 
   travel: [
     { title: 'By car', body: 'Use the postcode above in your sat nav. There is plenty of parking, and cars can stay overnight if collected by 11am the next day.' },
-    { title: 'By train', body: 'TODO: nearest station and how long the taxi takes from there.' },
+    { title: 'By train', body: 'Wokingham station is about a mile away, around five minutes by taxi, with direct trains from London Waterloo and Reading.' },
     { title: 'Taxis', body: 'TODO: a local taxi number. Book your ride home ahead of time, as they get busy late at night.' },
   ],
 
   stay: [
-    { name: 'Hotel one', distance: 'TODO: distance from the venue', note: 'We have a small block of rooms held until two months before the day. Mention our names when booking.' },
+    { name: 'Cantley House Hotel', distance: 'The venue itself', note: 'The easiest option: no travel home at the end of the night. Rooms are limited, so book early.' },
     { name: 'Hotel two', distance: 'TODO: distance from the venue', note: 'A cheaper option with easy parking.' },
   ],
 
