@@ -4,8 +4,8 @@
 export const wedding = {
   couple: ['Jamie', 'Hannah'] as const,
   // Local time of the ceremony. Used for the date line and the countdown.
-  date: '2027-06-12T13:00:00', // TODO: the day is a placeholder, the 1pm time is real
-  rsvpBy: '2027-04-30', // TODO
+  date: '2027-09-12T13:00:00',
+  rsvpBy: '2027-07-31', // TODO: placeholder deadline
   town: 'Wokingham, Berkshire',
 
   venue: {
