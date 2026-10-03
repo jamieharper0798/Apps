@@ -1,13 +1,15 @@
 @import "tailwindcss";
 
-/* Layout: a single centred invitation column, set like printed stationery, with the RSVP card as the one raised object. */
+/* Layout: a full-bleed photo opening, then an editorial two-column grid (label left, content right) on paper,
+   closing on a deep evergreen RSVP band. Gold is used sparingly for times, labels and the ampersand. */
 @theme {
-  --color-paper: #f3f4ee;
-  --color-card: #fbfbf8;
-  --color-ink: #1f3329;
-  --color-ink-soft: #4d5e55;
-  --color-rule: #d5d9cc;
-  --color-gold: #a8864a;
+  --color-paper: #f5f4ef;
+  --color-card: #fcfbf8;
+  --color-ink: #17261e;
+  --color-ink-soft: #56645c;
+  --color-rule: #dcdccf;
+  --color-gold: #9c7c45;
+  --color-gold-light: #d8c29a;
   --color-gold-soft: #e9dfc8;
   --font-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
   --font-body: "Jost", "Futura", "Century Gothic", system-ui, sans-serif;
@@ -21,15 +23,11 @@ html {
   scroll-behavior: smooth;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-}
-
 body {
   margin: 0;
   font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
   background: var(--color-paper);
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
@@ -46,11 +44,69 @@ h3 {
   outline-offset: 3px;
 }
 
-.eyebrow {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--color-gold);
+::selection {
+  background: var(--color-gold-soft);
+  color: var(--color-ink);
+}
+
+@layer components {
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--color-gold);
+    padding-bottom: 0.3rem;
+  }
+
+  .link-arrow::after {
+    content: "→";
+    transition: transform 0.3s ease;
+  }
+
+  .link-arrow:hover::after {
+    transform: translateX(4px);
+  }
+}
+
+/* One orchestrated moment on load: the photo settles and the names rise in. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-photo {
+    animation: settle 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .hero-text {
+    animation: rise 1.2s 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@keyframes settle {
+  from {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
 }

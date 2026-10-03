@@ -2,7 +2,7 @@ import { useState, type FormEvent, type ReactNode } from 'react';
 import { submitRsvp } from '../lib/rsvp';
 
 const inputClass =
-  'w-full rounded-lg border border-rule bg-paper px-3.5 py-2.5 text-ink placeholder:text-ink-soft/50 focus:border-gold focus:outline-none';
+  'w-full rounded-none border-0 border-b border-rule bg-transparent px-0 py-2.5 text-ink placeholder:text-ink-soft/50 focus:border-ink focus:outline-none';
 
 export function RsvpForm({ invitedName }: { invitedName: string }) {
   const [name, setName] = useState(invitedName);
@@ -38,7 +38,7 @@ export function RsvpForm({ invitedName }: { invitedName: string }) {
 
   if (status === 'sent') {
     return (
-      <div className="rounded-2xl border border-gold-soft bg-card px-6 py-12 text-center shadow-[0_1px_0_var(--color-gold-soft),0_20px_40px_-24px_rgba(31,51,41,0.25)]">
+      <div className="rounded-sm bg-card text-ink px-6 py-12 text-center shadow-[0_40px_80px_-40px_rgba(0,0,0,0.6)]">
         <p className="font-display text-3xl italic">{attending ? 'See you there!' : "We'll miss you"}</p>
         <p className="mx-auto mt-3 max-w-sm text-ink-soft">
           {attending
@@ -55,7 +55,7 @@ export function RsvpForm({ invitedName }: { invitedName: string }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid gap-6 rounded-2xl border border-gold-soft bg-card p-6 shadow-[0_1px_0_var(--color-gold-soft),0_20px_40px_-24px_rgba(31,51,41,0.25)] sm:p-10"
+      className="grid gap-8 rounded-sm bg-card text-ink p-6 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.6)] sm:p-12"
     >
       <div className="grid gap-6 sm:grid-cols-2">
         <Field id="rsvp-name" label="Your name">
@@ -67,7 +67,7 @@ export function RsvpForm({ invitedName }: { invitedName: string }) {
       </div>
 
       <fieldset>
-        <legend className="mb-2 text-sm font-medium">Will you be there?</legend>
+        <legend className="mb-3 text-[0.72rem] font-medium uppercase tracking-[0.18em] text-ink-soft">Will you be there?</legend>
         <div className="grid gap-3 sm:grid-cols-2">
           <Choice checked={attending === true} onChange={() => setAttending(true)} label="Joyfully accepts" />
           <Choice checked={attending === false} onChange={() => setAttending(false)} label="Regretfully declines" />
@@ -112,7 +112,7 @@ export function RsvpForm({ invitedName }: { invitedName: string }) {
       <button
         type="submit"
         disabled={attending === null || status === 'sending'}
-        className="justify-self-start rounded-full bg-ink px-8 py-3.5 text-sm font-medium uppercase tracking-[0.16em] text-paper transition hover:bg-ink/85 disabled:cursor-not-allowed disabled:opacity-40"
+        className="w-full rounded-full bg-ink px-8 py-4 sm:w-auto sm:justify-self-start text-sm font-medium uppercase tracking-[0.16em] text-paper transition hover:bg-ink/85 disabled:cursor-not-allowed disabled:opacity-40"
       >
         {status === 'sending' ? 'Sending…' : 'Send my reply'}
       </button>
@@ -123,9 +123,9 @@ export function RsvpForm({ invitedName }: { invitedName: string }) {
 function Field({ id, label, hint, children }: { id: string; label: string; hint?: string; children: ReactNode }) {
   return (
     <div className="grid min-w-0 gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium">
+      <label htmlFor={id} className="text-[0.72rem] font-medium uppercase tracking-[0.18em] text-ink-soft">
         {label}
-        {hint && <span className="ml-2 font-normal text-ink-soft">{hint}</span>}
+        {hint && <span className="ml-2 font-normal normal-case tracking-normal text-ink-soft/70">{hint}</span>}
       </label>
       {children}
     </div>
@@ -135,8 +135,8 @@ function Field({ id, label, hint, children }: { id: string; label: string; hint?
 function Choice({ checked, onChange, label }: { checked: boolean; onChange: () => void; label: string }) {
   return (
     <label
-      className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-gold ${
-        checked ? 'border-ink bg-ink text-paper' : 'border-rule bg-paper hover:border-gold'
+      className={`flex cursor-pointer items-center gap-3 rounded-sm border px-4 py-3.5 transition has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-gold ${
+        checked ? 'border-ink bg-ink text-paper' : 'border-rule bg-card hover:border-gold'
       }`}
     >
       <input type="radio" name="attending" className="sr-only" checked={checked} onChange={onChange} />
