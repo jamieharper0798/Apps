@@ -71,7 +71,17 @@ export default function App() {
         </ul>
       </nav>
 
-      <header className="mx-auto max-w-3xl pb-16 pt-16 text-center sm:pt-24">
+      <figure className="-mx-4 m-0">
+        <img
+          src={`${import.meta.env.BASE_URL}venue.jpg`}
+          srcSet={`${import.meta.env.BASE_URL}venue-small.jpg 900w, ${import.meta.env.BASE_URL}venue.jpg 1620w`}
+          sizes="100vw"
+          alt={`${wedding.venue.name}, seen across the lawn on a sunny day`}
+          className="block h-[clamp(16rem,55vw,34rem)] w-full object-cover object-[center_45%]"
+        />
+      </figure>
+
+      <header className="mx-auto max-w-3xl pb-16 pt-14 text-center sm:pt-20">
         <p className="eyebrow">{guest ? `Dear ${guest}, you're invited` : "You're invited to the wedding of"}</p>
         <h1 className="mt-8 font-display text-[clamp(3.25rem,13vw,7rem)] font-normal leading-[0.95] tracking-tight">
           {first}
