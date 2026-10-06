@@ -39,6 +39,7 @@ function App() {
     setPriority,
     setOwner,
     setDueDate,
+    reorderTasks,
     clearCompleted,
   } = useTodos();
   const { branding, setName, setIconFromFile, resetIcon } = useBranding();
@@ -220,6 +221,7 @@ function App() {
             onOwnerChange={setOwner}
             onDueDateChange={setDueDate}
             onPriorityChange={setPriority}
+            onReorder={reorderTasks}
           />
         </main>
 

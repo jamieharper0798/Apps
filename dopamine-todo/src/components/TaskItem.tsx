@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import type { ChangeEvent, KeyboardEvent } from 'react';
 import type { Priority, Task } from '../types';
 import { dueDatePillClasses } from '../lib/dueDate';
@@ -7,6 +9,19 @@ import { formatDueDate } from '../lib/formatDueDate';
 import { ordinalWord } from '../lib/ordinal';
 import { ownerSwatchClasses, ownerAvatarClasses } from '../lib/ownerColor';
 import { PriorityPicker } from './PriorityPicker';
+
+function GripIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+      <circle cx="9" cy="6" r="1.4" />
+      <circle cx="15" cy="6" r="1.4" />
+      <circle cx="9" cy="12" r="1.4" />
+      <circle cx="15" cy="12" r="1.4" />
+      <circle cx="9" cy="18" r="1.4" />
+      <circle cx="15" cy="18" r="1.4" />
+    </svg>
+  );
+}
 
 interface TaskItemProps {
   task: Task;
@@ -38,6 +53,10 @@ export function TaskItem({
   onDueDateChange,
   onPriorityChange,
 }: TaskItemProps) {
+  const { attributes, listeners, setNodeRef, transform, transition: dndTransition, isDragging } = useSortable({
+    id: task.id,
+  });
+
   const owner = task.owner ?? '';
   const dueDate = task.dueDate ?? null;
   const duePillClasses = dueDatePillClasses(dueDate, task.done);
@@ -175,90 +194,105 @@ export function TaskItem({
   );
 
   return (
-    <motion.li
-      layout
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, x: 40, scale: 0.9, transition: { duration: 0.2 } }}
-      transition={{ type: 'spring', stiffness: 300, damping: 26 }}
-      className="panel panel-hover group relative flex flex-col gap-3 rounded-lg p-4"
+    <li
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition: dndTransition, zIndex: isDragging ? 10 : undefined }}
+      className={isDragging ? 'relative' : undefined}
     >
-      <div className="flex items-start justify-between gap-2">
-        <button
-          onClick={() => onToggle(task.id)}
-          aria-label={task.done ? 'Mark as not done' : 'Mark as done'}
-          className={`relative flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border-2 font-display text-lg font-bold transition-all ${
-            task.done
-              ? 'border-[#c6ff4a] bg-[#c6ff4a] text-[#0a0a0a]'
-              : 'border-white/15 text-white/30 hover:border-white/35 hover:text-white/60'
-          }`}
-        >
-          {task.done && (
-            <span className="animate-ring-burst pointer-events-none absolute inset-0 rounded-lg bg-[#c6ff4a]" />
-          )}
-          {task.done ? (
-            <motion.svg
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-              viewBox="0 0 24 24"
-              className="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={3}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M20 6 9 17l-5-5" />
-            </motion.svg>
-          ) : (
-            String(index).padStart(2, '0')
-          )}
-        </button>
-
-        <div className="flex items-center gap-1.5">
-          <PriorityPicker priority={task.priority} onChange={(p) => onPriorityChange(task.id, p)} />
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, x: 40, scale: 0.9, transition: { duration: 0.2 } }}
+        transition={{ type: 'spring', stiffness: 300, damping: 26 }}
+        className={`panel panel-hover group relative flex h-full flex-col gap-3 rounded-lg p-4 ${isDragging ? 'opacity-50' : ''}`}
+      >
+        <div className="flex items-start justify-between gap-2">
           <button
-            onClick={() => onDelete(task.id)}
-            aria-label="Delete task"
-            className="shrink-0 rounded p-1.5 text-white/25 opacity-0 transition hover:border-red-400/40 hover:text-red-400 group-hover:opacity-100 focus-visible:opacity-100"
-          >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <div>
-        <p className="text-[10px] font-medium uppercase tracking-widest text-white/25">{ordinalWord(index)}</p>
-        {editingText ? (
-          <input
-            ref={textInputRef}
-            value={textDraft}
-            onChange={(e) => setTextDraft(e.target.value)}
-            onBlur={commitText}
-            onKeyDown={handleTextKeyDown}
-            maxLength={200}
-            className="mt-1 w-full min-w-0 rounded border border-[#c6ff4a]/50 bg-white/5 px-2 py-1 text-[15px] font-semibold text-white outline-none"
-          />
-        ) : (
-          <p
-            onClick={startEditingText}
-            title="Click to rename"
-            className={`mt-1 cursor-text rounded px-0.5 text-[15px] font-semibold leading-snug transition-colors hover:bg-white/5 ${
-              task.done ? 'text-white/30 line-through' : 'text-white/90'
+            onClick={() => onToggle(task.id)}
+            aria-label={task.done ? 'Mark as not done' : 'Mark as done'}
+            className={`relative flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border-2 font-display text-lg font-bold transition-all ${
+              task.done
+                ? 'border-[#c6ff4a] bg-[#c6ff4a] text-[#0a0a0a]'
+                : 'border-white/15 text-white/30 hover:border-white/35 hover:text-white/60'
             }`}
           >
-            {task.text}
-          </p>
-        )}
-      </div>
+            {task.done && (
+              <span className="animate-ring-burst pointer-events-none absolute inset-0 rounded-lg bg-[#c6ff4a]" />
+            )}
+            {task.done ? (
+              <motion.svg
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                viewBox="0 0 24 24"
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={3}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M20 6 9 17l-5-5" />
+              </motion.svg>
+            ) : (
+              String(index).padStart(2, '0')
+            )}
+          </button>
 
-      <div className="mt-auto flex items-center gap-2 pt-1 text-xs">
-        {ownerPill}
-        {dueDatePill}
-      </div>
-    </motion.li>
+          <div className="flex items-center gap-1">
+            <button
+              {...attributes}
+              {...listeners}
+              aria-label="Drag to reorder"
+              title="Drag to reorder"
+              style={{ touchAction: 'none' }}
+              className="shrink-0 cursor-grab rounded p-1.5 text-white/25 transition hover:text-white/60 active:cursor-grabbing"
+            >
+              <GripIcon />
+            </button>
+            <PriorityPicker priority={task.priority} onChange={(p) => onPriorityChange(task.id, p)} />
+            <button
+              onClick={() => onDelete(task.id)}
+              aria-label="Delete task"
+              className="shrink-0 rounded p-1.5 text-white/25 opacity-0 transition hover:border-red-400/40 hover:text-red-400 group-hover:opacity-100 focus-visible:opacity-100"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <p className="text-[10px] font-medium uppercase tracking-widest text-white/25">{ordinalWord(index)}</p>
+          {editingText ? (
+            <input
+              ref={textInputRef}
+              value={textDraft}
+              onChange={(e) => setTextDraft(e.target.value)}
+              onBlur={commitText}
+              onKeyDown={handleTextKeyDown}
+              maxLength={200}
+              className="mt-1 w-full min-w-0 rounded border border-[#c6ff4a]/50 bg-white/5 px-2 py-1 text-[15px] font-semibold text-white outline-none"
+            />
+          ) : (
+            <p
+              onClick={startEditingText}
+              title="Click to rename"
+              className={`mt-1 cursor-text rounded px-0.5 text-[15px] font-semibold leading-snug transition-colors hover:bg-white/5 ${
+                task.done ? 'text-white/30 line-through' : 'text-white/90'
+              }`}
+            >
+              {task.text}
+            </p>
+          )}
+        </div>
+
+        <div className="mt-auto flex items-center gap-2 pt-1 text-xs">
+          {ownerPill}
+          {dueDatePill}
+        </div>
+      </motion.div>
+    </li>
   );
 }
