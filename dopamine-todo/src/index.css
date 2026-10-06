@@ -25,6 +25,25 @@ body {
   background: #0b0a14;
   color: #f1eefc;
   overflow-x: hidden;
+  position: relative;
+}
+
+/* Subtle film-grain texture — the single biggest lever for a "premium" feel on
+   flat gradients. Fixed so it doesn't repaint on scroll, blended softly. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+#root {
+  position: relative;
+  z-index: 2;
 }
 
 ::selection {
@@ -50,12 +69,32 @@ body {
 .glass {
   background: linear-gradient(
     145deg,
-    rgba(255, 255, 255, 0.07),
+    rgba(255, 255, 255, 0.08),
     rgba(255, 255, 255, 0.02)
   );
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 12px 32px -14px rgba(0, 0, 0, 0.55);
+}
+
+/* Interactive glass surfaces: a gentle lift + brand-tinted glow on hover. */
+.glass-hover {
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.glass-hover:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 18px 40px -16px rgba(168, 85, 247, 0.35);
 }
 
 .bg-aurora {
@@ -63,7 +102,29 @@ body {
     radial-gradient(1200px 600px at 15% -10%, rgba(168, 85, 247, 0.35), transparent 60%),
     radial-gradient(900px 500px at 110% 10%, rgba(236, 72, 153, 0.28), transparent 55%),
     radial-gradient(800px 600px at 50% 120%, rgba(34, 211, 238, 0.18), transparent 55%),
+    radial-gradient(700px 500px at -10% 65%, rgba(16, 185, 129, 0.14), transparent 55%),
     #0b0a14;
+  background-repeat: no-repeat;
+  animation: aurora-drift 26s ease-in-out infinite alternate;
+}
+
+@keyframes aurora-drift {
+  0% {
+    background-position:
+      0% 0%,
+      0% 0%,
+      0% 0%,
+      0% 0%,
+      0 0;
+  }
+  100% {
+    background-position:
+      3% 4%,
+      -3% -3%,
+      2% -3%,
+      -2% 3%,
+      0 0;
+  }
 }
 
 @keyframes pop {
@@ -96,4 +157,30 @@ body {
   background-clip: text;
   color: transparent;
   animation: shimmer 3.5s linear infinite;
+}
+
+@keyframes xp-sheen {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+.xp-sheen {
+  animation: xp-sheen 2.4s ease-in-out infinite;
+}
+
+@keyframes ring-burst {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+.animate-ring-burst {
+  animation: ring-burst 0.5s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
 }

@@ -73,7 +73,7 @@ export function BrandingEditor({
             <div className="mt-5 flex items-center gap-4">
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="group relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10"
+                className="group relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 ring-1 ring-white/10"
                 aria-label="Upload icon image"
               >
                 {branding.icon512 ? (

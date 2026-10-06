@@ -40,7 +40,7 @@ export function ProgressRing({ progress, size = 64, stroke = 6 }: ProgressRingPr
           </linearGradient>
         </defs>
       </svg>
-      <div className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-white/80">
+      <div className="absolute inset-0 flex items-center justify-center text-xs font-semibold tabular-nums text-white/80">
         {Math.round(clamped * 100)}%
       </div>
     </div>
