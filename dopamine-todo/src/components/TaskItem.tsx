@@ -144,6 +144,14 @@ export function TaskItem({
     onDueDateChange(task.id, e.target.value || null);
   };
 
+  const openDatePicker = (e: { currentTarget: HTMLInputElement }) => {
+    try {
+      e.currentTarget.showPicker?.();
+    } catch {
+      // showPicker isn't available/allowed here — the input is still focused and usable.
+    }
+  };
+
   const ownerPill = editingOwner ? (
     <input
       ref={ownerInputRef}
@@ -188,6 +196,8 @@ export function TaskItem({
         type="date"
         value={dueDate ?? ''}
         onChange={handleDueDate}
+        onClick={openDatePicker}
+        onFocus={openDatePicker}
         aria-label="Due date"
         className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
       />
