@@ -1,16 +1,10 @@
 import { useEffect } from 'react';
 import type { Branding } from '../types';
+import { absoluteIconUrl } from '../lib/icons';
 
 const APP_TAGLINE = 'Dopamine To-Do';
 const APP_DESCRIPTION =
   'A modern to-do list that rewards you for getting things done: XP, streaks, and confetti on every task.';
-
-function absoluteIconUrl(path: string) {
-  // Cache-bust the default icons: browsers (and installed PWAs) cache icon URLs
-  // aggressively, so a content-hash query param is what forces a refetch when
-  // the underlying image changes even though the path stays the same.
-  return `${window.location.origin}${import.meta.env.BASE_URL}${path}?v=${import.meta.env.VITE_ICON_VERSION}`;
-}
 
 /** Keeps the document title, favicon, and PWA manifest in sync with user branding. */
 export function useBrandingMeta(branding: Branding) {
@@ -58,8 +52,8 @@ export function useBrandingMeta(branding: Branding) {
       name: `${branding.name} — ${APP_TAGLINE}`,
       short_name: branding.name,
       description: APP_DESCRIPTION,
-      theme_color: '#0b0a14',
-      background_color: '#0b0a14',
+      theme_color: '#0a0a0a',
+      background_color: '#0a0a0a',
       display: 'standalone',
       orientation: 'portrait',
       start_url: rootUrl,

@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Branding } from '../types';
+import { DEFAULT_ICON_512 } from '../lib/icons';
 
 interface BrandingEditorProps {
   open: boolean;
@@ -76,11 +77,7 @@ export function BrandingEditor({
                 className="group relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-[#c6ff4a]/40 bg-white/5"
                 aria-label="Upload icon image"
               >
-                {branding.icon512 ? (
-                  <img src={branding.icon512} alt="" className="h-full w-full object-cover" />
-                ) : (
-                  <span className="text-2xl">✅</span>
-                )}
+                <img src={branding.icon512 ?? DEFAULT_ICON_512} alt="" className="h-full w-full object-cover" />
                 <span className="absolute inset-0 flex items-center justify-center bg-black/50 text-[10px] font-semibold text-white opacity-0 transition group-hover:opacity-100">
                   {uploading ? '...' : 'Change'}
                 </span>
