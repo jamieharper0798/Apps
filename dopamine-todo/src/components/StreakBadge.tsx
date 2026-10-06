@@ -20,7 +20,9 @@ export function StreakBadge({ streak }: StreakBadgeProps) {
       title="Daily streak"
     >
       <span className={active ? 'animate-pulse' : ''}>🔥</span>
-      {streak} day{streak === 1 ? '' : 's'}
+      <span className="tabular-nums">
+        {streak} day{streak === 1 ? '' : 's'}
+      </span>
     </motion.div>
   );
 }

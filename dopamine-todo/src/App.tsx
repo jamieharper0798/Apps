@@ -123,15 +123,17 @@ function App() {
           <div className="flex items-center justify-between">
             <button
               onClick={() => setEditingBrand(true)}
-              className="group flex items-center gap-2 rounded-lg py-1 pr-2 transition hover:bg-white/5"
+              className="group flex items-center gap-2.5 rounded-lg py-1 pr-2 transition hover:bg-white/5"
               title="Customize name and icon"
             >
               {branding.icon192 ? (
-                <img src={branding.icon192} alt="" className="h-7 w-7 rounded-lg object-cover" />
+                <img src={branding.icon192} alt="" className="h-8 w-8 rounded-xl object-cover shadow-lg shadow-purple-500/20" />
               ) : (
-                <span className="text-2xl">✅</span>
+                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 text-lg ring-1 ring-white/10">
+                  ✅
+                </span>
               )}
-              <h1 className="font-display text-xl font-bold text-white">{branding.name}</h1>
+              <h1 className="font-display text-xl font-bold tracking-tight text-white">{branding.name}</h1>
               <svg
                 viewBox="0 0 24 24"
                 className="h-3.5 w-3.5 text-white/0 transition group-hover:text-white/40"
@@ -169,9 +171,13 @@ function App() {
 
           <ListToggle active={activeList} onChange={setActiveList} />
 
-          <div className="glass flex items-center justify-between gap-4 rounded-2xl p-4">
+          <div className="glass relative flex items-center justify-between gap-4 overflow-hidden rounded-2xl p-4">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -left-10 -top-10 h-32 w-32 rounded-full bg-purple-500/20 blur-3xl"
+            />
             <XPBar level={levelInfo.level} xpIntoLevel={levelInfo.xpIntoLevel} xpForNextLevel={levelInfo.xpForNextLevel} />
-            <div className="flex items-center gap-3">
+            <div className="relative flex items-center gap-3">
               <StreakBadge streak={dopamine.streak} />
               <ProgressRing progress={progress} />
             </div>
@@ -199,7 +205,7 @@ function App() {
               ))}
             </div>
             <div className="flex items-center gap-3 text-xs text-white/40">
-              <span>{activeCount} left</span>
+              <span className="tabular-nums">{activeCount} left</span>
               {completed > 0 && (
                 <button
                   onClick={() => clearCompleted(activeList)}

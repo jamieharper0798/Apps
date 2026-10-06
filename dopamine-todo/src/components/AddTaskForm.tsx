@@ -25,7 +25,7 @@ export function AddTaskForm({ onAdd, listLabel }: AddTaskFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="glass flex flex-col gap-3 rounded-2xl p-3 sm:flex-row sm:items-center sm:p-2 sm:pl-4">
+    <form onSubmit={handleSubmit} className="glass flex flex-col gap-3 rounded-2xl p-3 ring-1 ring-transparent transition focus-within:ring-purple-400/40 sm:flex-row sm:items-center sm:p-2 sm:pl-4">
       <input
         value={text}
         onChange={(e) => setText(e.target.value)}
@@ -52,9 +52,12 @@ export function AddTaskForm({ onAdd, listLabel }: AddTaskFormProps) {
         </div>
         <button
           type="submit"
-          className="rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-purple-500/25 transition active:scale-95 hover:shadow-purple-500/40 disabled:opacity-40"
+          className="flex items-center gap-1 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-purple-500/25 transition active:scale-95 hover:shadow-purple-500/40 disabled:opacity-40"
           disabled={!text.trim()}
         >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" d="M12 5v14M5 12h14" />
+          </svg>
           Add
         </button>
       </div>

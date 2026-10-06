@@ -46,9 +46,15 @@ export function TaskList({
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="glass flex flex-col items-center gap-2 rounded-2xl py-16 text-center"
+        className="glass flex flex-col items-center gap-3 rounded-2xl py-16 text-center"
       >
-        <span className="text-4xl">{filter === 'done' ? '🏁' : '✨'}</span>
+        <motion.span
+          animate={{ y: [0, -6, 0] }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+          className="text-5xl"
+        >
+          {filter === 'done' ? '🏁' : '✨'}
+        </motion.span>
         <p className="font-display text-lg font-medium text-white/70">
           {filter === 'done' ? 'Nothing completed yet' : filter === 'active' ? "You're all caught up" : `No ${listLabel.toLowerCase()} tasks yet`}
         </p>
@@ -68,7 +74,7 @@ export function TaskList({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="hidden items-center gap-3 px-1 text-[11px] font-medium uppercase tracking-wide text-white/25 sm:flex">
+      <div className="hidden items-center gap-3 py-1 pl-4 pr-3 text-[11px] font-medium uppercase tracking-wide text-white/25 sm:flex sm:pr-4">
         <span className={`${CHECKBOX_COL} shrink-0`} />
         <span className={`${DOT_COL} shrink-0`} />
         <span className="flex-1">Task</span>
