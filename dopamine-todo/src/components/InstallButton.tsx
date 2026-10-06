@@ -13,17 +13,18 @@ export function InstallButton({ appName }: InstallButtonProps) {
   if (!canInstall && !iosHint) return null;
 
   return (
-    <div className="relative">
+    <div className="relative shrink-0">
       <motion.button
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         onClick={() => (canInstall ? promptInstall() : setShowIosHint((v) => !v))}
-        className="flex items-center gap-1.5 rounded border border-[#c6ff4a]/60 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-[#c6ff4a] transition active:scale-95 hover:bg-[#c6ff4a]/10"
+        className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded border border-[#c6ff4a]/60 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-[#c6ff4a] transition active:scale-95 hover:bg-[#c6ff4a]/10"
       >
-        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2}>
+        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v13m0 0-4-4m4 4 4-4M5 19h14" />
         </svg>
-        Install App
+        <span className="hidden sm:inline">Install App</span>
+        <span className="sm:hidden">Install</span>
       </motion.button>
 
       <AnimatePresence>

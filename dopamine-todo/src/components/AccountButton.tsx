@@ -28,7 +28,7 @@ export function AccountButton({ user, syncing, onSignInClick, onSignOut }: Accou
     return (
       <button
         onClick={onSignInClick}
-        className="flex items-center gap-1.5 rounded border border-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white/70 transition hover:border-white/30 hover:text-white"
+        className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded border border-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white/70 transition hover:border-white/30 hover:text-white"
         title="Sign in to sync across devices"
       >
         <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -47,11 +47,11 @@ export function AccountButton({ user, syncing, onSignInClick, onSignOut }: Accou
     <div ref={rootRef} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 rounded border border-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white/70 transition hover:border-white/30 hover:text-white"
+        className="flex shrink-0 items-center gap-1.5 rounded border border-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white/70 transition hover:border-white/30 hover:text-white"
         title={user.email ?? 'Account'}
       >
-        <span className={`h-1.5 w-1.5 rounded-full ${syncing ? 'animate-pulse bg-amber-400' : 'bg-[#c6ff4a]'}`} />
-        <span className="max-w-[110px] truncate normal-case">{user.email}</span>
+        <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${syncing ? 'animate-pulse bg-amber-400' : 'bg-[#c6ff4a]'}`} />
+        <span className="max-w-[90px] truncate normal-case sm:max-w-[110px]">{user.email}</span>
       </button>
 
       <AnimatePresence>

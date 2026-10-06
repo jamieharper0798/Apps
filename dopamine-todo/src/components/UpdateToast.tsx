@@ -8,7 +8,7 @@ export function UpdateToast() {
   } = useRegisterSW();
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center px-4">
+    <div className="pointer-events-none fixed inset-x-0 z-50 flex justify-center px-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
       <AnimatePresence>
         {needRefresh && (
           <motion.div
