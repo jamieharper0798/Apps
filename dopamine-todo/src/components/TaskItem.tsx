@@ -8,6 +8,7 @@ import { dueDatePillClasses } from '../lib/dueDate';
 import { formatDueDate } from '../lib/formatDueDate';
 import { ordinalWord } from '../lib/ordinal';
 import { ownerSwatchClasses, ownerAvatarClasses } from '../lib/ownerColor';
+import { PRIORITY_NUMBER_CLASSES } from '../lib/priority';
 import { PriorityPicker } from './PriorityPicker';
 
 function GripIcon() {
@@ -210,10 +211,10 @@ export function TaskItem({
           <button
             onClick={() => onToggle(task.id)}
             aria-label={task.done ? 'Mark as not done' : 'Mark as done'}
-            className={`relative flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border-2 font-display text-lg font-bold transition-all ${
+            className={`relative flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border-2 font-display text-2xl font-bold transition-all sm:h-[72px] sm:w-[72px] sm:text-3xl ${
               task.done
-                ? 'border-[#c6ff4a] bg-[#c6ff4a] text-[#0a0a0a]'
-                : 'border-white/15 text-white/30 hover:border-white/35 hover:text-white/60'
+                ? 'border-[#c6ff4a] bg-[#c6ff4a] text-[#0a0a0a] shadow-[0_0_20px_-4px_#c6ff4a]'
+                : `bg-white/[0.03] hover:brightness-125 ${PRIORITY_NUMBER_CLASSES[task.priority]}`
             }`}
           >
             {task.done && (
@@ -225,7 +226,7 @@ export function TaskItem({
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                 viewBox="0 0 24 24"
-                className="h-5 w-5"
+                className="h-7 w-7"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth={3}

@@ -27,3 +27,17 @@ export const PRIORITY_BADGE_CLASSES: Record<Priority, string> = {
   medium: 'border-white/30 text-white/70',
   high: 'border-[#c6ff4a]/60 text-[#c6ff4a]',
 };
+
+/** Neon hex per priority, used for the big glowing ordinal badge on each card. */
+export const PRIORITY_NEON: Record<Priority, string> = {
+  low: '#4cc9f0',
+  medium: '#ffb703',
+  high: '#c6ff4a',
+};
+
+/** Border + text + glow classes for the big ordinal number badge, color-coded by priority. */
+export const PRIORITY_NUMBER_CLASSES: Record<Priority, string> = {
+  low: 'border-[#4cc9f0] text-[#4cc9f0] shadow-[0_0_18px_-4px_#4cc9f0]',
+  medium: 'border-[#ffb703] text-[#ffb703] shadow-[0_0_18px_-4px_#ffb703]',
+  high: 'border-[#c6ff4a] text-[#c6ff4a] shadow-[0_0_18px_-4px_#c6ff4a]',
+};
