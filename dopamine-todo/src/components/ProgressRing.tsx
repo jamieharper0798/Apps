@@ -26,19 +26,13 @@ export function ProgressRing({ progress, size = 64, stroke = 6 }: ProgressRingPr
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="url(#ring-gradient)"
+          stroke="#c6ff4a"
           strokeWidth={stroke}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           style={{ transition: 'stroke-dashoffset 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
         />
-        <defs>
-          <linearGradient id="ring-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#a855f7" />
-            <stop offset="100%" stopColor="#f472b6" />
-          </linearGradient>
-        </defs>
       </svg>
       <div className="absolute inset-0 flex items-center justify-center text-xs font-semibold tabular-nums text-white/80">
         {Math.round(clamped * 100)}%

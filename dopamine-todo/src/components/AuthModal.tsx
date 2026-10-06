@@ -62,9 +62,9 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 26 }}
             onClick={(e) => e.stopPropagation()}
-            className="glass w-full max-w-sm rounded-3xl p-6"
+            className="panel w-full max-w-sm rounded-lg p-6"
           >
-            <h2 className="font-display text-lg font-bold text-white">
+            <h2 className="font-display text-lg font-bold uppercase tracking-wide text-white">
               {mode === 'signin' ? 'Sign in' : 'Create account'}
             </h2>
             <p className="mt-1 text-xs text-white/40">
@@ -75,18 +75,18 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
 
             <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-3">
               <div>
-                <label className="block text-xs font-medium text-white/40">Email</label>
+                <label className="block text-xs font-medium uppercase tracking-wide text-white/40">Email</label>
                 <input
                   type="email"
                   required
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl bg-white/5 px-3 py-2 text-sm text-white outline-none ring-1 ring-white/10 focus:ring-purple-400/50"
+                  className="mt-1.5 w-full rounded border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#c6ff4a]/50"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-white/40">Password</label>
+                <label className="block text-xs font-medium uppercase tracking-wide text-white/40">Password</label>
                 <input
                   type="password"
                   required
@@ -94,7 +94,7 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
                   autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl bg-white/5 px-3 py-2 text-sm text-white outline-none ring-1 ring-white/10 focus:ring-purple-400/50"
+                  className="mt-1.5 w-full rounded border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#c6ff4a]/50"
                 />
               </div>
 
@@ -103,7 +103,7 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
               <button
                 type="submit"
                 disabled={submitting}
-                className="mt-1 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+                className="mt-1 rounded border border-[#c6ff4a]/60 px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-[#c6ff4a] transition hover:bg-[#c6ff4a]/10 disabled:opacity-50"
               >
                 {submitting ? 'Please wait…' : mode === 'signin' ? 'Sign in' : 'Create account'}
               </button>
@@ -121,7 +121,7 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
 
             <button
               onClick={handleClose}
-              className="mt-4 w-full text-center text-xs font-medium text-white/25 hover:text-white/50"
+              className="mt-4 w-full text-center text-xs font-medium uppercase tracking-wide text-white/25 hover:text-white/50"
             >
               Cancel
             </button>

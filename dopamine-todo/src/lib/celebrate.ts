@@ -6,7 +6,7 @@ export function burstConfetti(originX = 0.5, originY = 0.5) {
     spread: 70,
     startVelocity: 35,
     origin: { x: originX, y: originY },
-    colors: ['#a855f7', '#f472b6', '#22d3ee', '#facc15'],
+    colors: ['#c6ff4a', '#ffffff', '#eaffb0', '#8fd13f'],
     scalar: 0.9,
     ticks: 150,
   });
@@ -15,7 +15,7 @@ export function burstConfetti(originX = 0.5, originY = 0.5) {
 export function burstLevelUp() {
   const duration = 900;
   const end = Date.now() + duration;
-  const colors = ['#a855f7', '#f472b6', '#22d3ee', '#facc15', '#4ade80'];
+  const colors = ['#c6ff4a', '#ffffff', '#eaffb0', '#8fd13f', '#4ade80'];
 
   (function frame() {
     confetti({

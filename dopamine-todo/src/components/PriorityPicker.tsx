@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Priority } from '../types';
-import { PRIORITY_ORDER, PRIORITY_STYLES, PRIORITY_SHORT_LABELS } from '../lib/priority';
+import { PRIORITY_ORDER, PRIORITY_CODE, PRIORITY_BADGE_CLASSES } from '../lib/priority';
 
 interface PriorityPickerProps {
   priority: Priority;
@@ -33,11 +33,11 @@ export function PriorityPicker({ priority, onChange }: PriorityPickerProps) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label={`Priority: ${PRIORITY_SHORT_LABELS[priority]}. Click to change.`}
-        title={`Priority: ${PRIORITY_SHORT_LABELS[priority]}`}
-        className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
+        aria-label={`Priority: ${PRIORITY_CODE[priority]}. Click to change.`}
+        title={`Priority: ${PRIORITY_CODE[priority]}`}
+        className={`rounded border px-2 py-1 text-[10px] font-bold uppercase tracking-wider transition hover:border-white/40 ${PRIORITY_BADGE_CLASSES[priority]}`}
       >
-        <span className={`h-1.5 w-1.5 rounded-full ${PRIORITY_STYLES[priority]}`} />
+        {PRIORITY_CODE[priority]}
       </button>
 
       <AnimatePresence>
@@ -47,19 +47,20 @@ export function PriorityPicker({ priority, onChange }: PriorityPickerProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: -4 }}
             transition={{ type: 'spring', stiffness: 400, damping: 24 }}
-            className="glass absolute left-1/2 top-full z-20 mt-1.5 flex -translate-x-1/2 gap-1 rounded-xl p-1"
+            className="panel absolute right-0 top-full z-20 mt-1.5 flex gap-1 rounded-lg p-1"
           >
             {PRIORITY_ORDER.map((p) => (
               <button
                 key={p}
                 type="button"
                 onClick={() => handlePick(p)}
-                className={`flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs font-medium whitespace-nowrap transition ${
-                  p === priority ? 'bg-white/10 text-white' : 'text-white/50 hover:bg-white/5 hover:text-white/80'
+                className={`rounded border px-2 py-1 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap transition ${
+                  p === priority
+                    ? PRIORITY_BADGE_CLASSES[p]
+                    : 'border-transparent text-white/40 hover:border-white/15 hover:text-white/70'
                 }`}
               >
-                <span className={`h-1.5 w-1.5 rounded-full ${PRIORITY_STYLES[p]}`} />
-                {PRIORITY_SHORT_LABELS[p]}
+                {PRIORITY_CODE[p]}
               </button>
             ))}
           </motion.div>
