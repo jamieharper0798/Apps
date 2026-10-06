@@ -1,9 +1,9 @@
 import { dayKey } from './gamify';
 
-/** Formats an ISO 'YYYY-MM-DD' date as a short, friendly label: Today, Tomorrow, Mon, or "Oct 12". */
+/** Formats an ISO 'YYYY-MM-DD' date as a short terminal-style label: TODAY, T+1D, T-2D, or "OCT 12". */
 export function formatDueDate(dueDate: string): string {
   const today = dayKey();
-  if (dueDate === today) return 'Today';
+  if (dueDate === today) return 'TODAY';
 
   const [y, m, d] = dueDate.split('-').map(Number);
   const date = new Date(y, m - 1, d);
@@ -11,14 +11,15 @@ export function formatDueDate(dueDate: string): string {
   const todayDate = new Date(ty, tm - 1, td);
   const diffDays = Math.round((date.getTime() - todayDate.getTime()) / 86400000);
 
-  if (diffDays === 1) return 'Tomorrow';
-  if (diffDays === -1) return 'Yesterday';
-  if (diffDays > 1 && diffDays < 7) return date.toLocaleDateString(undefined, { weekday: 'short' });
+  if (diffDays > 0 && diffDays < 10) return `T+${diffDays}D`;
+  if (diffDays < 0 && diffDays > -10) return `T${diffDays}D`;
 
   const sameYear = y === ty;
-  return date.toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: sameYear ? undefined : 'numeric',
-  });
+  return date
+    .toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      year: sameYear ? undefined : 'numeric',
+    })
+    .toUpperCase();
 }

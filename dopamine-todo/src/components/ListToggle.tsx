@@ -4,12 +4,13 @@ import { LIST_ORDER, LIST_META } from '../lib/lists';
 
 interface ListToggleProps {
   active: ListId;
+  counts: Record<ListId, number>;
   onChange: (list: ListId) => void;
 }
 
-export function ListToggle({ active, onChange }: ListToggleProps) {
+export function ListToggle({ active, counts, onChange }: ListToggleProps) {
   return (
-    <div className="glass relative flex gap-1 rounded-2xl p-1">
+    <div className="flex items-center gap-6 border-b border-white/10">
       {LIST_ORDER.map((list) => {
         const meta = LIST_META[list];
         const isActive = list === active;
@@ -17,17 +18,18 @@ export function ListToggle({ active, onChange }: ListToggleProps) {
           <button
             key={list}
             onClick={() => onChange(list)}
-            className="relative flex flex-1 items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold transition"
+            className="relative flex items-center gap-1.5 pb-2.5 text-sm font-semibold uppercase tracking-wide transition"
           >
+            <span className={isActive ? 'text-white' : 'text-white/35 hover:text-white/60'}>
+              {meta.label} <span className="tabular-nums text-white/30">· {counts[list] ?? 0}</span>
+            </span>
             {isActive && (
               <motion.div
-                layoutId="list-toggle-active"
+                layoutId="list-toggle-underline"
                 transition={{ type: 'spring', stiffness: 400, damping: 32 }}
-                className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500"
+                className="absolute inset-x-0 -bottom-px h-0.5 bg-[#c6ff4a]"
               />
             )}
-            <span className={`relative z-10 ${isActive ? 'text-white' : 'text-white/40'}`}>{meta.icon}</span>
-            <span className={`relative z-10 ${isActive ? 'text-white' : 'text-white/40'}`}>{meta.label}</span>
           </button>
         );
       })}

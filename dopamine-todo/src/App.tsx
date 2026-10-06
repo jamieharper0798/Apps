@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTodos } from './hooks/useTodos';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import type { ListId } from './types';
-import { LIST_META } from './lib/lists';
+import { LIST_ORDER, LIST_META } from './lib/lists';
 import { AddTaskForm } from './components/AddTaskForm';
 import { TaskList } from './components/TaskList';
 import type { Filter } from './components/TaskList';
@@ -57,6 +57,11 @@ function App() {
     if (toastTimer.current) clearTimeout(toastTimer.current);
   }, []);
 
+  const listCounts = LIST_ORDER.reduce(
+    (acc, list) => ({ ...acc, [list]: tasks.filter((t) => t.list === list).length }),
+    {} as Record<ListId, number>,
+  );
+
   const listTasks = tasks.filter((t) => t.list === activeList);
   const total = listTasks.length;
   const completed = listTasks.filter((t) => t.done).length;
@@ -90,14 +95,14 @@ function App() {
     deleteTask(id);
   };
 
-  const FILTERS: { value: Filter; label: string }[] = [
-    { value: 'all', label: 'All' },
-    { value: 'active', label: 'Active' },
-    { value: 'done', label: 'Done' },
+  const FILTERS: { value: Filter; label: string; count: number }[] = [
+    { value: 'all', label: 'All', count: total },
+    { value: 'active', label: 'Active', count: activeCount },
+    { value: 'done', label: 'Done', count: completed },
   ];
 
   return (
-    <div className="bg-aurora min-h-screen">
+    <div className="min-h-screen bg-[#0a0a0a]">
       <CelebrationToast toast={toast} />
       <LevelUpOverlay level={levelUp} onClose={() => setLevelUp(null)} />
       <UpdateToast />
@@ -118,89 +123,77 @@ function App() {
         />
       )}
 
-      <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-16 pt-8 sm:px-6">
-        <header className="mb-8 flex flex-col gap-6">
-          <div className="flex items-center justify-between">
-            <button
-              onClick={() => setEditingBrand(true)}
-              className="group flex items-center gap-2.5 rounded-lg py-1 pr-2 transition hover:bg-white/5"
-              title="Customize name and icon"
+      <header className="border-b border-white/10">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 sm:px-6">
+          <button
+            onClick={() => setEditingBrand(true)}
+            className="group flex min-w-0 items-center gap-3 rounded py-1 pr-2 transition hover:bg-white/5"
+            title="Customize name and icon"
+          >
+            {branding.icon192 ? (
+              <img src={branding.icon192} alt="" className="h-9 w-9 shrink-0 rounded-lg border-2 border-[#c6ff4a]/60 object-cover" />
+            ) : (
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border-2 border-[#c6ff4a]/60 text-lg">
+                ✅
+              </span>
+            )}
+            <h1 className="truncate text-base font-bold uppercase tracking-wide text-white sm:text-lg sm:tracking-widest">{branding.name}</h1>
+            <svg
+              viewBox="0 0 24 24"
+              className="hidden h-3.5 w-3.5 shrink-0 text-white/0 transition group-hover:text-white/40 sm:block"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
             >
-              {branding.icon192 ? (
-                <img src={branding.icon192} alt="" className="h-8 w-8 rounded-xl object-cover shadow-lg shadow-purple-500/20" />
-              ) : (
-                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 text-lg ring-1 ring-white/10">
-                  ✅
-                </span>
-              )}
-              <h1 className="font-display text-xl font-bold tracking-tight text-white">{branding.name}</h1>
-              <svg
-                viewBox="0 0 24 24"
-                className="h-3.5 w-3.5 text-white/0 transition group-hover:text-white/40"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5m-1.5-9.5a2.121 2.121 0 0 1 3 3L12 16l-4 1 1-4 9.5-9.5Z"
-                />
-              </svg>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5m-1.5-9.5a2.121 2.121 0 0 1 3 3L12 16l-4 1 1-4 9.5-9.5Z"
+              />
+            </svg>
+          </button>
+          <div className="flex items-center gap-2">
+            {isFirebaseConfigured && (
+              <AccountButton
+                user={user}
+                syncing={syncing}
+                onSignInClick={() => setAuthModalOpen(true)}
+                onSignOut={signOutUser}
+              />
+            )}
+            <InstallButton appName={branding.name} />
+            <button
+              onClick={() => setMuted((m) => !m)}
+              className="rounded border border-white/15 p-2 text-white/50 transition hover:border-white/30 hover:text-white"
+              aria-label={muted ? 'Unmute sound' : 'Mute sound'}
+              title={muted ? 'Unmute' : 'Mute'}
+            >
+              {muted ? '🔇' : '🔊'}
             </button>
-            <div className="flex items-center gap-2">
-              {isFirebaseConfigured && (
-                <AccountButton
-                  user={user}
-                  syncing={syncing}
-                  onSignInClick={() => setAuthModalOpen(true)}
-                  onSignOut={signOutUser}
-                />
-              )}
-              <InstallButton appName={branding.name} />
-              <button
-                onClick={() => setMuted((m) => !m)}
-                className="rounded-full p-2 text-white/50 transition hover:bg-white/10 hover:text-white"
-                aria-label={muted ? 'Unmute sound' : 'Mute sound'}
-                title={muted ? 'Unmute' : 'Mute'}
-              >
-                {muted ? '🔇' : '🔊'}
-              </button>
-            </div>
           </div>
+        </div>
+      </header>
 
-          <ListToggle active={activeList} onChange={setActiveList} />
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-6 px-4 pb-16 pt-6 sm:px-6 lg:grid-cols-[1fr_300px]">
+        <main className="flex min-w-0 flex-col gap-5">
+          <ListToggle active={activeList} counts={listCounts} onChange={setActiveList} />
 
-          <div className="glass relative flex items-center justify-between gap-4 overflow-hidden rounded-2xl p-4">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -left-10 -top-10 h-32 w-32 rounded-full bg-purple-500/20 blur-3xl"
-            />
-            <XPBar level={levelInfo.level} xpIntoLevel={levelInfo.xpIntoLevel} xpForNextLevel={levelInfo.xpForNextLevel} />
-            <div className="relative flex items-center gap-3">
-              <StreakBadge streak={dopamine.streak} />
-              <ProgressRing progress={progress} />
-            </div>
-          </div>
-        </header>
-
-        <main className="flex flex-1 flex-col gap-5">
           <AddTaskForm
             onAdd={(text, priority) => addTask(text, priority, activeList)}
             listLabel={LIST_META[activeList].label}
           />
 
-          <div className="flex items-center justify-between">
-            <div className="flex gap-1 rounded-xl bg-white/5 p-1">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-4">
               {FILTERS.map((f) => (
                 <button
                   key={f.value}
                   onClick={() => setFilter(f.value)}
-                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
-                    filter === f.value ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/70'
+                  className={`border-b-2 pb-1 text-xs font-semibold uppercase tracking-wide transition ${
+                    filter === f.value ? 'border-[#c6ff4a] text-white' : 'border-transparent text-white/35 hover:text-white/60'
                   }`}
                 >
-                  {f.label}
+                  {f.label} <span className="tabular-nums text-white/25">· {f.count}</span>
                 </button>
               ))}
             </div>
@@ -209,7 +202,7 @@ function App() {
               {completed > 0 && (
                 <button
                   onClick={() => clearCompleted(activeList)}
-                  className="font-medium text-white/40 hover:text-red-400"
+                  className="font-medium uppercase tracking-wide text-white/40 hover:text-red-400"
                 >
                   Clear done
                 </button>
@@ -230,11 +223,22 @@ function App() {
           />
         </main>
 
-        <footer className="mt-10 text-center text-xs text-white/25">
-          {dopamine.totalCompleted > 0
-            ? `${dopamine.totalCompleted} task${dopamine.totalCompleted === 1 ? '' : 's'} completed all-time · keep the streak alive`
-            : 'Complete your first task to start earning XP'}
-        </footer>
+        <aside className="flex flex-col gap-4 lg:pt-[52px]">
+          <div className="panel rounded-lg p-4">
+            <XPBar level={levelInfo.level} xpIntoLevel={levelInfo.xpIntoLevel} xpForNextLevel={levelInfo.xpForNextLevel} />
+          </div>
+          <div className="panel flex items-center justify-between gap-3 rounded-lg p-4">
+            <StreakBadge streak={dopamine.streak} />
+            <ProgressRing progress={progress} />
+          </div>
+          <div className="panel rounded-lg p-4 text-center">
+            <p className="text-[10px] uppercase tracking-widest text-white/30">All-time cleared</p>
+            <p className="mt-1 font-display text-3xl font-bold tabular-nums text-[#c6ff4a]">{dopamine.totalCompleted}</p>
+            <p className="mt-1 text-[10px] uppercase tracking-wide text-white/25">
+              {dopamine.totalCompleted > 0 ? 'keep the streak alive' : 'complete your first task'}
+            </p>
+          </div>
+        </aside>
       </div>
     </div>
   );

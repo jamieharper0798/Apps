@@ -12,10 +12,8 @@ export function StreakBadge({ streak }: StreakBadgeProps) {
       initial={{ scale: 0.7, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ type: 'spring', stiffness: 260, damping: 14 }}
-      className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold ${
-        active
-          ? 'bg-gradient-to-r from-orange-500/20 to-amber-400/20 text-amber-300 ring-1 ring-amber-400/30'
-          : 'bg-white/5 text-white/40 ring-1 ring-white/10'
+      className={`flex items-center gap-1.5 rounded border px-3 py-1.5 text-sm font-semibold ${
+        active ? 'border-[#c6ff4a]/50 text-[#c6ff4a]' : 'border-white/10 text-white/40'
       }`}
       title="Daily streak"
     >

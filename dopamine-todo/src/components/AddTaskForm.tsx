@@ -1,17 +1,14 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Priority } from '../types';
+import { PRIORITY_CODE } from '../lib/priority';
 
 interface AddTaskFormProps {
   onAdd: (text: string, priority: Priority) => void;
   listLabel: string;
 }
 
-const PRIORITIES: { value: Priority; label: string; dot: string }[] = [
-  { value: 'low', label: 'Low · +10xp', dot: 'bg-cyan-400' },
-  { value: 'medium', label: 'Medium · +20xp', dot: 'bg-amber-400' },
-  { value: 'high', label: 'High · +35xp', dot: 'bg-pink-500' },
-];
+const PRIORITIES: Priority[] = ['low', 'medium', 'high'];
 
 export function AddTaskForm({ onAdd, listLabel }: AddTaskFormProps) {
   const [text, setText] = useState('');
@@ -25,40 +22,40 @@ export function AddTaskForm({ onAdd, listLabel }: AddTaskFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="glass flex flex-col gap-3 rounded-2xl p-3 ring-1 ring-transparent transition focus-within:ring-purple-400/40 sm:flex-row sm:items-center sm:p-2 sm:pl-4">
-      <input
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder={`Add a ${listLabel.toLowerCase()} task…`}
-        className="flex-1 bg-transparent py-2 text-[15px] text-white placeholder-white/35 outline-none"
-        maxLength={200}
-      />
+    <form onSubmit={handleSubmit} className="panel flex flex-col gap-3 rounded-lg p-3 ring-1 ring-transparent transition focus-within:ring-[#c6ff4a]/40 sm:flex-row sm:items-center sm:p-2 sm:pl-4">
+      <div className="flex min-w-0 flex-1 items-center gap-2">
+        <span className="shrink-0 text-[#c6ff4a]">&gt;</span>
+        <input
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder={`add a ${listLabel.toLowerCase()} task_`}
+          className="min-w-0 flex-1 bg-transparent py-2 text-[15px] text-white placeholder-white/30 outline-none"
+          maxLength={200}
+        />
+      </div>
       <div className="flex items-center gap-2">
-        <div className="flex rounded-xl bg-white/5 p-1">
+        <div className="flex gap-1 rounded border border-white/10 p-1">
           {PRIORITIES.map((p) => (
             <button
-              key={p.value}
+              key={p}
               type="button"
-              onClick={() => setPriority(p.value)}
-              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${
-                priority === p.value ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/70'
+              onClick={() => setPriority(p)}
+              className={`rounded px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider transition ${
+                priority === p ? 'bg-white/10 text-white' : 'text-white/35 hover:text-white/70'
               }`}
-              title={p.label}
+              title={PRIORITY_CODE[p]}
             >
-              <span className={`h-1.5 w-1.5 rounded-full ${p.dot}`} />
-              <span className="hidden sm:inline">{p.value}</span>
+              {PRIORITY_CODE[p]}
             </button>
           ))}
         </div>
         <button
           type="submit"
-          className="flex items-center gap-1 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-purple-500/25 transition active:scale-95 hover:shadow-purple-500/40 disabled:opacity-40"
+          className="flex items-center gap-1.5 rounded border border-[#c6ff4a]/60 px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-[#c6ff4a] transition active:scale-95 hover:bg-[#c6ff4a]/10 disabled:opacity-30"
           disabled={!text.trim()}
         >
-          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" d="M12 5v14M5 12h14" />
-          </svg>
           Add
+          <span aria-hidden>↵</span>
         </button>
       </div>
     </form>

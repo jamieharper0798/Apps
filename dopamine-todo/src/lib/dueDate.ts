@@ -1,10 +1,10 @@
 import { dayKey } from './gamify';
 
-/** Combined pill bg+text classes for a due date, reflecting overdue/today/upcoming/empty state. */
+/** Combined border+text classes for a due-date badge, reflecting overdue/today/upcoming/empty state. */
 export function dueDatePillClasses(dueDate: string | null, done: boolean): string {
-  if (!dueDate || done) return 'text-white/25';
+  if (!dueDate || done) return 'border-white/10 text-white/25';
   const today = dayKey();
-  if (dueDate < today) return 'bg-red-400/10 text-red-400';
-  if (dueDate === today) return 'bg-amber-400/10 text-amber-300';
-  return 'text-white/60';
+  if (dueDate < today) return 'border-red-400/40 text-red-400';
+  if (dueDate === today) return 'border-[#c6ff4a]/50 text-[#c6ff4a]';
+  return 'border-white/15 text-white/50';
 }

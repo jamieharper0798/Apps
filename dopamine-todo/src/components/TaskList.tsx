@@ -2,7 +2,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import type { Priority, Task } from '../types';
 import { TaskItem } from './TaskItem';
 import { PRIORITY_ORDER, PRIORITY_STYLES } from '../lib/priority';
-import { CHECKBOX_COL, DOT_COL, OWNER_COL, DUE_COL, DELETE_COL } from '../lib/taskColumns';
 
 export type Filter = 'all' | 'active' | 'done';
 
@@ -46,7 +45,7 @@ export function TaskList({
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="glass flex flex-col items-center gap-3 rounded-2xl py-16 text-center"
+        className="panel flex flex-col items-center gap-3 rounded-lg py-16 text-center"
       >
         <motion.span
           animate={{ y: [0, -6, 0] }}
@@ -72,31 +71,26 @@ export function TaskList({
     tasks: filtered.filter((t) => t.priority === priority),
   })).filter((group) => group.tasks.length > 0);
 
-  return (
-    <div className="flex flex-col gap-3">
-      <div className="hidden items-center gap-3 py-1 pl-4 pr-3 text-[11px] font-medium uppercase tracking-wide text-white/25 sm:flex sm:pr-4">
-        <span className={`${CHECKBOX_COL} shrink-0`} />
-        <span className={`${DOT_COL} shrink-0`} />
-        <span className="flex-1">Task</span>
-        <span className={`${OWNER_COL} shrink-0`}>Owner</span>
-        <span className={`${DUE_COL} shrink-0`}>Due</span>
-        <span className={`${DELETE_COL} shrink-0`} />
-      </div>
+  let runningIndex = 0;
 
-      <div className="flex flex-col gap-5">
-        {groups.map((group) => (
-          <section key={group.priority} className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 px-1 text-xs font-semibold uppercase tracking-wide text-white/35">
-              <span className={`h-1.5 w-1.5 rounded-full ${PRIORITY_STYLES[group.priority]}`} />
-              {PRIORITY_LABELS[group.priority]}
-              <span className="font-normal normal-case text-white/20">· {group.tasks.length}</span>
-            </div>
-            <ul className="flex flex-col gap-2">
-              <AnimatePresence initial={false}>
-                {group.tasks.map((task) => (
+  return (
+    <div className="flex flex-col gap-6">
+      {groups.map((group) => (
+        <section key={group.priority} className="flex flex-col gap-3">
+          <div className="flex items-center gap-2 border-b border-white/10 pb-2 text-xs font-semibold uppercase tracking-widest text-white/35">
+            <span className={`h-1.5 w-1.5 rounded-full ${PRIORITY_STYLES[group.priority]}`} />
+            {PRIORITY_LABELS[group.priority]}
+            <span className="font-normal normal-case text-white/20">· {group.tasks.length}</span>
+          </div>
+          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <AnimatePresence initial={false}>
+              {group.tasks.map((task) => {
+                runningIndex += 1;
+                return (
                   <TaskItem
                     key={task.id}
                     task={task}
+                    index={runningIndex}
                     onToggle={onToggle}
                     onDelete={onDelete}
                     onEdit={onEdit}
@@ -104,12 +98,12 @@ export function TaskList({
                     onDueDateChange={onDueDateChange}
                     onPriorityChange={onPriorityChange}
                   />
-                ))}
-              </AnimatePresence>
-            </ul>
-          </section>
-        ))}
-      </div>
+                );
+              })}
+            </AnimatePresence>
+          </ul>
+        </section>
+      ))}
     </div>
   );
 }

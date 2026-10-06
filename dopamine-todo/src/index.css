@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: "Outfit", system-ui, "Segoe UI", Roboto, sans-serif;
-  --font-body: "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-display: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-body: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 
 :root {
@@ -22,23 +22,10 @@ body,
 body {
   margin: 0;
   font-family: var(--font-body);
-  background: #0b0a14;
-  color: #f1eefc;
+  background: #0a0a0a;
+  color: #f2f2ec;
   overflow-x: hidden;
   position: relative;
-}
-
-/* Subtle film-grain texture — the single biggest lever for a "premium" feel on
-   flat gradients. Fixed so it doesn't repaint on scroll, blended softly. */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0.035;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 #root {
@@ -47,8 +34,8 @@ body::after {
 }
 
 ::selection {
-  background: #a855f7;
-  color: white;
+  background: #c6ff4a;
+  color: #0a0a0a;
 }
 
 /* Scrollbar */
@@ -59,72 +46,27 @@ body::after {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(168, 85, 247, 0.35);
+  background: rgba(198, 255, 74, 0.25);
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(168, 85, 247, 0.55);
+  background: rgba(198, 255, 74, 0.45);
 }
 
-.glass {
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.08),
-    rgba(255, 255, 255, 0.02)
-  );
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 1px 2px rgba(0, 0, 0, 0.2),
-    0 12px 32px -14px rgba(0, 0, 0, 0.55);
+/* Flat bordered "terminal panel" surface — the base card treatment. */
+.panel {
+  background: #111110;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Interactive glass surfaces: a gentle lift + brand-tinted glow on hover. */
-.glass-hover {
+.panel-hover {
   transition:
-    transform 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    border-color 0.15s ease,
+    background-color 0.15s ease;
 }
-.glass-hover:hover {
-  transform: translateY(-1px);
-  border-color: rgba(255, 255, 255, 0.16);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 1px 2px rgba(0, 0, 0, 0.2),
-    0 18px 40px -16px rgba(168, 85, 247, 0.35);
-}
-
-.bg-aurora {
-  background:
-    radial-gradient(1200px 600px at 15% -10%, rgba(168, 85, 247, 0.35), transparent 60%),
-    radial-gradient(900px 500px at 110% 10%, rgba(236, 72, 153, 0.28), transparent 55%),
-    radial-gradient(800px 600px at 50% 120%, rgba(34, 211, 238, 0.18), transparent 55%),
-    radial-gradient(700px 500px at -10% 65%, rgba(16, 185, 129, 0.14), transparent 55%),
-    #0b0a14;
-  background-repeat: no-repeat;
-  animation: aurora-drift 26s ease-in-out infinite alternate;
-}
-
-@keyframes aurora-drift {
-  0% {
-    background-position:
-      0% 0%,
-      0% 0%,
-      0% 0%,
-      0% 0%,
-      0 0;
-  }
-  100% {
-    background-position:
-      3% 4%,
-      -3% -3%,
-      2% -3%,
-      -2% 3%,
-      0 0;
-  }
+.panel-hover:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: #141413;
 }
 
 @keyframes pop {
@@ -151,7 +93,7 @@ body::after {
   }
 }
 .shimmer-text {
-  background: linear-gradient(90deg, #f1eefc 20%, #a855f7 40%, #f472b6 60%, #f1eefc 80%);
+  background: linear-gradient(90deg, #f2f2ec 20%, #c6ff4a 40%, #eaffb0 60%, #f2f2ec 80%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
@@ -183,4 +125,18 @@ body::after {
 }
 .animate-ring-burst {
   animation: ring-burst 0.5s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+.animate-blink {
+  animation: blink 1.1s step-end infinite;
 }
