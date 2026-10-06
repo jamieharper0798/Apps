@@ -8,7 +8,7 @@ const outDir = path.join(scriptsDir, '../public/icons/');
 mkdirSync(outDir, { recursive: true });
 
 const source = path.join(scriptsDir, 'icon-source.webp');
-const APP_BG = '#0b0a14';
+const APP_BG = '#0a0a0a';
 
 // Regular icons: the source image is already a finished square icon, used as-is.
 for (const size of [192, 512]) {

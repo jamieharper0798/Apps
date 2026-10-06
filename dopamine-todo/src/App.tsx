@@ -22,6 +22,7 @@ import { useBranding } from './hooks/useBranding';
 import { useBrandingMeta } from './hooks/useBrandingMeta';
 import { useAuth } from './hooks/useAuth';
 import { isFirebaseConfigured } from './lib/firebase';
+import { DEFAULT_ICON_192 } from './lib/icons';
 import { burstConfetti, burstLevelUp } from './lib/celebrate';
 import { playComplete, playDelete, playLevelUp } from './lib/sound';
 import { randomHype } from './lib/gamify';
@@ -131,13 +132,11 @@ function App() {
             className="group flex min-w-0 items-center gap-3 rounded py-1 pr-2 transition hover:bg-white/5"
             title="Customize name and icon"
           >
-            {branding.icon192 ? (
-              <img src={branding.icon192} alt="" className="h-9 w-9 shrink-0 rounded-lg border-2 border-[#c6ff4a]/60 object-cover" />
-            ) : (
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border-2 border-[#c6ff4a]/60 text-lg">
-                ✅
-              </span>
-            )}
+            <img
+              src={branding.icon192 ?? DEFAULT_ICON_192}
+              alt=""
+              className="h-9 w-9 shrink-0 rounded-lg border-2 border-[#c6ff4a]/60 object-cover"
+            />
             <h1 className="truncate text-base font-bold uppercase tracking-wide text-white sm:text-lg sm:tracking-widest">{branding.name}</h1>
             <svg
               viewBox="0 0 24 24"
