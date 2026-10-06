@@ -12,7 +12,7 @@ interface CelebrationToastProps {
 
 export function CelebrationToast({ toast }: CelebrationToastProps) {
   return (
-    <div className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center sm:top-6">
+    <div className="pointer-events-none fixed inset-x-0 z-50 flex justify-center px-4 pt-[max(1rem,env(safe-area-inset-top))] sm:pt-[max(1.5rem,env(safe-area-inset-top))]">
       <AnimatePresence>
         {toast && (
           <motion.div

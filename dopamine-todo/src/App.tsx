@@ -124,8 +124,8 @@ function App() {
         />
       )}
 
-      <header className="border-b border-white/10">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 sm:px-6">
+      <header className="border-b border-white/10 pt-[env(safe-area-inset-top)]">
+        <div className="mx-auto flex max-w-6xl items-center justify-between py-5 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:pl-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))]">
           <button
             onClick={() => setEditingBrand(true)}
             className="group flex min-w-0 items-center gap-3 rounded py-1 pr-2 transition hover:bg-white/5"
@@ -153,7 +153,7 @@ function App() {
               />
             </svg>
           </button>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
             {isFirebaseConfigured && (
               <AccountButton
                 user={user}
@@ -165,7 +165,7 @@ function App() {
             <InstallButton appName={branding.name} />
             <button
               onClick={() => setMuted((m) => !m)}
-              className="rounded border border-white/15 p-2 text-white/50 transition hover:border-white/30 hover:text-white"
+              className="shrink-0 rounded border border-white/15 p-2 text-white/50 transition hover:border-white/30 hover:text-white"
               aria-label={muted ? 'Unmute sound' : 'Mute sound'}
               title={muted ? 'Unmute' : 'Mute'}
             >
@@ -175,7 +175,7 @@ function App() {
         </div>
       </header>
 
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-6 px-4 pb-16 pt-6 sm:px-6 lg:grid-cols-[1fr_300px]">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-6 pb-[max(4rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-6 sm:pl-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))] lg:grid-cols-[1fr_300px]">
         <main className="flex min-w-0 flex-col gap-5">
           <ListToggle active={activeList} counts={listCounts} onChange={setActiveList} />
 
