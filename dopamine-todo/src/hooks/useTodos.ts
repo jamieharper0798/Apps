@@ -92,6 +92,25 @@ export function useTodos() {
     [setState],
   );
 
+  /** Reorders a subset of tasks (e.g. one priority group) to match `orderedIds`, leaving every other task's position untouched. */
+  const reorderTasks = useCallback(
+    (orderedIds: string[]) => {
+      setState((prev) => {
+        const byId = new Map(prev.tasks.map((t) => [t.id, t]));
+        const orderedSet = new Set(orderedIds);
+        let cursor = 0;
+        const tasks = prev.tasks.map((t) => {
+          if (!orderedSet.has(t.id)) return t;
+          const next = byId.get(orderedIds[cursor]);
+          cursor += 1;
+          return next ?? t;
+        });
+        return { ...prev, tasks };
+      });
+    },
+    [setState],
+  );
+
   const clearCompleted = useCallback(
     (list: ListId) => {
       setState((prev) => ({
@@ -181,6 +200,7 @@ export function useTodos() {
     setPriority,
     setOwner,
     setDueDate,
+    reorderTasks,
     clearCompleted,
   };
 }

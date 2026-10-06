@@ -1,4 +1,14 @@
 import { AnimatePresence, motion } from 'framer-motion';
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates, arrayMove } from '@dnd-kit/sortable';
 import type { Priority, Task } from '../types';
 import { TaskItem } from './TaskItem';
 import { PRIORITY_ORDER, PRIORITY_STYLES } from '../lib/priority';
@@ -15,6 +25,7 @@ interface TaskListProps {
   onOwnerChange: (id: string, owner: string) => void;
   onDueDateChange: (id: string, dueDate: string | null) => void;
   onPriorityChange: (id: string, priority: Priority) => void;
+  onReorder: (orderedIds: string[]) => void;
 }
 
 const PRIORITY_LABELS: Record<Task['priority'], string> = {
@@ -22,6 +33,77 @@ const PRIORITY_LABELS: Record<Task['priority'], string> = {
   medium: 'Medium priority',
   low: 'Low priority',
 };
+
+function PriorityGroup({
+  priority,
+  tasks,
+  startIndex,
+  onToggle,
+  onDelete,
+  onEdit,
+  onOwnerChange,
+  onDueDateChange,
+  onPriorityChange,
+  onReorder,
+}: {
+  priority: Priority;
+  tasks: Task[];
+  startIndex: number;
+  onToggle: (id: string) => void;
+  onDelete: (id: string) => void;
+  onEdit: (id: string, text: string) => void;
+  onOwnerChange: (id: string, owner: string) => void;
+  onDueDateChange: (id: string, dueDate: string | null) => void;
+  onPriorityChange: (id: string, priority: Priority) => void;
+  onReorder: (orderedIds: string[]) => void;
+}) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
+  const ids = tasks.map((t) => t.id);
+
+  const handleDragEnd = (e: DragEndEvent) => {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    const oldIndex = ids.indexOf(String(active.id));
+    const newIndex = ids.indexOf(String(over.id));
+    if (oldIndex === -1 || newIndex === -1) return;
+    onReorder(arrayMove(ids, oldIndex, newIndex));
+  };
+
+  return (
+    <section className="flex flex-col gap-3">
+      <div className="flex items-center gap-2 border-b border-white/10 pb-2 text-xs font-semibold uppercase tracking-widest text-white/35">
+        <span className={`h-1.5 w-1.5 rounded-full ${PRIORITY_STYLES[priority]}`} />
+        {PRIORITY_LABELS[priority]}
+        <span className="font-normal normal-case text-white/20">· {tasks.length}</span>
+      </div>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={ids} strategy={rectSortingStrategy}>
+          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <AnimatePresence initial={false}>
+              {tasks.map((task, i) => (
+                <TaskItem
+                  key={task.id}
+                  task={task}
+                  index={startIndex + i}
+                  onToggle={onToggle}
+                  onDelete={onDelete}
+                  onEdit={onEdit}
+                  onOwnerChange={onOwnerChange}
+                  onDueDateChange={onDueDateChange}
+                  onPriorityChange={onPriorityChange}
+                />
+              ))}
+            </AnimatePresence>
+          </ul>
+        </SortableContext>
+      </DndContext>
+    </section>
+  );
+}
 
 export function TaskList({
   tasks,
@@ -33,6 +115,7 @@ export function TaskList({
   onOwnerChange,
   onDueDateChange,
   onPriorityChange,
+  onReorder,
 }: TaskListProps) {
   const filtered = tasks.filter((t) => {
     if (filter === 'active') return !t.done;
@@ -71,39 +154,29 @@ export function TaskList({
     tasks: filtered.filter((t) => t.priority === priority),
   })).filter((group) => group.tasks.length > 0);
 
-  let runningIndex = 0;
+  let runningIndex = 1;
 
   return (
     <div className="flex flex-col gap-6">
-      {groups.map((group) => (
-        <section key={group.priority} className="flex flex-col gap-3">
-          <div className="flex items-center gap-2 border-b border-white/10 pb-2 text-xs font-semibold uppercase tracking-widest text-white/35">
-            <span className={`h-1.5 w-1.5 rounded-full ${PRIORITY_STYLES[group.priority]}`} />
-            {PRIORITY_LABELS[group.priority]}
-            <span className="font-normal normal-case text-white/20">· {group.tasks.length}</span>
-          </div>
-          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            <AnimatePresence initial={false}>
-              {group.tasks.map((task) => {
-                runningIndex += 1;
-                return (
-                  <TaskItem
-                    key={task.id}
-                    task={task}
-                    index={runningIndex}
-                    onToggle={onToggle}
-                    onDelete={onDelete}
-                    onEdit={onEdit}
-                    onOwnerChange={onOwnerChange}
-                    onDueDateChange={onDueDateChange}
-                    onPriorityChange={onPriorityChange}
-                  />
-                );
-              })}
-            </AnimatePresence>
-          </ul>
-        </section>
-      ))}
+      {groups.map((group) => {
+        const startIndex = runningIndex;
+        runningIndex += group.tasks.length;
+        return (
+          <PriorityGroup
+            key={group.priority}
+            priority={group.priority}
+            tasks={group.tasks}
+            startIndex={startIndex}
+            onToggle={onToggle}
+            onDelete={onDelete}
+            onEdit={onEdit}
+            onOwnerChange={onOwnerChange}
+            onDueDateChange={onDueDateChange}
+            onPriorityChange={onPriorityChange}
+            onReorder={onReorder}
+          />
+        );
+      })}
     </div>
   );
 }
