@@ -31,7 +31,10 @@ export function ProgressRing({ progress, size = 64, stroke = 6 }: ProgressRingPr
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
-          style={{ transition: 'stroke-dashoffset 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+          style={{
+            transition: 'stroke-dashoffset 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            filter: 'drop-shadow(0 0 5px rgba(198, 255, 74, 0.65))',
+          }}
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center text-xs font-semibold tabular-nums text-white/80">

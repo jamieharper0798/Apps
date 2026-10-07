@@ -22,7 +22,10 @@ export function AddTaskForm({ onAdd, listLabel }: AddTaskFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="panel flex flex-col gap-3 rounded-lg p-3 ring-1 ring-transparent transition focus-within:ring-[#c6ff4a]/40 sm:flex-row sm:items-center sm:p-2 sm:pl-4">
+    <form
+      onSubmit={handleSubmit}
+      className="panel flex flex-col gap-3 rounded-xl p-3 ring-1 ring-transparent transition-shadow duration-200 focus-within:shadow-[0_0_0_1px_#c6ff4a66,0_0_24px_-8px_#c6ff4a66] focus-within:ring-[#c6ff4a]/40 sm:flex-row sm:items-center sm:p-2 sm:pl-4"
+    >
       <div className="flex min-w-0 flex-1 items-center gap-2">
         <span className="shrink-0 text-[#c6ff4a]">&gt;</span>
         <input
@@ -34,13 +37,13 @@ export function AddTaskForm({ onAdd, listLabel }: AddTaskFormProps) {
         />
       </div>
       <div className="flex items-center gap-2">
-        <div className="flex gap-1 rounded border border-white/10 p-1">
+        <div className="flex gap-1 rounded-lg border border-white/10 p-1">
           {PRIORITIES.map((p) => (
             <button
               key={p}
               type="button"
               onClick={() => setPriority(p)}
-              className={`rounded px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider transition ${
+              className={`rounded-md px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider transition ${
                 priority === p ? 'bg-white/10 text-white' : 'text-white/35 hover:text-white/70'
               }`}
               title={PRIORITY_CODE[p]}
@@ -51,7 +54,7 @@ export function AddTaskForm({ onAdd, listLabel }: AddTaskFormProps) {
         </div>
         <button
           type="submit"
-          className="flex items-center gap-1.5 rounded border border-[#c6ff4a]/60 px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-[#c6ff4a] transition active:scale-95 hover:bg-[#c6ff4a]/10 disabled:opacity-30"
+          className="flex items-center gap-1.5 rounded-lg border border-[#c6ff4a]/60 px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-[#c6ff4a] transition hover:shadow-[0_0_20px_-6px_#c6ff4a] active:scale-95 hover:bg-[#c6ff4a]/10 disabled:opacity-30 disabled:hover:shadow-none"
           disabled={!text.trim()}
         >
           Add

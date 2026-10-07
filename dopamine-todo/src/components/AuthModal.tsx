@@ -62,7 +62,7 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 26 }}
             onClick={(e) => e.stopPropagation()}
-            className="panel w-full max-w-sm rounded-lg p-6"
+            className="panel w-full max-w-sm rounded-2xl p-6"
           >
             <h2 className="font-display text-lg font-bold uppercase tracking-wide text-white">
               {mode === 'signin' ? 'Sign in' : 'Create account'}
@@ -82,7 +82,7 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1.5 w-full rounded border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#c6ff4a]/50"
+                  className="mt-1.5 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none transition focus:border-[#c6ff4a]/50 focus:shadow-[0_0_0_3px_#c6ff4a1a]"
                 />
               </div>
               <div>
@@ -94,7 +94,7 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
                   autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1.5 w-full rounded border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#c6ff4a]/50"
+                  className="mt-1.5 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none transition focus:border-[#c6ff4a]/50 focus:shadow-[0_0_0_3px_#c6ff4a1a]"
                 />
               </div>
 
@@ -103,7 +103,7 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
               <button
                 type="submit"
                 disabled={submitting}
-                className="mt-1 rounded border border-[#c6ff4a]/60 px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-[#c6ff4a] transition hover:bg-[#c6ff4a]/10 disabled:opacity-50"
+                className="mt-1 rounded-lg border border-[#c6ff4a]/60 px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-[#c6ff4a] transition hover:shadow-[0_0_16px_-6px_#c6ff4a] hover:bg-[#c6ff4a]/10 disabled:opacity-50 disabled:hover:shadow-none"
               >
                 {submitting ? 'Please wait…' : mode === 'signin' ? 'Sign in' : 'Create account'}
               </button>

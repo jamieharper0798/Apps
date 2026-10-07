@@ -22,7 +22,7 @@ export function LevelUpOverlay({ level, onClose }: LevelUpOverlayProps) {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 260, damping: 18 }}
-            className="panel mx-4 flex flex-col items-center gap-3 rounded-lg px-10 py-10 text-center"
+            className="panel mx-4 flex flex-col items-center gap-3 rounded-2xl px-10 py-10 text-center"
           >
             <motion.div
               animate={{ rotate: [0, -8, 8, -6, 6, 0] }}
@@ -36,7 +36,7 @@ export function LevelUpOverlay({ level, onClose }: LevelUpOverlayProps) {
             <p className="uppercase tracking-wide text-white/60">{levelTitle(level)}</p>
             <button
               onClick={onClose}
-              className="mt-3 rounded border border-[#c6ff4a]/60 px-5 py-2 text-sm font-bold uppercase tracking-wide text-[#c6ff4a] transition hover:bg-[#c6ff4a]/10"
+              className="mt-3 rounded-lg border border-[#c6ff4a]/60 px-5 py-2 text-sm font-bold uppercase tracking-wide text-[#c6ff4a] transition hover:shadow-[0_0_20px_-6px_#c6ff4a] hover:bg-[#c6ff4a]/10"
             >
               Keep going
             </button>

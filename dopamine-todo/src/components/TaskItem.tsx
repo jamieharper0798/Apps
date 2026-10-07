@@ -160,12 +160,12 @@ export function TaskItem({
       onBlur={commitOwner}
       onKeyDown={handleOwnerKeyDown}
       maxLength={40}
-      className="min-w-0 flex-1 rounded border border-[#c6ff4a]/50 bg-white/5 px-2 py-1 text-xs text-white outline-none"
+      className="min-w-0 flex-1 rounded-md border border-[#c6ff4a]/50 bg-white/5 px-2 py-1 text-xs text-white outline-none"
     />
   ) : (
     <button
       onClick={startEditingOwner}
-      className={`flex min-w-0 flex-1 items-center gap-1.5 truncate rounded border px-2 py-1 text-left text-[11px] font-medium uppercase tracking-wide transition hover:border-white/30 ${
+      className={`flex min-w-0 flex-1 items-center gap-1.5 truncate rounded-md border px-2 py-1 text-left text-[11px] font-medium uppercase tracking-wide transition hover:border-white/30 ${
         owner ? `border ${ownerSwatch}` : 'border-white/10 text-white/25'
       }`}
     >
@@ -187,7 +187,7 @@ export function TaskItem({
   const dueDatePill = (
     <div className="relative shrink-0">
       <div
-        className={`pointer-events-none flex items-center gap-1.5 truncate rounded border px-2 py-1 text-[11px] font-medium uppercase tracking-wide ${duePillClasses}`}
+        className={`pointer-events-none flex items-center gap-1.5 truncate rounded-md border px-2 py-1 text-[11px] font-medium uppercase tracking-wide ${duePillClasses}`}
       >
         <CalendarIcon />
         <span className="truncate">{dueDate ? formatDueDate(dueDate) : 'No due'}</span>
@@ -215,20 +215,20 @@ export function TaskItem({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, x: 40, scale: 0.9, transition: { duration: 0.2 } }}
         transition={{ type: 'spring', stiffness: 300, damping: 26 }}
-        className={`panel panel-hover group relative flex h-full flex-col gap-3 rounded-lg p-4 ${isDragging ? 'opacity-50' : ''}`}
+        className={`panel panel-hover group relative flex h-full flex-col gap-3 rounded-xl p-4 ${isDragging ? 'opacity-50' : ''}`}
       >
         <div className="flex items-start justify-between gap-2">
           <button
             onClick={() => onToggle(task.id)}
             aria-label={task.done ? 'Mark as not done' : 'Mark as done'}
-            className={`relative flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border-2 font-display text-2xl font-bold transition-all sm:h-[72px] sm:w-[72px] sm:text-3xl ${
+            className={`relative flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border-2 font-display text-2xl font-bold transition-all duration-200 sm:h-[72px] sm:w-[72px] sm:text-3xl ${
               task.done
-                ? 'border-[#c6ff4a] bg-[#c6ff4a] text-[#0a0a0a] shadow-[0_0_20px_-4px_#c6ff4a]'
-                : `bg-white/[0.03] hover:brightness-125 ${PRIORITY_NUMBER_CLASSES[task.priority]}`
+                ? 'border-[#c6ff4a] bg-[#c6ff4a] text-[#0a0a0a] shadow-[0_0_28px_-6px_#c6ff4a]'
+                : `bg-white/[0.03] hover:-translate-y-0.5 hover:brightness-125 ${PRIORITY_NUMBER_CLASSES[task.priority]}`
             }`}
           >
             {task.done && (
-              <span className="animate-ring-burst pointer-events-none absolute inset-0 rounded-lg bg-[#c6ff4a]" />
+              <span className="animate-ring-burst pointer-events-none absolute inset-0 rounded-xl bg-[#c6ff4a]" />
             )}
             {task.done ? (
               <motion.svg
@@ -257,7 +257,7 @@ export function TaskItem({
               aria-label="Drag to reorder"
               title="Drag to reorder"
               style={{ touchAction: 'none' }}
-              className="shrink-0 cursor-grab rounded p-1.5 text-white/25 transition hover:text-white/60 active:cursor-grabbing"
+              className="shrink-0 cursor-grab rounded-md p-1.5 text-white/25 transition hover:text-white/60 active:cursor-grabbing"
             >
               <GripIcon />
             </button>
@@ -265,7 +265,7 @@ export function TaskItem({
             <button
               onClick={() => onDelete(task.id)}
               aria-label="Delete task"
-              className="shrink-0 rounded p-1.5 text-white/25 opacity-0 transition hover:border-red-400/40 hover:text-red-400 group-hover:opacity-100 focus-visible:opacity-100"
+              className="shrink-0 rounded-md p-1.5 text-white/25 opacity-0 transition hover:border-red-400/40 hover:text-red-400 group-hover:opacity-100 focus-visible:opacity-100"
             >
               <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -284,13 +284,13 @@ export function TaskItem({
               onBlur={commitText}
               onKeyDown={handleTextKeyDown}
               maxLength={200}
-              className="mt-1 w-full min-w-0 rounded border border-[#c6ff4a]/50 bg-white/5 px-2 py-1 text-[15px] font-semibold text-white outline-none"
+              className="mt-1 w-full min-w-0 rounded-md border border-[#c6ff4a]/50 bg-white/5 px-2 py-1 text-[15px] font-semibold text-white outline-none"
             />
           ) : (
             <p
               onClick={startEditingText}
               title="Click to rename"
-              className={`mt-1 cursor-text rounded px-0.5 text-[15px] font-semibold leading-snug transition-colors hover:bg-white/5 ${
+              className={`mt-1 cursor-text rounded-md px-0.5 text-[15px] font-semibold leading-snug transition-colors hover:bg-white/5 ${
                 task.done ? 'text-white/30 line-through' : 'text-white/90'
               }`}
             >

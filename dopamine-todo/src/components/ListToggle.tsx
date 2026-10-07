@@ -27,7 +27,7 @@ export function ListToggle({ active, counts, onChange }: ListToggleProps) {
               <motion.div
                 layoutId="list-toggle-underline"
                 transition={{ type: 'spring', stiffness: 400, damping: 32 }}
-                className="absolute inset-x-0 -bottom-px h-0.5 bg-[#c6ff4a]"
+                className="absolute inset-x-0 -bottom-px h-0.5 rounded-full bg-[#c6ff4a] shadow-[0_0_10px_-1px_#c6ff4a]"
               />
             )}
           </button>

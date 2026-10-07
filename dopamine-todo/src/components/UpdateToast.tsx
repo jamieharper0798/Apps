@@ -15,12 +15,12 @@ export function UpdateToast() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 16 }}
-            className="panel pointer-events-auto flex items-center gap-3 rounded-lg py-2 pl-4 pr-2 text-sm text-white shadow-xl shadow-black/30"
+            className="panel pointer-events-auto flex items-center gap-3 rounded-full py-2 pl-4 pr-2 text-sm text-white shadow-xl shadow-black/30"
           >
             <span>A new version is ready</span>
             <button
               onClick={() => updateServiceWorker(true)}
-              className="rounded border border-[#c6ff4a]/60 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-[#c6ff4a] transition hover:bg-[#c6ff4a]/10"
+              className="rounded-full border border-[#c6ff4a]/60 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-[#c6ff4a] transition hover:bg-[#c6ff4a]/10"
             >
               Refresh
             </button>
