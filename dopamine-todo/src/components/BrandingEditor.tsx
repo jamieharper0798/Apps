@@ -66,7 +66,7 @@ export function BrandingEditor({
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 26 }}
             onClick={(e) => e.stopPropagation()}
-            className="panel w-full max-w-sm rounded-lg p-6"
+            className="panel w-full max-w-sm rounded-2xl p-6"
           >
             <h2 className="font-display text-lg font-bold uppercase tracking-wide text-white">Customize</h2>
             <p className="mt-1 text-xs text-white/40">Make it yours — rename the app and set your own icon.</p>
@@ -74,7 +74,7 @@ export function BrandingEditor({
             <div className="mt-5 flex items-center gap-4">
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="group relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-[#c6ff4a]/40 bg-white/5"
+                className="group relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-[#c6ff4a]/40 bg-white/5"
                 aria-label="Upload icon image"
               >
                 <img src={branding.icon512 ?? DEFAULT_ICON_512} alt="" className="h-full w-full object-cover" />
@@ -86,14 +86,14 @@ export function BrandingEditor({
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
-                  className="rounded border border-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white transition hover:border-white/30 disabled:opacity-50"
+                  className="rounded-lg border border-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white transition hover:border-white/30 disabled:opacity-50"
                 >
                   {uploading ? 'Uploading…' : 'Upload image'}
                 </button>
                 {branding.icon512 && (
                   <button
                     onClick={onResetIcon}
-                    className="rounded px-3 py-1.5 text-xs font-medium text-white/40 transition hover:text-red-400"
+                    className="rounded-lg px-3 py-1.5 text-xs font-medium text-white/40 transition hover:text-red-400"
                   >
                     Remove image
                   </button>
@@ -115,19 +115,19 @@ export function BrandingEditor({
               onChange={(e) => setName(e.target.value)}
               maxLength={24}
               placeholder="JH To Do List"
-              className="mt-1.5 w-full rounded border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#c6ff4a]/50"
+              className="mt-1.5 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/30 outline-none transition focus:border-[#c6ff4a]/50 focus:shadow-[0_0_0_3px_#c6ff4a1a]"
             />
 
             <div className="mt-6 flex justify-end gap-2">
               <button
                 onClick={onClose}
-                className="rounded px-4 py-2 text-sm font-medium uppercase tracking-wide text-white/50 transition hover:text-white"
+                className="rounded-lg px-4 py-2 text-sm font-medium uppercase tracking-wide text-white/50 transition hover:text-white"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
-                className="rounded border border-[#c6ff4a]/60 px-4 py-2 text-sm font-bold uppercase tracking-wide text-[#c6ff4a] transition hover:bg-[#c6ff4a]/10"
+                className="rounded-lg border border-[#c6ff4a]/60 px-4 py-2 text-sm font-bold uppercase tracking-wide text-[#c6ff4a] transition hover:shadow-[0_0_16px_-6px_#c6ff4a] hover:bg-[#c6ff4a]/10"
               >
                 Save
               </button>

@@ -125,17 +125,17 @@ function App() {
         />
       )}
 
-      <header className="border-b border-white/10 pt-[env(safe-area-inset-top)]">
+      <header className="sticky top-0 z-30 border-b border-white/10 bg-[#0a0a0a]/75 pt-[env(safe-area-inset-top)] backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between py-5 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:pl-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))]">
           <button
             onClick={() => setEditingBrand(true)}
-            className="group flex min-w-0 items-center gap-3 rounded py-1 pr-2 transition hover:bg-white/5"
+            className="group flex min-w-0 items-center gap-3 rounded-lg py-1 pr-2 transition hover:bg-white/5"
             title="Customize name and icon"
           >
             <img
               src={branding.icon192 ?? DEFAULT_ICON_192}
               alt=""
-              className="h-9 w-9 shrink-0 rounded-lg border-2 border-[#c6ff4a]/60 object-cover"
+              className="h-9 w-9 shrink-0 rounded-xl border-2 border-[#c6ff4a]/60 object-cover shadow-[0_0_16px_-6px_#c6ff4a99]"
             />
             <h1 className="truncate text-base font-bold uppercase tracking-wide text-white sm:text-lg sm:tracking-widest">{branding.name}</h1>
             <svg
@@ -164,7 +164,7 @@ function App() {
             <InstallButton appName={branding.name} />
             <button
               onClick={() => setMuted((m) => !m)}
-              className="shrink-0 rounded border border-white/15 p-2 text-white/50 transition hover:border-white/30 hover:text-white"
+              className="shrink-0 rounded-lg border border-white/15 p-2 text-white/50 transition hover:border-white/30 hover:text-white"
               aria-label={muted ? 'Unmute sound' : 'Mute sound'}
               title={muted ? 'Unmute' : 'Mute'}
             >
@@ -225,14 +225,14 @@ function App() {
         </main>
 
         <aside className="flex flex-col gap-4 lg:pt-[52px]">
-          <div className="panel rounded-lg p-4">
+          <div className="panel panel-hover rounded-xl p-4">
             <XPBar level={levelInfo.level} xpIntoLevel={levelInfo.xpIntoLevel} xpForNextLevel={levelInfo.xpForNextLevel} />
           </div>
-          <div className="panel flex items-center justify-between gap-3 rounded-lg p-4">
+          <div className="panel panel-hover flex items-center justify-between gap-3 rounded-xl p-4">
             <StreakBadge streak={dopamine.streak} />
             <ProgressRing progress={progress} />
           </div>
-          <div className="panel rounded-lg p-4 text-center">
+          <div className="panel panel-hover rounded-xl p-4 text-center">
             <p className="text-[10px] uppercase tracking-widest text-white/30">All-time cleared</p>
             <p className="mt-1 font-display text-3xl font-bold tabular-nums text-[#c6ff4a]">{dopamine.totalCompleted}</p>
             <p className="mt-1 text-[10px] uppercase tracking-wide text-white/25">

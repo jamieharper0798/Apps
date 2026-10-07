@@ -128,7 +128,7 @@ export function TaskList({
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="panel flex flex-col items-center gap-3 rounded-lg py-16 text-center"
+        className="panel flex flex-col items-center gap-3 rounded-xl py-16 text-center"
       >
         <motion.span
           animate={{ y: [0, -6, 0] }}

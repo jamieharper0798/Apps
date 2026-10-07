@@ -18,7 +18,7 @@ export function InstallButton({ appName }: InstallButtonProps) {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         onClick={() => (canInstall ? promptInstall() : setShowIosHint((v) => !v))}
-        className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded border border-[#c6ff4a]/60 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-[#c6ff4a] transition active:scale-95 hover:bg-[#c6ff4a]/10"
+        className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border border-[#c6ff4a]/60 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-[#c6ff4a] transition hover:shadow-[0_0_16px_-6px_#c6ff4a] active:scale-95 hover:bg-[#c6ff4a]/10"
       >
         <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v13m0 0-4-4m4 4 4-4M5 19h14" />
@@ -33,7 +33,7 @@ export function InstallButton({ appName }: InstallButtonProps) {
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
-            className="panel absolute right-0 top-full z-10 mt-2 w-56 rounded-lg p-3 text-left text-xs normal-case text-white/70"
+            className="panel absolute right-0 top-full z-10 mt-2 w-56 rounded-xl p-3 text-left text-xs normal-case text-white/70"
           >
             Tap the Share icon <span className="text-white">⬆️</span> then{' '}
             <span className="font-semibold text-white">Add to Home Screen</span> to install {appName}.

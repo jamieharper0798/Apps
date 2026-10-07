@@ -35,7 +35,7 @@ export function PriorityPicker({ priority, onChange }: PriorityPickerProps) {
         onClick={() => setOpen((v) => !v)}
         aria-label={`Priority: ${PRIORITY_CODE[priority]}. Click to change.`}
         title={`Priority: ${PRIORITY_CODE[priority]}`}
-        className={`rounded border px-2 py-1 text-[10px] font-bold uppercase tracking-wider transition hover:border-white/40 ${PRIORITY_BADGE_CLASSES[priority]}`}
+        className={`rounded-md border px-2 py-1 text-[10px] font-bold uppercase tracking-wider transition hover:border-white/40 ${PRIORITY_BADGE_CLASSES[priority]}`}
       >
         {PRIORITY_CODE[priority]}
       </button>
@@ -47,14 +47,14 @@ export function PriorityPicker({ priority, onChange }: PriorityPickerProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: -4 }}
             transition={{ type: 'spring', stiffness: 400, damping: 24 }}
-            className="panel absolute right-0 top-full z-20 mt-1.5 flex gap-1 rounded-lg p-1"
+            className="panel absolute right-0 top-full z-20 mt-1.5 flex gap-1 rounded-xl p-1"
           >
             {PRIORITY_ORDER.map((p) => (
               <button
                 key={p}
                 type="button"
                 onClick={() => handlePick(p)}
-                className={`rounded border px-2 py-1 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap transition ${
+                className={`rounded-md border px-2 py-1 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap transition ${
                   p === priority
                     ? PRIORITY_BADGE_CLASSES[p]
                     : 'border-transparent text-white/40 hover:border-white/15 hover:text-white/70'
