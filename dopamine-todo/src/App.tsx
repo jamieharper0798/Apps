@@ -33,6 +33,7 @@ function App() {
     dopamine,
     levelInfo,
     syncing,
+    syncError,
     addTask,
     deleteTask,
     editTask,
@@ -157,6 +158,7 @@ function App() {
               <AccountButton
                 user={user}
                 syncing={syncing}
+                syncError={syncError}
                 onSignInClick={() => setAuthModalOpen(true)}
                 onSignOut={signOutUser}
               />

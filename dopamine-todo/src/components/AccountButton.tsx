@@ -5,11 +5,12 @@ import type { User } from 'firebase/auth';
 interface AccountButtonProps {
   user: User | null;
   syncing: boolean;
+  syncError: boolean;
   onSignInClick: () => void;
   onSignOut: () => void;
 }
 
-export function AccountButton({ user, syncing, onSignInClick, onSignOut }: AccountButtonProps) {
+export function AccountButton({ user, syncing, syncError, onSignInClick, onSignOut }: AccountButtonProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -47,11 +48,19 @@ export function AccountButton({ user, syncing, onSignInClick, onSignOut }: Accou
     <div ref={rootRef} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex shrink-0 items-center gap-1.5 rounded-lg border border-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white/70 transition hover:border-white/30 hover:text-white"
-        title={user.email ?? 'Account'}
+        className={`flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition hover:border-white/30 ${
+          syncError ? 'border-red-400/50 text-red-300' : 'border-white/15 text-white/70 hover:text-white'
+        }`}
+        title={syncError ? 'Sync error — your changes may not be saved. Click for details.' : user.email ?? 'Account'}
       >
-        <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${syncing ? 'animate-pulse bg-amber-400' : 'bg-[#c6ff4a]'}`} />
-        <span className="max-w-[90px] truncate normal-case sm:max-w-[110px]">{user.email}</span>
+        <span
+          className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+            syncError ? 'bg-red-400' : syncing ? 'animate-pulse bg-amber-400' : 'bg-[#c6ff4a]'
+          }`}
+        />
+        <span className="max-w-[90px] truncate normal-case sm:max-w-[110px]">
+          {syncError ? 'Sync error' : user.email}
+        </span>
       </button>
 
       <AnimatePresence>
@@ -63,7 +72,18 @@ export function AccountButton({ user, syncing, onSignInClick, onSignOut }: Accou
             transition={{ type: 'spring', stiffness: 400, damping: 24 }}
             className="panel absolute right-0 top-full z-20 mt-1.5 w-44 rounded-xl p-1"
           >
-            <p className="px-2.5 pb-1.5 pt-1 text-[11px] uppercase tracking-wide text-white/40">{syncing ? 'Syncing…' : 'Synced'}</p>
+            <p className="px-2.5 pb-1.5 pt-1 text-[11px] normal-case text-white/40">
+              {syncError ? (
+                <span className="text-red-300">
+                  Can't reach your synced data right now. Changes made in this state won't be saved — check your
+                  connection and reload.
+                </span>
+              ) : syncing ? (
+                'Syncing…'
+              ) : (
+                `Synced as ${user.email}`
+              )}
+            </p>
             <button
               onClick={() => {
                 setOpen(false);
