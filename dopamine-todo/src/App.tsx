@@ -246,15 +246,15 @@ function App() {
                     className={`flex items-center gap-1 border-b-2 pb-1 text-xs font-semibold uppercase tracking-wide transition ${
                       filter === f.value
                         ? isOverdue
-                          ? 'border-red-400 text-red-400'
+                          ? 'border-danger text-danger'
                           : 'border-accent text-ink'
                         : isOverdue
-                          ? 'border-transparent text-red-400/70 hover:text-red-400'
+                          ? 'border-transparent text-danger/70 hover:text-danger'
                           : 'border-transparent text-ink/35 hover:text-ink/60'
                     }`}
                   >
                     {isOverdue && <span aria-hidden>⚠</span>}
-                    {f.label} <span className={`font-mono tabular-nums ${isOverdue ? 'text-red-400/70' : 'text-ink/25'}`}>· {f.count}</span>
+                    {f.label} <span className={`font-mono tabular-nums ${isOverdue ? 'text-danger/70' : 'text-ink/25'}`}>· {f.count}</span>
                   </button>
                 );
               })}
@@ -264,7 +264,7 @@ function App() {
               {completed > 0 && (
                 <button
                   onClick={() => clearCompleted(activeList)}
-                  className="font-medium uppercase tracking-wide text-ink/40 hover:text-red-400"
+                  className="font-medium uppercase tracking-wide text-ink/40 hover:text-danger"
                 >
                   Clear done
                 </button>

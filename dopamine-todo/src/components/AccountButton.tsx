@@ -49,13 +49,13 @@ export function AccountButton({ user, syncing, syncError, onSignInClick, onSignO
       <button
         onClick={() => setOpen((v) => !v)}
         className={`flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition hover:border-ink/30 ${
-          syncError ? 'border-red-400/50 text-red-300' : 'border-ink/15 text-ink/70 hover:text-ink'
+          syncError ? 'border-danger/50 text-danger' : 'border-ink/15 text-ink/70 hover:text-ink'
         }`}
         title={syncError ? 'Sync error — your changes may not be saved. Click for details.' : user.email ?? 'Account'}
       >
         <span
           className={`h-1.5 w-1.5 shrink-0 rounded-full ${
-            syncError ? 'bg-red-400' : syncing ? 'animate-pulse bg-amber-400' : 'bg-accent'
+            syncError ? 'bg-danger' : syncing ? 'animate-pulse bg-warn' : 'bg-accent'
           }`}
         />
         <span className="max-w-[90px] truncate normal-case sm:max-w-[110px]">
@@ -74,7 +74,7 @@ export function AccountButton({ user, syncing, syncError, onSignInClick, onSignO
           >
             <p className="px-2.5 pb-1.5 pt-1 text-[11px] normal-case text-ink/40">
               {syncError ? (
-                <span className="text-red-300">
+                <span className="text-danger">
                   Can't reach your synced data right now. Changes made in this state won't be saved — check your
                   connection and reload.
                 </span>

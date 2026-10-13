@@ -98,7 +98,7 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
                 />
               </div>
 
-              {error && <p className="text-xs text-red-400">{error}</p>}
+              {error && <p className="text-xs text-danger">{error}</p>}
 
               <button
                 type="submit"

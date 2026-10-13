@@ -6,10 +6,18 @@
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --color-ink: var(--ink);
   --color-accent: var(--accent);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+  --color-warn: var(--warn);
+  --color-prio-low: var(--prio-low);
+  --color-prio-medium: var(--prio-medium);
 }
 
 /* Theme tokens: dark is the default, [data-theme="light"] overrides below.
-   --accent is independent of theme and is user-customizable (see useBranding). */
+   --accent is independent of theme and is user-customizable (see useBranding).
+   --danger/--info/--warn are semantic status colors (overdue, owner tags, sync state) that
+   need darker, more saturated shades on a light surface to stay readable — the plain
+   Tailwind red-400/blue-400 values they replace were tuned for a near-black background. */
 :root {
   color-scheme: dark;
   --accent: #c6ff4a;
@@ -18,6 +26,11 @@
   --panel: #111110;
   --panel-highlight: rgba(255, 255, 255, 0.05);
   --panel-shadow: rgba(0, 0, 0, 0.1);
+  --danger: #f87171;
+  --info: #60a5fa;
+  --warn: #fbbf24;
+  --prio-low: #4cc9f0;
+  --prio-medium: #ffb703;
 }
 
 :root[data-theme="light"] {
@@ -27,6 +40,11 @@
   --panel: #ffffff;
   --panel-highlight: rgba(0, 0, 0, 0.035);
   --panel-shadow: rgba(0, 0, 0, 0.05);
+  --danger: #dc2626;
+  --info: #2563eb;
+  --warn: #b45309;
+  --prio-low: #0e7490;
+  --prio-medium: #b45309;
 }
 
 * {

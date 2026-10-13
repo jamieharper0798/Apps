@@ -4,7 +4,7 @@ import { dayKey } from './gamify';
 export function dueDatePillClasses(dueDate: string | null, done: boolean): string {
   if (!dueDate || done) return 'border-ink/10 text-ink/25';
   const today = dayKey();
-  if (dueDate < today) return 'border-red-400/40 text-red-400';
+  if (dueDate < today) return 'border-danger/40 text-danger';
   if (dueDate === today) return 'border-accent/50 text-accent';
   return 'border-ink/15 text-ink/50';
 }

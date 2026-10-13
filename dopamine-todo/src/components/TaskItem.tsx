@@ -297,7 +297,7 @@ export function TaskItem({
             <button
               onClick={() => onDelete(task.id)}
               aria-label="Delete task"
-              className="shrink-0 rounded-md p-1.5 text-ink/25 opacity-0 transition hover:border-red-400/40 hover:text-red-400 group-hover:opacity-100 focus-visible:opacity-100"
+              className="shrink-0 rounded-md p-1.5 text-ink/25 opacity-0 transition hover:border-danger/40 hover:text-danger group-hover:opacity-100 focus-visible:opacity-100"
             >
               <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />

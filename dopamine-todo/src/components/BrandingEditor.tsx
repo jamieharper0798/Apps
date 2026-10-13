@@ -99,7 +99,7 @@ export function BrandingEditor({
                 {branding.icon512 && (
                   <button
                     onClick={onResetIcon}
-                    className="rounded-lg px-3 py-1.5 text-xs font-medium text-ink/40 transition hover:text-red-400"
+                    className="rounded-lg px-3 py-1.5 text-xs font-medium text-ink/40 transition hover:text-danger"
                   >
                     Remove image
                   </button>
@@ -113,7 +113,7 @@ export function BrandingEditor({
                 className="hidden"
               />
             </div>
-            {error && <p className="mt-2 text-xs text-red-400">{error}</p>}
+            {error && <p className="mt-2 text-xs text-danger">{error}</p>}
 
             <label className="mt-5 block text-xs font-medium uppercase tracking-wide text-ink/40">Accent color</label>
             <div className="mt-1.5 flex flex-wrap items-center gap-2">
