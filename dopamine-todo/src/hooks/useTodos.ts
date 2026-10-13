@@ -37,6 +37,7 @@ export function useTodos() {
         owner: '',
         list,
         dueDate: null,
+        notes: '',
         createdAt: Date.now(),
         completedAt: null,
       };
@@ -87,6 +88,16 @@ export function useTodos() {
       setState((prev) => ({
         ...prev,
         tasks: prev.tasks.map((t) => (t.id === id ? { ...t, dueDate } : t)),
+      }));
+    },
+    [setState],
+  );
+
+  const setNotes = useCallback(
+    (id: string, notes: string) => {
+      setState((prev) => ({
+        ...prev,
+        tasks: prev.tasks.map((t) => (t.id === id ? { ...t, notes: notes.slice(0, 4000) } : t)),
       }));
     },
     [setState],
@@ -186,7 +197,11 @@ export function useTodos() {
   const levelInfo = levelFromTotalXp(state.dopamine.xp);
 
   // Tasks created before per-list support existed have no `list` field — default them to personal.
-  const tasks: Task[] = state.tasks.map((t) => (t.list ? t : { ...t, list: 'personal' }));
+  // Tasks created before notes existed have no `notes` field — default to empty.
+  const tasks: Task[] = state.tasks.map((t) => {
+    if (t.list && t.notes !== undefined) return t;
+    return { ...t, list: t.list ?? 'personal', notes: t.notes ?? '' };
+  });
 
   return {
     tasks,
@@ -201,6 +216,7 @@ export function useTodos() {
     setPriority,
     setOwner,
     setDueDate,
+    setNotes,
     reorderTasks,
     clearCompleted,
   };
