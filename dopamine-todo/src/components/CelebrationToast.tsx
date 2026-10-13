@@ -24,7 +24,7 @@ export function CelebrationToast({ toast }: CelebrationToastProps) {
             className="panel flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white shadow-xl shadow-black/30"
           >
             <span>{toast.message}</span>
-            <span className="rounded-full border border-[#c6ff4a]/60 px-2 py-0.5 text-xs font-bold text-[#c6ff4a]">
+            <span className="rounded-full border border-[#c6ff4a]/60 px-2 py-0.5 font-mono text-xs font-bold text-[#c6ff4a]">
               +{toast.xp} XP
             </span>
           </motion.div>

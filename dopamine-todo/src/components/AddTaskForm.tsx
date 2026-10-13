@@ -27,7 +27,7 @@ export function AddTaskForm({ onAdd, listLabel }: AddTaskFormProps) {
       className="panel flex flex-col gap-3 rounded-xl p-3 ring-1 ring-transparent transition-shadow duration-200 focus-within:shadow-[0_0_0_1px_#c6ff4a66,0_0_24px_-8px_#c6ff4a66] focus-within:ring-[#c6ff4a]/40 sm:flex-row sm:items-center sm:p-2 sm:pl-4"
     >
       <div className="flex min-w-0 flex-1 items-center gap-2">
-        <span className="shrink-0 text-[#c6ff4a]">&gt;</span>
+        <span className="shrink-0 font-mono text-[#c6ff4a]">&gt;</span>
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -43,7 +43,7 @@ export function AddTaskForm({ onAdd, listLabel }: AddTaskFormProps) {
               key={p}
               type="button"
               onClick={() => setPriority(p)}
-              className={`rounded-md px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider transition ${
+              className={`rounded-md px-2.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition ${
                 priority === p ? 'bg-white/10 text-white' : 'text-white/35 hover:text-white/70'
               }`}
               title={PRIORITY_CODE[p]}
