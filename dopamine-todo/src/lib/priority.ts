@@ -30,7 +30,7 @@ export const PRIORITY_BADGE_CLASSES: Record<Priority, string> = {
 
 /** Border + text + glow classes for the big ordinal number badge, color-coded by priority. */
 export const PRIORITY_NUMBER_CLASSES: Record<Priority, string> = {
-  low: 'border-[#4cc9f0] text-[#4cc9f0] shadow-[0_0_26px_-6px_#4cc9f0]',
-  medium: 'border-[#ffb703] text-[#ffb703] shadow-[0_0_26px_-6px_#ffb703]',
+  low: 'border-prio-low text-prio-low shadow-[0_0_26px_-6px_var(--prio-low)]',
+  medium: 'border-prio-medium text-prio-medium shadow-[0_0_26px_-6px_var(--prio-medium)]',
   high: 'border-accent text-accent shadow-[0_0_26px_-6px_var(--accent)]',
 };

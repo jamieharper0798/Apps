@@ -1,7 +1,7 @@
-const JAMIE_SWATCH = 'border-blue-400/40 text-blue-300';
-const OTHER_SWATCH = 'border-red-400/40 text-red-300';
-const JAMIE_AVATAR = 'bg-blue-400/20 text-blue-300';
-const OTHER_AVATAR = 'bg-red-400/20 text-red-300';
+const JAMIE_SWATCH = 'border-info/40 text-info';
+const OTHER_SWATCH = 'border-danger/40 text-danger';
+const JAMIE_AVATAR = 'bg-info/20 text-info';
+const OTHER_AVATAR = 'bg-danger/20 text-danger';
 
 function isJamie(owner: string): boolean {
   return owner.trim().toLowerCase() === 'jamie';
