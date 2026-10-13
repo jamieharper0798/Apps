@@ -64,7 +64,7 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
             onClick={(e) => e.stopPropagation()}
             className="panel w-full max-w-sm rounded-2xl p-6"
           >
-            <h2 className="font-display text-lg font-bold uppercase tracking-wide text-white">
+            <h2 className="font-display text-xl font-bold tracking-tight text-white">
               {mode === 'signin' ? 'Sign in' : 'Create account'}
             </h2>
             <p className="mt-1 text-xs text-white/40">

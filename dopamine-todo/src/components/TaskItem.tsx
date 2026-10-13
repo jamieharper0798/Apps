@@ -190,7 +190,7 @@ export function TaskItem({
         className={`pointer-events-none flex items-center gap-1.5 truncate rounded-md border px-2 py-1 text-[11px] font-medium uppercase tracking-wide ${duePillClasses}`}
       >
         <CalendarIcon />
-        <span className="truncate">{dueDate ? formatDueDate(dueDate) : 'No due'}</span>
+        <span className="truncate font-mono">{dueDate ? formatDueDate(dueDate) : 'No due'}</span>
       </div>
       <input
         type="date"
@@ -214,14 +214,14 @@ export function TaskItem({
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, x: 40, scale: 0.9, transition: { duration: 0.2 } }}
-        transition={{ type: 'spring', stiffness: 300, damping: 26 }}
+        transition={{ type: 'spring', stiffness: 260, damping: 28 }}
         className={`panel panel-hover group relative flex h-full flex-col gap-3 rounded-xl p-4 ${isDragging ? 'opacity-50' : ''}`}
       >
         <div className="flex items-start justify-between gap-2">
           <button
             onClick={() => onToggle(task.id)}
             aria-label={task.done ? 'Mark as not done' : 'Mark as done'}
-            className={`relative flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border-2 font-display text-2xl font-bold transition-all duration-200 sm:h-[72px] sm:w-[72px] sm:text-3xl ${
+            className={`relative flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border-2 font-mono text-2xl font-bold transition-all duration-200 sm:h-[72px] sm:w-[72px] sm:text-3xl ${
               task.done
                 ? 'border-[#c6ff4a] bg-[#c6ff4a] text-[#0a0a0a] shadow-[0_0_28px_-6px_#c6ff4a]'
                 : `bg-white/[0.03] hover:-translate-y-0.5 hover:brightness-125 ${PRIORITY_NUMBER_CLASSES[task.priority]}`
@@ -275,7 +275,7 @@ export function TaskItem({
         </div>
 
         <div>
-          <p className="text-[10px] font-medium uppercase tracking-widest text-white/25">{ordinalWord(index)}</p>
+          <p className="font-mono text-[10px] font-medium uppercase tracking-widest text-white/25">{ordinalWord(index)}</p>
           {editingText ? (
             <input
               ref={textInputRef}

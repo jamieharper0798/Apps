@@ -138,7 +138,7 @@ function App() {
               alt=""
               className="h-9 w-9 shrink-0 rounded-xl border-2 border-[#c6ff4a]/60 object-cover shadow-[0_0_16px_-6px_#c6ff4a99]"
             />
-            <h1 className="truncate text-base font-bold uppercase tracking-wide text-white sm:text-lg sm:tracking-widest">{branding.name}</h1>
+            <h1 className="truncate text-[clamp(1.05rem,3vw,1.25rem)] font-bold tracking-tight text-white">{branding.name}</h1>
             <svg
               viewBox="0 0 24 24"
               className="hidden h-3.5 w-3.5 shrink-0 text-white/0 transition group-hover:text-white/40 sm:block"
@@ -195,12 +195,12 @@ function App() {
                     filter === f.value ? 'border-[#c6ff4a] text-white' : 'border-transparent text-white/35 hover:text-white/60'
                   }`}
                 >
-                  {f.label} <span className="tabular-nums text-white/25">· {f.count}</span>
+                  {f.label} <span className="font-mono tabular-nums text-white/25">· {f.count}</span>
                 </button>
               ))}
             </div>
             <div className="flex items-center gap-3 text-xs text-white/40">
-              <span className="tabular-nums">{activeCount} left</span>
+              <span className="font-mono tabular-nums">{activeCount} left</span>
               {completed > 0 && (
                 <button
                   onClick={() => clearCompleted(activeList)}
@@ -236,7 +236,7 @@ function App() {
           </div>
           <div className="panel panel-hover rounded-xl p-4 text-center">
             <p className="text-[10px] uppercase tracking-widest text-white/30">All-time cleared</p>
-            <p className="mt-1 font-display text-3xl font-bold tabular-nums text-[#c6ff4a]">{dopamine.totalCompleted}</p>
+            <p className="mt-1 font-mono text-3xl font-bold tabular-nums text-[#c6ff4a]">{dopamine.totalCompleted}</p>
             <p className="mt-1 text-[10px] uppercase tracking-wide text-white/25">
               {dopamine.totalCompleted > 0 ? 'keep the streak alive' : 'complete your first task'}
             </p>

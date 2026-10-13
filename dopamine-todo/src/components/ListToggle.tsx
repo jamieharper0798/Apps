@@ -21,7 +21,7 @@ export function ListToggle({ active, counts, onChange }: ListToggleProps) {
             className="relative flex items-center gap-1.5 pb-2.5 text-sm font-semibold uppercase tracking-wide transition"
           >
             <span className={isActive ? 'text-white' : 'text-white/35 hover:text-white/60'}>
-              {meta.label} <span className="tabular-nums text-white/30">· {counts[list] ?? 0}</span>
+              {meta.label} <span className="font-mono tabular-nums text-white/30">· {counts[list] ?? 0}</span>
             </span>
             {isActive && (
               <motion.div

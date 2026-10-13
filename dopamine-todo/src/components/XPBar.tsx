@@ -12,13 +12,13 @@ export function XPBar({ level, xpIntoLevel, xpForNextLevel }: XPBarProps) {
 
   return (
     <div className="relative flex min-w-0 items-center gap-3">
-      <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-[#c6ff4a] font-display text-xl font-bold text-[#c6ff4a] shadow-[0_0_22px_-6px_#c6ff4a]">
+      <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-[#c6ff4a] font-mono text-xl font-bold text-[#c6ff4a] shadow-[0_0_22px_-6px_#c6ff4a]">
         {level}
       </div>
       <div className="min-w-0">
         <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-2">
           <span className="truncate text-sm font-semibold uppercase tracking-wide text-white/90">{levelTitle(level)}</span>
-          <span className="shrink-0 tabular-nums text-[11px] text-white/40">
+          <span className="shrink-0 font-mono tabular-nums text-[11px] text-white/40">
             {xpIntoLevel}/{xpForNextLevel} XP
           </span>
         </div>

@@ -68,7 +68,7 @@ export function BrandingEditor({
             onClick={(e) => e.stopPropagation()}
             className="panel w-full max-w-sm rounded-2xl p-6"
           >
-            <h2 className="font-display text-lg font-bold uppercase tracking-wide text-white">Customize</h2>
+            <h2 className="font-display text-xl font-bold tracking-tight text-white">Customize</h2>
             <p className="mt-1 text-xs text-white/40">Make it yours — rename the app and set your own icon.</p>
 
             <div className="mt-5 flex items-center gap-4">

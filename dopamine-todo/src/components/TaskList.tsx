@@ -78,7 +78,7 @@ function PriorityGroup({
       <div className="flex items-center gap-2 border-b border-white/10 pb-2 text-xs font-semibold uppercase tracking-widest text-white/35">
         <span className={`h-1.5 w-1.5 rounded-full ${PRIORITY_STYLES[priority]}`} />
         {PRIORITY_LABELS[priority]}
-        <span className="font-normal normal-case text-white/20">· {tasks.length}</span>
+        <span className="font-mono font-normal normal-case text-white/20">· {tasks.length}</span>
       </div>
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={ids} strategy={rectSortingStrategy}>
