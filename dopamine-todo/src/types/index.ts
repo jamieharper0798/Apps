@@ -11,6 +11,7 @@ export interface Task {
   list: ListId;
   /** ISO date string 'YYYY-MM-DD', or null if no due date is set. */
   dueDate: string | null;
+  notes: string;
   createdAt: number;
   completedAt: number | null;
 }

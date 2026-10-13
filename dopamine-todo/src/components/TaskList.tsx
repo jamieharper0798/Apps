@@ -26,6 +26,7 @@ interface TaskListProps {
   onDueDateChange: (id: string, dueDate: string | null) => void;
   onPriorityChange: (id: string, priority: Priority) => void;
   onReorder: (orderedIds: string[]) => void;
+  onOpen: (id: string) => void;
 }
 
 const PRIORITY_LABELS: Record<Task['priority'], string> = {
@@ -45,6 +46,7 @@ function PriorityGroup({
   onDueDateChange,
   onPriorityChange,
   onReorder,
+  onOpen,
 }: {
   priority: Priority;
   tasks: Task[];
@@ -56,6 +58,7 @@ function PriorityGroup({
   onDueDateChange: (id: string, dueDate: string | null) => void;
   onPriorityChange: (id: string, priority: Priority) => void;
   onReorder: (orderedIds: string[]) => void;
+  onOpen: (id: string) => void;
 }) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -95,6 +98,7 @@ function PriorityGroup({
                   onOwnerChange={onOwnerChange}
                   onDueDateChange={onDueDateChange}
                   onPriorityChange={onPriorityChange}
+                  onOpen={onOpen}
                 />
               ))}
             </AnimatePresence>
@@ -116,6 +120,7 @@ export function TaskList({
   onDueDateChange,
   onPriorityChange,
   onReorder,
+  onOpen,
 }: TaskListProps) {
   const filtered = tasks.filter((t) => {
     if (filter === 'active') return !t.done;
@@ -174,6 +179,7 @@ export function TaskList({
             onDueDateChange={onDueDateChange}
             onPriorityChange={onPriorityChange}
             onReorder={onReorder}
+            onOpen={onOpen}
           />
         );
       })}

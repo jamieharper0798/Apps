@@ -18,6 +18,7 @@ import { UpdateToast } from './components/UpdateToast';
 import { BrandingEditor } from './components/BrandingEditor';
 import { AccountButton } from './components/AccountButton';
 import { AuthModal } from './components/AuthModal';
+import { TaskDetailModal } from './components/TaskDetailModal';
 import { useBranding } from './hooks/useBranding';
 import { useBrandingMeta } from './hooks/useBrandingMeta';
 import { useAuth } from './hooks/useAuth';
@@ -41,6 +42,7 @@ function App() {
     setPriority,
     setOwner,
     setDueDate,
+    setNotes,
     reorderTasks,
     clearCompleted,
   } = useTodos();
@@ -54,6 +56,7 @@ function App() {
   const [muted, setMuted] = useState(false);
   const [editingBrand, setEditingBrand] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [openTaskId, setOpenTaskId] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => () => {
@@ -64,6 +67,8 @@ function App() {
     (acc, list) => ({ ...acc, [list]: tasks.filter((t) => t.list === list).length }),
     {} as Record<ListId, number>,
   );
+
+  const openTask = tasks.find((t) => t.id === openTaskId) ?? null;
 
   const listTasks = tasks.filter((t) => t.list === activeList);
   const total = listTasks.length;
@@ -125,6 +130,12 @@ function App() {
           onSignUp={signUp}
         />
       )}
+      <TaskDetailModal
+        task={openTask}
+        onClose={() => setOpenTaskId(null)}
+        onEditTitle={editTask}
+        onEditNotes={setNotes}
+      />
 
       <header className="sticky top-0 z-30 border-b border-white/10 bg-[#0a0a0a]/75 pt-[env(safe-area-inset-top)] backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between py-5 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:pl-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))]">
@@ -223,6 +234,7 @@ function App() {
             onDueDateChange={setDueDate}
             onPriorityChange={setPriority}
             onReorder={reorderTasks}
+            onOpen={setOpenTaskId}
           />
         </main>
 

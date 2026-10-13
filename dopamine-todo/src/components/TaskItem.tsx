@@ -24,6 +24,15 @@ function GripIcon() {
   );
 }
 
+function NoteIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M14 3v5h5M9 13h6M9 17h6" />
+    </svg>
+  );
+}
+
 interface TaskItemProps {
   task: Task;
   index: number;
@@ -33,6 +42,7 @@ interface TaskItemProps {
   onOwnerChange: (id: string, owner: string) => void;
   onDueDateChange: (id: string, dueDate: string | null) => void;
   onPriorityChange: (id: string, priority: Priority) => void;
+  onOpen: (id: string) => void;
 }
 
 function CalendarIcon() {
@@ -53,6 +63,7 @@ export function TaskItem({
   onOwnerChange,
   onDueDateChange,
   onPriorityChange,
+  onOpen,
 }: TaskItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition: dndTransition, isDragging } = useSortable({
     id: task.id,
@@ -260,6 +271,19 @@ export function TaskItem({
               className="shrink-0 cursor-grab rounded-md p-1.5 text-white/25 transition hover:text-white/60 active:cursor-grabbing"
             >
               <GripIcon />
+            </button>
+            <button
+              onClick={() => onOpen(task.id)}
+              aria-label={task.notes ? 'View notes' : 'Add notes'}
+              title={task.notes ? 'View notes' : 'Add notes'}
+              className={`relative shrink-0 rounded-md p-1.5 transition hover:text-white/60 ${
+                task.notes ? 'text-[#c6ff4a]' : 'text-white/25'
+              }`}
+            >
+              <NoteIcon />
+              {task.notes && (
+                <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-[#c6ff4a] shadow-[0_0_6px_-1px_#c6ff4a]" />
+              )}
             </button>
             <PriorityPicker priority={task.priority} onChange={(p) => onPriorityChange(task.id, p)} />
             <button
