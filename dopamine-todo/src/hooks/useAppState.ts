@@ -16,14 +16,17 @@ export function useAppState(initial: AppState) {
   const cloud = useCloudState<AppState>(user?.uid ?? null, 'todoApps', initial);
 
   useEffect(() => {
-    if (!user || !cloud.ready || cloud.exists) return;
+    // A failed read must never be treated as "no cloud doc yet" — that would overwrite real
+    // cloud data with empty/local state. Only seed when we've confirmed, error-free, that
+    // nothing exists for this account.
+    if (!user || !cloud.ready || cloud.exists || cloud.errored) return;
     cloud.setValue(localState);
     // Seed once per sign-in, when the cloud doc doesn't exist yet — not on every localState change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, cloud.ready, cloud.exists]);
+  }, [user, cloud.ready, cloud.exists, cloud.errored]);
 
   if (user) {
-    return [cloud.value, cloud.setValue, { syncing: !cloud.ready }] as const;
+    return [cloud.value, cloud.setValue, { syncing: !cloud.ready, syncError: cloud.errored }] as const;
   }
-  return [localState, setLocalState, { syncing: false }] as const;
+  return [localState, setLocalState, { syncing: false, syncError: false }] as const;
 }

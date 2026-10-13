@@ -23,7 +23,7 @@ export interface CompleteResult {
 }
 
 export function useTodos() {
-  const [state, setState, { syncing }] = useAppState(INITIAL_STATE);
+  const [state, setState, { syncing, syncError }] = useAppState(INITIAL_STATE);
 
   const addTask = useCallback(
     (text: string, priority: Priority, list: ListId) => {
@@ -193,6 +193,7 @@ export function useTodos() {
     dopamine: state.dopamine,
     levelInfo,
     syncing,
+    syncError,
     addTask,
     deleteTask,
     editTask,
