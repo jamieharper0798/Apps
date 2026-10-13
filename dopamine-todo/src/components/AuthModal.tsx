@@ -64,10 +64,10 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
             onClick={(e) => e.stopPropagation()}
             className="panel w-full max-w-sm rounded-2xl p-6"
           >
-            <h2 className="font-display text-xl font-bold tracking-tight text-white">
+            <h2 className="font-display text-xl font-bold tracking-tight text-ink">
               {mode === 'signin' ? 'Sign in' : 'Create account'}
             </h2>
-            <p className="mt-1 text-xs text-white/40">
+            <p className="mt-1 text-xs text-ink/40">
               {mode === 'signin'
                 ? 'Sign in to sync your to-do list across devices.'
                 : 'Create an account to sync your to-do list across devices.'}
@@ -75,18 +75,18 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
 
             <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-3">
               <div>
-                <label className="block text-xs font-medium uppercase tracking-wide text-white/40">Email</label>
+                <label className="block text-xs font-medium uppercase tracking-wide text-ink/40">Email</label>
                 <input
                   type="email"
                   required
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1.5 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none transition focus:border-[#c6ff4a]/50 focus:shadow-[0_0_0_3px_#c6ff4a1a]"
+                  className="mt-1.5 w-full rounded-lg border border-ink/10 bg-ink/5 px-3 py-2 text-sm text-ink outline-none transition focus:border-accent/50 focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--accent)_10%,transparent)]"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium uppercase tracking-wide text-white/40">Password</label>
+                <label className="block text-xs font-medium uppercase tracking-wide text-ink/40">Password</label>
                 <input
                   type="password"
                   required
@@ -94,7 +94,7 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
                   autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1.5 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none transition focus:border-[#c6ff4a]/50 focus:shadow-[0_0_0_3px_#c6ff4a1a]"
+                  className="mt-1.5 w-full rounded-lg border border-ink/10 bg-ink/5 px-3 py-2 text-sm text-ink outline-none transition focus:border-accent/50 focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--accent)_10%,transparent)]"
                 />
               </div>
 
@@ -103,7 +103,7 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
               <button
                 type="submit"
                 disabled={submitting}
-                className="mt-1 rounded-lg border border-[#c6ff4a]/60 px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-[#c6ff4a] transition hover:shadow-[0_0_16px_-6px_#c6ff4a] hover:bg-[#c6ff4a]/10 disabled:opacity-50 disabled:hover:shadow-none"
+                className="mt-1 rounded-lg border border-accent/60 px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-accent transition hover:shadow-[0_0_16px_-6px_var(--accent)] hover:bg-accent/10 disabled:opacity-50 disabled:hover:shadow-none"
               >
                 {submitting ? 'Please wait…' : mode === 'signin' ? 'Sign in' : 'Create account'}
               </button>
@@ -114,14 +114,14 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
                 setMode((m) => (m === 'signin' ? 'signup' : 'signin'));
                 setError(null);
               }}
-              className="mt-4 w-full text-center text-xs font-medium text-white/40 hover:text-white"
+              className="mt-4 w-full text-center text-xs font-medium text-ink/40 hover:text-ink"
             >
               {mode === 'signin' ? "Don't have an account? Create one" : 'Already have an account? Sign in'}
             </button>
 
             <button
               onClick={handleClose}
-              className="mt-4 w-full text-center text-xs font-medium uppercase tracking-wide text-white/25 hover:text-white/50"
+              className="mt-4 w-full text-center text-xs font-medium uppercase tracking-wide text-ink/25 hover:text-ink/50"
             >
               Cancel
             </button>

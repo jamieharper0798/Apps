@@ -10,7 +10,7 @@ interface ListToggleProps {
 
 export function ListToggle({ active, counts, onChange }: ListToggleProps) {
   return (
-    <div className="flex items-center gap-6 border-b border-white/10">
+    <div className="flex items-center gap-6 border-b border-ink/10">
       {LIST_ORDER.map((list) => {
         const meta = LIST_META[list];
         const isActive = list === active;
@@ -20,14 +20,14 @@ export function ListToggle({ active, counts, onChange }: ListToggleProps) {
             onClick={() => onChange(list)}
             className="relative flex items-center gap-1.5 pb-2.5 text-sm font-semibold uppercase tracking-wide transition"
           >
-            <span className={isActive ? 'text-white' : 'text-white/35 hover:text-white/60'}>
-              {meta.label} <span className="font-mono tabular-nums text-white/30">· {counts[list] ?? 0}</span>
+            <span className={isActive ? 'text-ink' : 'text-ink/35 hover:text-ink/60'}>
+              {meta.label} <span className="font-mono tabular-nums text-ink/30">· {counts[list] ?? 0}</span>
             </span>
             {isActive && (
               <motion.div
                 layoutId="list-toggle-underline"
                 transition={{ type: 'spring', stiffness: 400, damping: 32 }}
-                className="absolute inset-x-0 -bottom-px h-0.5 rounded-full bg-[#c6ff4a] shadow-[0_0_10px_-1px_#c6ff4a]"
+                className="absolute inset-x-0 -bottom-px h-0.5 rounded-full bg-accent shadow-[0_0_10px_-1px_var(--accent)]"
               />
             )}
           </button>

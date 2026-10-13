@@ -12,19 +12,19 @@ export function XPBar({ level, xpIntoLevel, xpForNextLevel }: XPBarProps) {
 
   return (
     <div className="relative flex min-w-0 items-center gap-3">
-      <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-[#c6ff4a] font-mono text-xl font-bold text-[#c6ff4a] shadow-[0_0_22px_-6px_#c6ff4a]">
+      <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-accent font-mono text-xl font-bold text-accent shadow-[0_0_22px_-6px_var(--accent)]">
         {level}
       </div>
       <div className="min-w-0">
         <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-2">
-          <span className="truncate text-sm font-semibold uppercase tracking-wide text-white/90">{levelTitle(level)}</span>
-          <span className="shrink-0 font-mono tabular-nums text-[11px] text-white/40">
+          <span className="truncate text-sm font-semibold uppercase tracking-wide text-ink/90">{levelTitle(level)}</span>
+          <span className="shrink-0 font-mono tabular-nums text-[11px] text-ink/40">
             {xpIntoLevel}/{xpForNextLevel} XP
           </span>
         </div>
-        <div className="relative mt-1.5 h-1.5 w-40 overflow-hidden rounded-full bg-white/10 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] sm:w-56">
+        <div className="relative mt-1.5 h-1.5 w-40 overflow-hidden rounded-full bg-ink/10 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] sm:w-56">
           <motion.div
-            className="relative h-full overflow-hidden rounded-full bg-[#c6ff4a] shadow-[0_0_10px_-1px_#c6ff4a]"
+            className="relative h-full overflow-hidden rounded-full bg-accent shadow-[0_0_10px_-1px_var(--accent)]"
             animate={{ width: `${pct * 100}%` }}
             transition={{ type: 'spring', stiffness: 120, damping: 20 }}
           >

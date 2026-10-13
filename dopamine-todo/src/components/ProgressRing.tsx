@@ -26,7 +26,7 @@ export function ProgressRing({ progress, size = 64, stroke = 6 }: ProgressRingPr
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#c6ff4a"
+          stroke="var(--accent)"
           strokeWidth={stroke}
           strokeLinecap="round"
           strokeDasharray={circumference}
@@ -37,7 +37,7 @@ export function ProgressRing({ progress, size = 64, stroke = 6 }: ProgressRingPr
           }}
         />
       </svg>
-      <div className="absolute inset-0 flex items-center justify-center font-mono text-xs font-semibold tabular-nums text-white/80">
+      <div className="absolute inset-0 flex items-center justify-center font-mono text-xs font-semibold tabular-nums text-ink/80">
         {Math.round(clamped * 100)}%
       </div>
     </div>

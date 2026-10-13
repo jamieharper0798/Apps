@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
-import type { AppState, ListId, Priority, Task } from '../types';
+import type { AppState, ListId, Priority, Repeat, Task } from '../types';
 import { useAppState } from './useAppState';
 import { XP_BY_PRIORITY, dayKey, isYesterday, levelFromTotalXp } from '../lib/gamify';
+import { nextDueDate } from '../lib/repeat';
 
 const INITIAL_STATE: AppState = {
   tasks: [],
@@ -38,6 +39,7 @@ export function useTodos() {
         list,
         dueDate: null,
         notes: '',
+        repeat: 'none',
         createdAt: Date.now(),
         completedAt: null,
       };
@@ -49,6 +51,19 @@ export function useTodos() {
   const deleteTask = useCallback(
     (id: string) => {
       setState((prev) => ({ ...prev, tasks: prev.tasks.filter((t) => t.id !== id) }));
+    },
+    [setState],
+  );
+
+  /** Re-inserts a deleted task at its original position, for an "undo delete" action. */
+  const restoreTask = useCallback(
+    (task: Task, index: number) => {
+      setState((prev) => {
+        if (prev.tasks.some((t) => t.id === task.id)) return prev;
+        const tasks = [...prev.tasks];
+        tasks.splice(Math.min(index, tasks.length), 0, task);
+        return { ...prev, tasks };
+      });
     },
     [setState],
   );
@@ -98,6 +113,16 @@ export function useTodos() {
       setState((prev) => ({
         ...prev,
         tasks: prev.tasks.map((t) => (t.id === id ? { ...t, notes: notes.slice(0, 4000) } : t)),
+      }));
+    },
+    [setState],
+  );
+
+  const setRepeat = useCallback(
+    (id: string, repeat: Repeat) => {
+      setState((prev) => ({
+        ...prev,
+        tasks: prev.tasks.map((t) => (t.id === id ? { ...t, repeat } : t)),
       }));
     },
     [setState],
@@ -164,14 +189,19 @@ export function useTodos() {
       }
 
       const newLevelInfo = levelFromTotalXp(newXp);
+      const isRecurring = nowCompleting && target.repeat !== 'none';
 
       setState((prev) => ({
         ...prev,
-        tasks: prev.tasks.map((t) =>
-          t.id === id
-            ? { ...t, done: nowCompleting, completedAt: nowCompleting ? Date.now() : null }
-            : t,
-        ),
+        tasks: prev.tasks.map((t) => {
+          if (t.id !== id) return t;
+          if (isRecurring) {
+            // Recurring tasks grant XP/streak like any completion, but immediately roll
+            // forward to their next occurrence instead of sitting in the Done list.
+            return { ...t, done: false, completedAt: Date.now(), dueDate: nextDueDate(t.repeat, t.dueDate) };
+          }
+          return { ...t, done: nowCompleting, completedAt: nowCompleting ? Date.now() : null };
+        }),
         dopamine: {
           xp: newXp,
           level: newLevelInfo.level,
@@ -197,10 +227,10 @@ export function useTodos() {
   const levelInfo = levelFromTotalXp(state.dopamine.xp);
 
   // Tasks created before per-list support existed have no `list` field — default them to personal.
-  // Tasks created before notes existed have no `notes` field — default to empty.
+  // Tasks created before notes/repeat existed have no `notes`/`repeat` field — default them.
   const tasks: Task[] = state.tasks.map((t) => {
-    if (t.list && t.notes !== undefined) return t;
-    return { ...t, list: t.list ?? 'personal', notes: t.notes ?? '' };
+    if (t.list && t.notes !== undefined && t.repeat !== undefined) return t;
+    return { ...t, list: t.list ?? 'personal', notes: t.notes ?? '', repeat: t.repeat ?? 'none' };
   });
 
   return {
@@ -211,12 +241,14 @@ export function useTodos() {
     syncError,
     addTask,
     deleteTask,
+    restoreTask,
     editTask,
     toggleTask,
     setPriority,
     setOwner,
     setDueDate,
     setNotes,
+    setRepeat,
     reorderTasks,
     clearCompleted,
   };

@@ -21,10 +21,10 @@ export function CelebrationToast({ toast }: CelebrationToastProps) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -16, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 350, damping: 22 }}
-            className="panel flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white shadow-xl shadow-black/30"
+            className="panel flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-ink shadow-xl shadow-black/30"
           >
             <span>{toast.message}</span>
-            <span className="rounded-full border border-[#c6ff4a]/60 px-2 py-0.5 font-mono text-xs font-bold text-[#c6ff4a]">
+            <span className="rounded-full border border-accent/60 px-2 py-0.5 font-mono text-xs font-bold text-accent">
               +{toast.xp} XP
             </span>
           </motion.div>

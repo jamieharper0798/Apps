@@ -10,6 +10,7 @@ const APP_DESCRIPTION =
 export function useBrandingMeta(branding: Branding) {
   useEffect(() => {
     document.title = `${branding.name} — ${APP_TAGLINE}`;
+    document.documentElement.style.setProperty('--accent', branding.accentColor ?? '#c6ff4a');
 
     let faviconLink = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
     if (!faviconLink) {
