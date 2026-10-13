@@ -13,7 +13,7 @@ export function StreakBadge({ streak }: StreakBadgeProps) {
       animate={{ scale: 1, opacity: 1 }}
       transition={{ type: 'spring', stiffness: 260, damping: 14 }}
       className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-semibold ${
-        active ? 'border-[#c6ff4a]/50 bg-[#c6ff4a]/[0.05] text-[#c6ff4a] shadow-[0_0_18px_-8px_#c6ff4a]' : 'border-white/10 text-white/40'
+        active ? 'border-accent/50 bg-accent/[0.05] text-accent shadow-[0_0_18px_-8px_var(--accent)]' : 'border-ink/10 text-ink/40'
       }`}
       title="Daily streak"
     >

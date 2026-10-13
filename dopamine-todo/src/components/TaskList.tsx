@@ -12,8 +12,9 @@ import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates, arra
 import type { Priority, Task } from '../types';
 import { TaskItem } from './TaskItem';
 import { PRIORITY_ORDER, PRIORITY_STYLES } from '../lib/priority';
+import { dayKey } from '../lib/gamify';
 
-export type Filter = 'all' | 'active' | 'done';
+export type Filter = 'all' | 'active' | 'done' | 'overdue';
 
 interface TaskListProps {
   tasks: Task[];
@@ -78,10 +79,10 @@ function PriorityGroup({
 
   return (
     <section className="flex flex-col gap-3">
-      <div className="flex items-center gap-2 border-b border-white/10 pb-2 text-xs font-semibold uppercase tracking-widest text-white/35">
+      <div className="flex items-center gap-2 border-b border-ink/10 pb-2 text-xs font-semibold uppercase tracking-widest text-ink/35">
         <span className={`h-1.5 w-1.5 rounded-full ${PRIORITY_STYLES[priority]}`} />
         {PRIORITY_LABELS[priority]}
-        <span className="font-mono font-normal normal-case text-white/20">· {tasks.length}</span>
+        <span className="font-mono font-normal normal-case text-ink/20">· {tasks.length}</span>
       </div>
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={ids} strategy={rectSortingStrategy}>
@@ -122,9 +123,11 @@ export function TaskList({
   onReorder,
   onOpen,
 }: TaskListProps) {
+  const today = dayKey();
   const filtered = tasks.filter((t) => {
     if (filter === 'active') return !t.done;
     if (filter === 'done') return t.done;
+    if (filter === 'overdue') return !t.done && !!t.dueDate && t.dueDate < today;
     return true;
   });
 
@@ -140,15 +143,23 @@ export function TaskList({
           transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
           className="text-5xl"
         >
-          {filter === 'done' ? '🏁' : '✨'}
+          {filter === 'done' ? '🏁' : filter === 'overdue' ? '🎉' : '✨'}
         </motion.span>
-        <p className="font-display text-lg font-medium text-white/70">
-          {filter === 'done' ? 'Nothing completed yet' : filter === 'active' ? "You're all caught up" : `No ${listLabel.toLowerCase()} tasks yet`}
+        <p className="font-display text-lg font-medium text-ink/70">
+          {filter === 'done'
+            ? 'Nothing completed yet'
+            : filter === 'overdue'
+              ? 'Nothing overdue'
+              : filter === 'active'
+                ? "You're all caught up"
+                : `No ${listLabel.toLowerCase()} tasks yet`}
         </p>
-        <p className="max-w-xs text-sm text-white/35">
-          {filter === 'active'
-            ? 'Add a new task above and start earning XP.'
-            : 'Add your first task and feel the momentum build.'}
+        <p className="max-w-xs text-sm text-ink/35">
+          {filter === 'overdue'
+            ? "You're on top of your due dates."
+            : filter === 'active'
+              ? 'Add a new task above and start earning XP.'
+              : 'Add your first task and feel the momentum build.'}
         </p>
       </motion.div>
     );

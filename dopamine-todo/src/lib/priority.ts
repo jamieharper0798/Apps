@@ -1,9 +1,9 @@
 import type { Priority } from '../types';
 
 export const PRIORITY_STYLES: Record<Priority, string> = {
-  low: 'bg-white/25',
-  medium: 'bg-white/60',
-  high: 'bg-[#c6ff4a]',
+  low: 'bg-ink/25',
+  medium: 'bg-ink/60',
+  high: 'bg-accent',
 };
 
 export const PRIORITY_ORDER: Priority[] = ['high', 'medium', 'low'];
@@ -23,21 +23,14 @@ export const PRIORITY_CODE: Record<Priority, string> = {
 
 /** Outlined badge classes — high priority gets the accent treatment, the rest stay neutral. */
 export const PRIORITY_BADGE_CLASSES: Record<Priority, string> = {
-  low: 'border-white/15 text-white/40 bg-white/[0.02]',
-  medium: 'border-white/30 text-white/70 bg-white/[0.02]',
-  high: 'border-[#c6ff4a]/60 text-[#c6ff4a] bg-[#c6ff4a]/[0.06]',
-};
-
-/** Neon hex per priority, used for the big glowing ordinal badge on each card. */
-export const PRIORITY_NEON: Record<Priority, string> = {
-  low: '#4cc9f0',
-  medium: '#ffb703',
-  high: '#c6ff4a',
+  low: 'border-ink/15 text-ink/40 bg-ink/[0.02]',
+  medium: 'border-ink/30 text-ink/70 bg-ink/[0.02]',
+  high: 'border-accent/60 text-accent bg-accent/[0.06]',
 };
 
 /** Border + text + glow classes for the big ordinal number badge, color-coded by priority. */
 export const PRIORITY_NUMBER_CLASSES: Record<Priority, string> = {
   low: 'border-[#4cc9f0] text-[#4cc9f0] shadow-[0_0_26px_-6px_#4cc9f0]',
   medium: 'border-[#ffb703] text-[#ffb703] shadow-[0_0_26px_-6px_#ffb703]',
-  high: 'border-[#c6ff4a] text-[#c6ff4a] shadow-[0_0_26px_-6px_#c6ff4a]',
+  high: 'border-accent text-accent shadow-[0_0_26px_-6px_var(--accent)]',
 };

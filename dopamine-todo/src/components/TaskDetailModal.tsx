@@ -1,18 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import type { Task } from '../types';
+import type { Repeat, Task } from '../types';
 import { dueDatePillClasses } from '../lib/dueDate';
 import { formatDueDate } from '../lib/formatDueDate';
 import { ownerSwatchClasses, ownerAvatarClasses } from '../lib/ownerColor';
 import { PRIORITY_BADGE_CLASSES, PRIORITY_CODE } from '../lib/priority';
 import { LIST_META } from '../lib/lists';
+import { REPEAT_ORDER, REPEAT_CODE } from '../lib/repeat';
 
 interface TaskDetailModalProps {
   task: Task | null;
   onClose: () => void;
   onEditTitle: (id: string, text: string) => void;
   onEditNotes: (id: string, notes: string) => void;
+  onRepeatChange: (id: string, repeat: Repeat) => void;
 }
 
 function CalendarIcon() {
@@ -24,7 +26,7 @@ function CalendarIcon() {
   );
 }
 
-export function TaskDetailModal({ task, onClose, onEditTitle, onEditNotes }: TaskDetailModalProps) {
+export function TaskDetailModal({ task, onClose, onEditTitle, onEditNotes, onRepeatChange }: TaskDetailModalProps) {
   const [titleDraft, setTitleDraft] = useState('');
   const [notesDraft, setNotesDraft] = useState('');
   const titleRef = useRef<HTMLInputElement>(null);
@@ -102,12 +104,12 @@ export function TaskDetailModal({ task, onClose, onEditTitle, onEditNotes }: Tas
                 onBlur={commitTitle}
                 onKeyDown={handleTitleKeyDown}
                 maxLength={200}
-                className="-mx-2 -my-1 min-w-0 flex-1 rounded-lg bg-transparent px-2 py-1 text-xl font-bold text-white outline-none transition focus:bg-white/5"
+                className="-mx-2 -my-1 min-w-0 flex-1 rounded-lg bg-transparent px-2 py-1 text-xl font-bold text-ink outline-none transition focus:bg-ink/5"
               />
               <button
                 onClick={handleClose}
                 aria-label="Close"
-                className="shrink-0 rounded-lg p-1.5 text-white/40 transition hover:bg-white/10 hover:text-white"
+                className="shrink-0 rounded-lg p-1.5 text-ink/40 transition hover:bg-ink/10 hover:text-ink"
               >
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -119,7 +121,7 @@ export function TaskDetailModal({ task, onClose, onEditTitle, onEditNotes }: Tas
               <span className={`rounded-md border px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider ${PRIORITY_BADGE_CLASSES[task.priority]}`}>
                 {PRIORITY_CODE[task.priority]}
               </span>
-              <span className="rounded-md border border-white/10 px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-white/40">
+              <span className="rounded-md border border-ink/10 px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-ink/40">
                 {LIST_META[task.list].label}
               </span>
               {owner && (
@@ -138,7 +140,23 @@ export function TaskDetailModal({ task, onClose, onEditTitle, onEditNotes }: Tas
               )}
             </div>
 
-            <label className="mt-5 block text-xs font-medium uppercase tracking-wide text-white/40">Notes</label>
+            <label className="mt-5 block text-xs font-medium uppercase tracking-wide text-ink/40">Repeat</label>
+            <div className="mt-1.5 flex gap-1 rounded-lg border border-ink/10 p-1">
+              {REPEAT_ORDER.map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => onRepeatChange(task.id, r)}
+                  className={`flex-1 rounded-md px-2.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition ${
+                    task.repeat === r ? 'bg-ink/10 text-ink' : 'text-ink/35 hover:text-ink/70'
+                  }`}
+                >
+                  {REPEAT_CODE[r]}
+                </button>
+              ))}
+            </div>
+
+            <label className="mt-5 block text-xs font-medium uppercase tracking-wide text-ink/40">Notes</label>
             <textarea
               value={notesDraft}
               onChange={(e) => setNotesDraft(e.target.value)}
@@ -146,13 +164,13 @@ export function TaskDetailModal({ task, onClose, onEditTitle, onEditNotes }: Tas
               maxLength={4000}
               rows={8}
               placeholder="Add notes, links, or context for this task…"
-              className="mt-1.5 w-full resize-y rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm leading-relaxed text-white placeholder-white/30 outline-none transition focus:border-[#c6ff4a]/50 focus:shadow-[0_0_0_3px_#c6ff4a1a]"
+              className="mt-1.5 w-full resize-y rounded-lg border border-ink/10 bg-ink/5 px-3 py-2.5 text-sm leading-relaxed text-ink placeholder-ink/30 outline-none transition focus:border-accent/50 focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--accent)_10%,transparent)]"
             />
 
             <div className="mt-5 flex justify-end">
               <button
                 onClick={handleClose}
-                className="rounded-lg border border-[#c6ff4a]/60 px-4 py-2 text-sm font-bold uppercase tracking-wide text-[#c6ff4a] transition hover:bg-[#c6ff4a]/10 hover:shadow-[0_0_16px_-6px_#c6ff4a]"
+                className="rounded-lg border border-accent/60 px-4 py-2 text-sm font-bold uppercase tracking-wide text-accent transition hover:bg-accent/10 hover:shadow-[0_0_16px_-6px_var(--accent)]"
               >
                 Done
               </button>

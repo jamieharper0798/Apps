@@ -7,6 +7,7 @@ export const DEFAULT_BRANDING: Branding = {
   name: 'JH To Do List',
   icon192: null,
   icon512: null,
+  accentColor: null,
 };
 
 const MAX_NAME_LENGTH = 24;
@@ -35,9 +36,16 @@ export function useBranding() {
     setBranding((prev) => ({ ...prev, icon192: null, icon512: null }));
   }, [setBranding]);
 
+  const setAccentColor = useCallback(
+    (color: string | null) => {
+      setBranding((prev) => ({ ...prev, accentColor: color }));
+    },
+    [setBranding],
+  );
+
   const reset = useCallback(() => {
     setBranding(DEFAULT_BRANDING);
   }, [setBranding]);
 
-  return { branding, setName, setIconFromFile, resetIcon, reset };
+  return { branding, setName, setIconFromFile, resetIcon, setAccentColor, reset };
 }

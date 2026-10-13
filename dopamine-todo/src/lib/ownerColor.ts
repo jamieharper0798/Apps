@@ -15,6 +15,6 @@ export function ownerSwatchClasses(owner: string): string {
 
 /** Small avatar-circle color for an owner's initial. */
 export function ownerAvatarClasses(owner: string): string {
-  if (!owner.trim()) return 'bg-white/10 text-white/40';
+  if (!owner.trim()) return 'bg-ink/10 text-ink/40';
   return isJamie(owner) ? JAMIE_AVATAR : OTHER_AVATAR;
 }

@@ -15,6 +15,8 @@ import type { ToastData } from './components/CelebrationToast';
 import { LevelUpOverlay } from './components/LevelUpOverlay';
 import { InstallButton } from './components/InstallButton';
 import { UpdateToast } from './components/UpdateToast';
+import { UndoToast } from './components/UndoToast';
+import type { UndoData } from './components/UndoToast';
 import { BrandingEditor } from './components/BrandingEditor';
 import { AccountButton } from './components/AccountButton';
 import { AuthModal } from './components/AuthModal';
@@ -22,11 +24,12 @@ import { TaskDetailModal } from './components/TaskDetailModal';
 import { useBranding } from './hooks/useBranding';
 import { useBrandingMeta } from './hooks/useBrandingMeta';
 import { useAuth } from './hooks/useAuth';
+import { useTheme } from './hooks/useTheme';
 import { isFirebaseConfigured } from './lib/firebase';
 import { DEFAULT_ICON_192 } from './lib/icons';
 import { burstConfetti, burstLevelUp } from './lib/celebrate';
 import { playComplete, playDelete, playLevelUp } from './lib/sound';
-import { randomHype } from './lib/gamify';
+import { randomHype, dayKey } from './lib/gamify';
 
 function App() {
   const {
@@ -37,18 +40,21 @@ function App() {
     syncError,
     addTask,
     deleteTask,
+    restoreTask,
     editTask,
     toggleTask,
     setPriority,
     setOwner,
     setDueDate,
     setNotes,
+    setRepeat,
     reorderTasks,
     clearCompleted,
   } = useTodos();
-  const { branding, setName, setIconFromFile, resetIcon } = useBranding();
+  const { branding, setName, setIconFromFile, resetIcon, setAccentColor } = useBranding();
   useBrandingMeta(branding);
   const { user, signIn, signUp, signOutUser } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [activeList, setActiveList] = useLocalStorage<ListId>('dopamine-todo:activeList', 'personal');
   const [filter, setFilter] = useState<Filter>('all');
   const [toast, setToast] = useState<ToastData | null>(null);
@@ -57,10 +63,13 @@ function App() {
   const [editingBrand, setEditingBrand] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
+  const [undo, setUndo] = useState<(UndoData & { task: (typeof tasks)[number]; index: number }) | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const undoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => () => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
+    if (undoTimer.current) clearTimeout(undoTimer.current);
   }, []);
 
   const listCounts = LIST_ORDER.reduce(
@@ -75,6 +84,8 @@ function App() {
   const completed = listTasks.filter((t) => t.done).length;
   const progress = total === 0 ? 0 : completed / total;
   const activeCount = total - completed;
+  const today = dayKey();
+  const overdueCount = listTasks.filter((t) => !t.done && t.dueDate && t.dueDate < today).length;
 
   const handleToggle = (id: string) => {
     const result = toggleTask(id);
@@ -99,21 +110,39 @@ function App() {
   };
 
   const handleDelete = (id: string) => {
+    const index = tasks.findIndex((t) => t.id === id);
+    const task = tasks[index];
+    if (!task) return;
+
     if (!muted) playDelete();
     deleteTask(id);
+
+    const label = task.text.length > 40 ? `${task.text.slice(0, 40)}…` : task.text;
+    setUndo({ id: Date.now(), message: `Deleted "${label}"`, task, index });
+    if (undoTimer.current) clearTimeout(undoTimer.current);
+    undoTimer.current = setTimeout(() => setUndo(null), 6000);
+  };
+
+  const handleUndo = () => {
+    if (!undo) return;
+    restoreTask(undo.task, undo.index);
+    setUndo(null);
+    if (undoTimer.current) clearTimeout(undoTimer.current);
   };
 
   const FILTERS: { value: Filter; label: string; count: number }[] = [
     { value: 'all', label: 'All', count: total },
     { value: 'active', label: 'Active', count: activeCount },
     { value: 'done', label: 'Done', count: completed },
+    ...(overdueCount > 0 ? [{ value: 'overdue' as Filter, label: 'Overdue', count: overdueCount }] : []),
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-[var(--surface)]">
       <CelebrationToast toast={toast} />
       <LevelUpOverlay level={levelUp} onClose={() => setLevelUp(null)} />
       <UpdateToast />
+      <UndoToast undo={undo} onUndo={handleUndo} />
       <BrandingEditor
         open={editingBrand}
         branding={branding}
@@ -121,6 +150,7 @@ function App() {
         onSaveName={setName}
         onUploadIcon={setIconFromFile}
         onResetIcon={resetIcon}
+        onAccentColorChange={setAccentColor}
       />
       {isFirebaseConfigured && (
         <AuthModal
@@ -135,24 +165,25 @@ function App() {
         onClose={() => setOpenTaskId(null)}
         onEditTitle={editTask}
         onEditNotes={setNotes}
+        onRepeatChange={setRepeat}
       />
 
-      <header className="sticky top-0 z-30 border-b border-white/10 bg-[#0a0a0a]/75 pt-[env(safe-area-inset-top)] backdrop-blur-md">
+      <header className="sticky top-0 z-30 border-b border-ink/10 bg-[var(--surface)]/75 pt-[env(safe-area-inset-top)] backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between py-5 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:pl-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))]">
           <button
             onClick={() => setEditingBrand(true)}
-            className="group flex min-w-0 items-center gap-3 rounded-lg py-1 pr-2 transition hover:bg-white/5"
+            className="group flex min-w-0 items-center gap-3 rounded-lg py-1 pr-2 transition hover:bg-ink/5"
             title="Customize name and icon"
           >
             <img
               src={branding.icon192 ?? DEFAULT_ICON_192}
               alt=""
-              className="h-9 w-9 shrink-0 rounded-xl border-2 border-[#c6ff4a]/60 object-cover shadow-[0_0_16px_-6px_#c6ff4a99]"
+              className="h-9 w-9 shrink-0 rounded-xl border-2 border-accent/60 object-cover shadow-[0_0_16px_-6px_color-mix(in_srgb,var(--accent)_60%,transparent)]"
             />
-            <h1 className="truncate text-[clamp(1.05rem,3vw,1.25rem)] font-bold tracking-tight text-white">{branding.name}</h1>
+            <h1 className="truncate text-[clamp(1.05rem,3vw,1.25rem)] font-bold tracking-tight text-ink">{branding.name}</h1>
             <svg
               viewBox="0 0 24 24"
-              className="hidden h-3.5 w-3.5 shrink-0 text-white/0 transition group-hover:text-white/40 sm:block"
+              className="hidden h-3.5 w-3.5 shrink-0 text-ink/0 transition group-hover:text-ink/40 sm:block"
               fill="none"
               stroke="currentColor"
               strokeWidth={2}
@@ -176,8 +207,16 @@ function App() {
             )}
             <InstallButton appName={branding.name} />
             <button
+              onClick={toggleTheme}
+              className="shrink-0 rounded-lg border border-ink/15 p-2 text-ink/50 transition hover:border-ink/30 hover:text-ink"
+              aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
+            <button
               onClick={() => setMuted((m) => !m)}
-              className="shrink-0 rounded-lg border border-white/15 p-2 text-white/50 transition hover:border-white/30 hover:text-white"
+              className="shrink-0 rounded-lg border border-ink/15 p-2 text-ink/50 transition hover:border-ink/30 hover:text-ink"
               aria-label={muted ? 'Unmute sound' : 'Mute sound'}
               title={muted ? 'Unmute' : 'Mute'}
             >
@@ -198,24 +237,34 @@ function App() {
 
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-4">
-              {FILTERS.map((f) => (
-                <button
-                  key={f.value}
-                  onClick={() => setFilter(f.value)}
-                  className={`border-b-2 pb-1 text-xs font-semibold uppercase tracking-wide transition ${
-                    filter === f.value ? 'border-[#c6ff4a] text-white' : 'border-transparent text-white/35 hover:text-white/60'
-                  }`}
-                >
-                  {f.label} <span className="font-mono tabular-nums text-white/25">· {f.count}</span>
-                </button>
-              ))}
+              {FILTERS.map((f) => {
+                const isOverdue = f.value === 'overdue';
+                return (
+                  <button
+                    key={f.value}
+                    onClick={() => setFilter(f.value)}
+                    className={`flex items-center gap-1 border-b-2 pb-1 text-xs font-semibold uppercase tracking-wide transition ${
+                      filter === f.value
+                        ? isOverdue
+                          ? 'border-red-400 text-red-400'
+                          : 'border-accent text-ink'
+                        : isOverdue
+                          ? 'border-transparent text-red-400/70 hover:text-red-400'
+                          : 'border-transparent text-ink/35 hover:text-ink/60'
+                    }`}
+                  >
+                    {isOverdue && <span aria-hidden>⚠</span>}
+                    {f.label} <span className={`font-mono tabular-nums ${isOverdue ? 'text-red-400/70' : 'text-ink/25'}`}>· {f.count}</span>
+                  </button>
+                );
+              })}
             </div>
-            <div className="flex items-center gap-3 text-xs text-white/40">
+            <div className="flex items-center gap-3 text-xs text-ink/40">
               <span className="font-mono tabular-nums">{activeCount} left</span>
               {completed > 0 && (
                 <button
                   onClick={() => clearCompleted(activeList)}
-                  className="font-medium uppercase tracking-wide text-white/40 hover:text-red-400"
+                  className="font-medium uppercase tracking-wide text-ink/40 hover:text-red-400"
                 >
                   Clear done
                 </button>
@@ -247,9 +296,9 @@ function App() {
             <ProgressRing progress={progress} />
           </div>
           <div className="panel panel-hover rounded-xl p-4 text-center">
-            <p className="text-[10px] uppercase tracking-widest text-white/30">All-time cleared</p>
-            <p className="mt-1 font-mono text-3xl font-bold tabular-nums text-[#c6ff4a]">{dopamine.totalCompleted}</p>
-            <p className="mt-1 text-[10px] uppercase tracking-wide text-white/25">
+            <p className="text-[10px] uppercase tracking-widest text-ink/30">All-time cleared</p>
+            <p className="mt-1 font-mono text-3xl font-bold tabular-nums text-accent">{dopamine.totalCompleted}</p>
+            <p className="mt-1 text-[10px] uppercase tracking-wide text-ink/25">
               {dopamine.totalCompleted > 0 ? 'keep the streak alive' : 'complete your first task'}
             </p>
           </div>

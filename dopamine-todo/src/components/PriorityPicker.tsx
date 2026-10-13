@@ -35,7 +35,7 @@ export function PriorityPicker({ priority, onChange }: PriorityPickerProps) {
         onClick={() => setOpen((v) => !v)}
         aria-label={`Priority: ${PRIORITY_CODE[priority]}. Click to change.`}
         title={`Priority: ${PRIORITY_CODE[priority]}`}
-        className={`rounded-md border px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition hover:border-white/40 ${PRIORITY_BADGE_CLASSES[priority]}`}
+        className={`rounded-md border px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition hover:border-ink/40 ${PRIORITY_BADGE_CLASSES[priority]}`}
       >
         {PRIORITY_CODE[priority]}
       </button>
@@ -57,7 +57,7 @@ export function PriorityPicker({ priority, onChange }: PriorityPickerProps) {
                 className={`rounded-md border px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider whitespace-nowrap transition ${
                   p === priority
                     ? PRIORITY_BADGE_CLASSES[p]
-                    : 'border-transparent text-white/40 hover:border-white/15 hover:text-white/70'
+                    : 'border-transparent text-ink/40 hover:border-ink/15 hover:text-ink/70'
                 }`}
               >
                 {PRIORITY_CODE[p]}

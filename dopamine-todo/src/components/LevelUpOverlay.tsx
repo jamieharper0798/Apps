@@ -31,12 +31,12 @@ export function LevelUpOverlay({ level, onClose }: LevelUpOverlayProps) {
             >
               🎉
             </motion.div>
-            <p className="font-display text-sm uppercase tracking-widest text-[#c6ff4a]">Level Up</p>
+            <p className="font-display text-sm uppercase tracking-widest text-accent">Level Up</p>
             <h2 className="shimmer-text font-display text-4xl font-bold">Level {level}</h2>
-            <p className="uppercase tracking-wide text-white/60">{levelTitle(level)}</p>
+            <p className="uppercase tracking-wide text-ink/60">{levelTitle(level)}</p>
             <button
               onClick={onClose}
-              className="mt-3 rounded-lg border border-[#c6ff4a]/60 px-5 py-2 text-sm font-bold uppercase tracking-wide text-[#c6ff4a] transition hover:shadow-[0_0_20px_-6px_#c6ff4a] hover:bg-[#c6ff4a]/10"
+              className="mt-3 rounded-lg border border-accent/60 px-5 py-2 text-sm font-bold uppercase tracking-wide text-accent transition hover:shadow-[0_0_20px_-6px_var(--accent)] hover:bg-accent/10"
             >
               Keep going
             </button>
