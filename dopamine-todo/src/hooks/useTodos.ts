@@ -189,7 +189,9 @@ export function useTodos() {
       }
 
       const newLevelInfo = levelFromTotalXp(newXp);
-      const isRecurring = nowCompleting && target.repeat !== 'none';
+      // Tasks created before `repeat` existed have no such field in storage — treat
+      // that the same as 'none' rather than letting `undefined !== 'none'` read as recurring.
+      const isRecurring = nowCompleting && (target.repeat ?? 'none') !== 'none';
 
       setState((prev) => ({
         ...prev,
