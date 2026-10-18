@@ -9,12 +9,21 @@ export function RsvpForm() {
   const [lastName, setLastName] = useState('');
   const [attending, setAttending] = useState<boolean | null>(null);
   const [partySize, setPartySize] = useState(1);
-  const [guestNames, setGuestNames] = useState('');
+  // First and last names of everyone else in the party; always partySize - 1 entries.
+  const [others, setOthers] = useState<{ first: string; last: string }[]>([]);
   const [hasDietary, setHasDietary] = useState(false);
   const [dietary, setDietary] = useState('');
   const [song, setSong] = useState('');
   const [message, setMessage] = useState('');
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+
+  const changePartySize = (n: number) => {
+    setPartySize(n);
+    setOthers((prev) => Array.from({ length: n - 1 }, (_, i) => prev[i] ?? { first: '', last: '' }));
+  };
+
+  const updateOther = (i: number, patch: Partial<{ first: string; last: string }>) =>
+    setOthers((prev) => prev.map((o, j) => (j === i ? { ...o, ...patch } : o)));
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -26,7 +35,7 @@ export function RsvpForm() {
         lastName: lastName.trim(),
         attending,
         partySize: attending ? partySize : 0,
-        guestNames: attending ? guestNames.trim() : '',
+        guestNames: attending ? others.map((o) => `${o.first.trim()} ${o.last.trim()}`).join(', ') : '',
         dietary: attending && hasDietary ? dietary.trim() : '',
         song: attending ? song.trim() : '',
         message: message.trim(),
@@ -77,9 +86,9 @@ export function RsvpForm() {
 
       {attending && (
         <>
-          <div className="grid gap-6 sm:grid-cols-[10rem_1fr]">
+          <div className="grid gap-6">
             <Field id="rsvp-party" label="How many of you?">
-              <select id="rsvp-party" className={inputClass} value={partySize} onChange={(e) => setPartySize(Number(e.target.value))}>
+              <select id="rsvp-party" className={`${inputClass} sm:max-w-[10rem]`} value={partySize} onChange={(e) => changePartySize(Number(e.target.value))}>
                 {[1, 2, 3, 4, 5, 6].map((n) => (
                   <option key={n} value={n}>
                     {n} {n === 1 ? 'person' : 'people'}
@@ -87,11 +96,31 @@ export function RsvpForm() {
                 ))}
               </select>
             </Field>
-            {partySize > 1 && (
-              <Field id="rsvp-guests" label="Who's coming with you?">
-                <input id="rsvp-guests" maxLength={300} className={inputClass} placeholder="Their names" value={guestNames} onChange={(e) => setGuestNames(e.target.value)} />
-              </Field>
-            )}
+            {others.map((o, i) => (
+              <fieldset key={i} className="grid gap-6 sm:grid-cols-2">
+                <legend className="mb-3 font-display text-lg italic text-gold">Guest {i + 2}</legend>
+                <Field id={`rsvp-guest-${i}-first`} label="First name">
+                  <input
+                    id={`rsvp-guest-${i}-first`}
+                    required
+                    maxLength={40}
+                    className={inputClass}
+                    value={o.first}
+                    onChange={(e) => updateOther(i, { first: e.target.value })}
+                  />
+                </Field>
+                <Field id={`rsvp-guest-${i}-last`} label="Last name">
+                  <input
+                    id={`rsvp-guest-${i}-last`}
+                    required
+                    maxLength={40}
+                    className={inputClass}
+                    value={o.last}
+                    onChange={(e) => updateOther(i, { last: e.target.value })}
+                  />
+                </Field>
+              </fieldset>
+            ))}
           </div>
           <div className="grid gap-4">
             <label className="flex cursor-pointer items-center gap-3 self-start">

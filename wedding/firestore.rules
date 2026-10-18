@@ -26,7 +26,7 @@ service cloud.firestore {
                     && request.resource.data.attending is bool
                     && request.resource.data.partySize is int
                     && request.resource.data.partySize >= 0 && request.resource.data.partySize <= 6
-                    && request.resource.data.guestNames is string && request.resource.data.guestNames.size() <= 300
+                    && request.resource.data.guestNames is string && request.resource.data.guestNames.size() <= 600
                     && request.resource.data.dietary is string && request.resource.data.dietary.size() <= 300
                     && request.resource.data.song is string && request.resource.data.song.size() <= 200
                     && request.resource.data.message is string && request.resource.data.message.size() <= 1000
