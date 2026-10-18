@@ -92,6 +92,33 @@ h3 {
   }
 }
 
+/* Sign-in screen: "You're invited" arrives first, then the names, then the sign-in box. */
+@media (prefers-reduced-motion: no-preference) {
+  .intro-invited {
+    animation: invited 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .intro-step-1 {
+    animation: rise 1s 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .intro-step-2 {
+    animation: rise 1.2s 1.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .intro-step-3 {
+    animation: rise 1s 2.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+}
+
+@keyframes invited {
+  from {
+    opacity: 0;
+    letter-spacing: 0.12em;
+    filter: blur(6px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
