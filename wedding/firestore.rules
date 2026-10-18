@@ -5,7 +5,7 @@ service cloud.firestore {
   match /databases/{database}/documents {
     // The User UIDs (Firebase console → Authentication → Users) of the people who can see the guest list.
     function isCouple() {
-      return request.auth != null && request.auth.uid in ['PASTE_USER_UID_HERE'];
+      return request.auth != null && request.auth.uid in ['NaERrR3freZ6dtRkePZmXIyuAU33'];
     }
 
     match /weddingRsvps/{rsvpId} {
