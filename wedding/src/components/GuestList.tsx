@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut, type User } from 'firebase/auth';
 import { auth } from '../lib/firebase';
+import { inviteLink } from '../lib/invite';
 import { fetchRsvps, guestName, latestPerGuest, type Rsvp } from '../lib/rsvp';
 
 // Private page at #guests for the couple: every reply, totals, a CSV export and personal invite links.
@@ -175,10 +176,11 @@ function Stat({ label, value }: { label: string; value: number }) {
 }
 
 function InviteLinkMaker() {
-  const [name, setName] = useState('');
+  const [first, setFirst] = useState('');
+  const [second, setSecond] = useState('');
   const [copied, setCopied] = useState(false);
-  const base = `${window.location.origin}${window.location.pathname}`;
-  const link = name.trim() ? `${base}?to=${encodeURIComponent(name.trim())}` : base;
+  const link = inviteLink(`${window.location.origin}${window.location.pathname}`, first, second);
+  const greeting = [first.trim(), second.trim()].filter(Boolean).join(' & ');
 
   const copy = async () => {
     try {
@@ -190,23 +192,23 @@ function InviteLinkMaker() {
     }
   };
 
+  const inputClass = 'min-w-0 flex-1 basis-48 rounded-lg border border-rule bg-card px-3.5 py-2.5';
+
   return (
     <section className="max-w-2xl">
       <h2 className="font-display text-2xl">Make an invite link</h2>
-      <p className="mt-2 text-ink-soft">The site greets the guest by name and fills it in on their RSVP. Leave it blank for a general link.</p>
+      <p className="mt-2 text-ink-soft">
+        The site greets your guests by name, just as you type it. Add a second name for couples. Leave both blank for a general link.
+      </p>
       <div className="mt-4 flex flex-wrap gap-3">
-        <input
-          id="invite-name"
-          placeholder="Guest's full name, for example Mary Smith"
-          className="min-w-0 flex-1 rounded-lg border border-rule bg-card px-3.5 py-2.5"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        <input id="invite-name" placeholder="Name, for example Mary" className={inputClass} value={first} onChange={(e) => setFirst(e.target.value)} />
+        <input id="invite-name-2" placeholder="Second name (optional), for example Tom" className={inputClass} value={second} onChange={(e) => setSecond(e.target.value)} />
         <button type="button" onClick={copy} className="rounded-full bg-ink px-6 py-2.5 text-sm font-medium text-paper hover:bg-ink/85">
           {copied ? 'Copied' : 'Copy link'}
         </button>
       </div>
-      <p className="mt-3 select-all break-all text-sm text-ink-soft">{link}</p>
+      {greeting && <p className="mt-3 text-sm">Guests will see: <span className="font-display italic text-gold">{greeting}, you're invited</span></p>}
+      <p className="mt-2 select-all break-all text-sm text-ink-soft">{link}</p>
     </section>
   );
 }

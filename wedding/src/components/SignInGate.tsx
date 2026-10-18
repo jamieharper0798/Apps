@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../lib/firebase';
+import { invitedGreeting } from '../lib/invite';
 
 // Guests share one login. The username they type maps to a Firebase email/password account,
 // e.g. JamieandHannah2027 → jamieandhannah2027@jamie-and-hannah-2027.web.app. Anyone typing a full email signs in as themselves.
@@ -11,13 +12,8 @@ function toEmail(username: string) {
   return u.includes('@') ? u : `${u}@${LOGIN_DOMAIN}`;
 }
 
-// Personal invite links (?to=Mary Smith) greet the guest by first name on the way in.
-function invitedFirstName() {
-  return new URLSearchParams(window.location.search).get('to')?.trim().split(/\s+/)[0]?.slice(0, 40) ?? '';
-}
-
 export function SignInGate() {
-  const guest = invitedFirstName();
+  const guest = invitedGreeting();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [status, setStatus] = useState<'idle' | 'signing-in' | 'wrong' | 'error'>('idle');
