@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut, type User } from 'firebase/auth';
 import { auth } from '../lib/firebase';
-import { fetchRsvps, latestPerGuest, type Rsvp } from '../lib/rsvp';
+import { fetchRsvps, guestName, latestPerGuest, type Rsvp } from '../lib/rsvp';
 
 // Private page at #guests for the couple: every reply, totals, a CSV export and personal invite links.
 export function GuestList() {
@@ -138,8 +138,7 @@ function Replies({ user }: { user: User }) {
                 {rsvps.map((r) => (
                   <tr key={r.id}>
                     <td className="px-4 py-3">
-                      <p className="font-medium">{r.name}</p>
-                      {r.email && <p className="text-ink-soft">{r.email}</p>}
+                      <p className="font-medium">{guestName(r)}</p>
                     </td>
                     <td className="px-4 py-3">
                       <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${r.attending ? 'bg-ink text-paper' : 'bg-rule text-ink-soft'}`}>
@@ -198,7 +197,7 @@ function InviteLinkMaker() {
       <div className="mt-4 flex flex-wrap gap-3">
         <input
           id="invite-name"
-          placeholder="Guest name, for example Aunt Mary"
+          placeholder="Guest's full name, for example Mary Smith"
           className="min-w-0 flex-1 rounded-lg border border-rule bg-card px-3.5 py-2.5"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -213,10 +212,17 @@ function InviteLinkMaker() {
 }
 
 function downloadCsv(rsvps: Rsvp[]) {
-  const cols = ['name', 'email', 'attending', 'partySize', 'guestNames', 'dietary', 'song', 'message', 'createdAt'] as const;
+  const cols = ['firstName', 'lastName', 'attending', 'partySize', 'guestNames', 'dietary', 'song', 'message', 'createdAt'] as const;
   const cell = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
   const rows = rsvps.map((r) =>
-    cols.map((c) => cell(c === 'attending' ? (r.attending ? 'yes' : 'no') : c === 'createdAt' ? r.createdAt?.toISOString() : r[c])).join(','),
+    cols
+      .map((c) => {
+        if (c === 'attending') return cell(r.attending ? 'yes' : 'no');
+        if (c === 'createdAt') return cell(r.createdAt?.toISOString());
+        if (c === 'firstName' && !r.firstName) return cell(r.name);
+        return cell(r[c]);
+      })
+      .join(','),
   );
   const blob = new Blob([[cols.join(','), ...rows].join('\n')], { type: 'text/csv' });
   const a = document.createElement('a');

@@ -4,8 +4,8 @@ import { db } from './firebase';
 export const RSVP_COLLECTION = 'weddingRsvps';
 
 export interface RsvpInput {
-  name: string;
-  email: string;
+  firstName: string;
+  lastName: string;
   attending: boolean;
   partySize: number;
   guestNames: string;
@@ -17,6 +17,11 @@ export interface RsvpInput {
 export interface Rsvp extends RsvpInput {
   id: string;
   createdAt: Date | null;
+  name?: string; // replies sent before the form split first and last name
+}
+
+export function guestName(r: Rsvp) {
+  return `${r.firstName ?? ''} ${r.lastName ?? ''}`.trim() || r.name || 'Unnamed guest';
 }
 
 // Guests can only create replies. Reading them back is limited to you by the Firestore rules (see README).
@@ -36,11 +41,11 @@ export async function fetchRsvps(): Promise<Rsvp[]> {
   });
 }
 
-// A guest who sends the form twice keeps only their newest reply. Matches on email, or name when no email was given.
+// A guest who sends the form twice keeps only their newest reply, matched on their name.
 export function latestPerGuest(rsvps: Rsvp[]): Rsvp[] {
   const seen = new Set<string>();
   return rsvps.filter((r) => {
-    const key = (r.email || r.name).trim().toLowerCase();
+    const key = guestName(r).toLowerCase().replace(/\s+/g, ' ');
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
