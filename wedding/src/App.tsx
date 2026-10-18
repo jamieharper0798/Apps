@@ -1,11 +1,14 @@
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react';
-import { wedding } from './wedding';
+import { signOut } from 'firebase/auth';
+import type { Wedding } from './wedding';
+import { auth } from './lib/firebase';
+import { useAuthUser, useWeddingContent } from './lib/session';
 import { RsvpForm } from './components/RsvpForm';
+import { SignInGate } from './components/SignInGate';
 
-// The couple's page pulls in Firebase sign-in, so guests never download it.
+// The couple's guest list page loads separately, only when someone opens #guests.
 const GuestList = lazy(() => import('./components/GuestList').then((m) => ({ default: m.GuestList })));
 
-const weddingDate = new Date(wedding.date);
 const base = import.meta.env.BASE_URL;
 
 // Placeholder lines still marked TODO in wedding.ts stay off the page until they're filled in.
@@ -54,16 +57,36 @@ const nav = [
 
 export default function App() {
   const hash = useHash();
+  const user = useAuthUser();
   if (hash === '#guests')
     return (
       <Suspense fallback={null}>
         <GuestList />
       </Suspense>
     );
-  return <Site />;
+  if (user === undefined) return null;
+  if (!user) return <SignInGate />;
+  return <SignedIn />;
 }
 
-function Site() {
+// The wedding details live in Firestore and are only readable once signed in, so they never ship in the public page code.
+function SignedIn() {
+  const content = useWeddingContent();
+  if (content.status === 'loading') return <p className="px-4 py-24 text-center text-ink-soft">Loading…</p>;
+  if (content.status === 'error')
+    return (
+      <div className="mx-auto max-w-md px-4 py-24 text-center">
+        <p className="text-ink">The wedding details didn't load. Check your internet connection and refresh the page.</p>
+        <button type="button" onClick={() => signOut(auth)} className="link-arrow mt-6">
+          Sign out
+        </button>
+      </div>
+    );
+  return <Site wedding={content.wedding} />;
+}
+
+function Site({ wedding }: { wedding: Wedding }) {
+  const weddingDate = new Date(wedding.date);
   const guest = invitedGuest();
   const [first, second] = wedding.couple;
   const rsvpBy = new Date(wedding.rsvpBy).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
@@ -275,6 +298,9 @@ function Site() {
           {first[0]}&thinsp;&amp;&thinsp;{second[0]}
         </p>
         <p className="mt-3 text-xs uppercase tracking-[0.3em]">{formatLongDate(weddingDate)}</p>
+        <button type="button" onClick={() => signOut(auth)} className="mt-8 text-xs text-paper/40 underline underline-offset-4 hover:text-paper/70">
+          Sign out
+        </button>
       </footer>
     </>
   );

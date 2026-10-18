@@ -1,5 +1,6 @@
 // Everything guests see lives here. Edit this file to change the site's wording.
-// Lines marked TODO are placeholders that still need your real details.
+// It isn't bundled into the page: the deploy workflow uploads it to Firestore (site/content),
+// which only signed-in guests can read. See scripts/publish-content.ts.
 
 export const wedding = {
   couple: ['Jamie', 'Hannah'] as const,
@@ -54,3 +55,5 @@ export const wedding = {
     { q: 'What if I need to change my RSVP?', a: 'Send the form again with your new answer. We will use the most recent one.' },
   ],
 };
+
+export type Wedding = typeof wedding;

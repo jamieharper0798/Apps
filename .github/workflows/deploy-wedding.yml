@@ -34,7 +34,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: env.HAS_KEY == 'true'
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: wedding/package-lock.json
 
@@ -46,12 +46,25 @@ jobs:
         if: env.HAS_KEY == 'true'
         run: npm run build
 
-      # Publishes the site to https://jamie-and-hannah-2027.web.app and the RSVP security rules to Firestore.
-      - name: Deploy
+      - name: Write deploy key
         if: env.HAS_KEY == 'true'
         env:
           SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_WEDDING }}
         run: |
           printf '%s' "$SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
-          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
-          npx --yes firebase-tools@14 deploy --only hosting,firestore:rules --project jamie-and-hannah-2027 --non-interactive
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/sa.json" >> "$GITHUB_ENV"
+
+      # Rules first, so the content and RSVPs are locked to signed-in guests before anything else changes.
+      - name: Deploy security rules
+        if: env.HAS_KEY == 'true'
+        run: npx --yes firebase-tools@14 deploy --only firestore:rules --project jamie-and-hannah-2027 --non-interactive
+
+      # The wedding details live in Firestore (readable only after sign-in), not in the public page code.
+      - name: Publish wedding details
+        if: env.HAS_KEY == 'true'
+        run: node --experimental-strip-types scripts/publish-content.ts
+
+      # Publishes the site to https://jamie-and-hannah-2027.web.app.
+      - name: Deploy site
+        if: env.HAS_KEY == 'true'
+        run: npx --yes firebase-tools@14 deploy --only hosting --project jamie-and-hannah-2027 --non-interactive
