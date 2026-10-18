@@ -24,7 +24,7 @@ export const wedding = {
   ],
 
   travel: [
-    { title: 'By car', body: 'Use the postcode above in your sat nav. There is plenty of parking, and cars can stay overnight if collected by 11am the next day.' },
+    { title: 'By car', body: 'Use the postcode above in your sat nav. There is plenty of parking, and cars can stay overnight.' },
     { title: 'By train', body: 'Wokingham station is about a mile away, around five minutes by taxi, with direct trains from London Waterloo and Reading.' },
   ],
 
