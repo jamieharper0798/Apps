@@ -15,7 +15,7 @@ export const wedding = {
   },
 
   schedule: [
-    { time: '12:30pm', title: 'Guests arrive', detail: 'Find a seat and say hello.' },
+    { time: '12:00pm', title: 'Guests arrive', detail: 'Find a seat and say hello.' },
     { time: '1:00pm', title: 'Ceremony', detail: 'Please be seated by ten to one.' },
     { time: '1:45pm', title: 'Drinks and canapés', detail: 'Photos on the lawn, weather permitting.' },
     { time: '3:30pm', title: 'Dinner and speeches', detail: 'Three courses. Tell us about dietary needs in your RSVP.' },
