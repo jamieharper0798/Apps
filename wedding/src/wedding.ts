@@ -43,7 +43,7 @@ export const wedding = {
 
   faq: [
     { q: 'Can I bring a plus-one?', a: 'Your invitation says how many seats we have saved for you. If you are not sure, just ask us.' },
-    { q: 'Are children invited?', a: 'We love your little ones, but this is an adults-only celebration, apart from babies in arms.' },
+    { q: 'Are children invited?', a: 'We love your little ones, but this is an adults-only celebration, apart from children who we have specifically invited.' },
     { q: 'Can I take photos?', a: 'We are having an unplugged ceremony, so please keep phones away until we are married. After that, snap away.' },
     { q: 'What if I need to change my RSVP?', a: 'Send the form again with your new answer. We will use the most recent one.' },
   ],
