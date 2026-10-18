@@ -1,4 +1,4 @@
-import { addDoc, collection, getDocs, orderBy, query, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs, orderBy, query, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { db } from './firebase';
 
 export const RSVP_COLLECTION = 'weddingRsvps';
@@ -42,10 +42,19 @@ export async function fetchRsvps(): Promise<Rsvp[]> {
 }
 
 // A guest who sends the form twice keeps only their newest reply, matched on their name.
+export function guestKey(r: Rsvp) {
+  return guestName(r).toLowerCase().replace(/\s+/g, ' ');
+}
+
+// Only the couple can delete, enforced by the Firestore rules.
+export async function deleteRsvps(ids: string[]) {
+  await Promise.all(ids.map((id) => deleteDoc(doc(db, RSVP_COLLECTION, id))));
+}
+
 export function latestPerGuest(rsvps: Rsvp[]): Rsvp[] {
   const seen = new Set<string>();
   return rsvps.filter((r) => {
-    const key = guestName(r).toLowerCase().replace(/\s+/g, ' ');
+    const key = guestKey(r);
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
