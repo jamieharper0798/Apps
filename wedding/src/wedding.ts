@@ -40,7 +40,7 @@ export const wedding = {
 
   dressCode: {
     title: 'Formal, garden friendly',
-    body: 'Suits and dresses. Part of the day is on grass, so heels with a wider base will thank you, and bring a layer for the evening.',
+    body: 'Suits and dresses. You know how to dress for a wedding. Just look your best and ready to have fun.',
   },
 
   gifts:
