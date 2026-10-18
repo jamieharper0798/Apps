@@ -39,7 +39,7 @@ export const wedding = {
   ],
 
   dressCode: {
-    title: 'Formal, garden friendly',
+    title: 'Classic wedding attire',
     body: 'Suits and dresses. You know how to dress for a wedding. Just look your best and ready to have fun.',
   },
 
