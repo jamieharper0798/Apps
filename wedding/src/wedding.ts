@@ -20,18 +20,17 @@ export const wedding = {
     { time: '1:45pm', title: 'Drinks and canapés', detail: 'Photos on the lawn, weather permitting.' },
     { time: '3:30pm', title: 'Dinner and speeches', detail: 'Three courses. Tell us about dietary needs in your RSVP.' },
     { time: '7:00pm', title: 'First dance and party', detail: 'Bring your dancing shoes.' },
-    { time: '12:00am', title: 'Carriages', detail: 'Taxis can be booked in advance. See Travel.' },
+    { time: '12:00am', title: 'Carriages', detail: 'Book your ride home ahead of time, as taxis get busy late at night.' },
   ],
 
   travel: [
     { title: 'By car', body: 'Use the postcode above in your sat nav. There is plenty of parking, and cars can stay overnight if collected by 11am the next day.' },
     { title: 'By train', body: 'Wokingham station is about a mile away, around five minutes by taxi, with direct trains from London Waterloo and Reading.' },
-    { title: 'Taxis', body: 'TODO: a local taxi number. Book your ride home ahead of time, as they get busy late at night.' },
   ],
 
   stay: [
     { name: 'Cantley House Hotel', distance: 'The venue itself', note: 'The easiest option: no travel home at the end of the night. Rooms are limited, so book early.' },
-    { name: 'Premier Inn Wokingham Town Centre', distance: 'About a mile away', note: 'A good-value option in the town centre, a few minutes from the venue by taxi.' },
+    { name: 'Premier Inn Wokingham Town Centre', distance: 'About a mile away', note: 'A good-value option in the town centre, a few minutes from the venue by taxi.', url: 'https://www.premierinn.com/gb/en/hotels/england/berkshire/wokingham/wokingham-town-centre.html' },
   ],
 
   dressCode: {
@@ -48,6 +47,4 @@ export const wedding = {
     { q: 'Can I take photos?', a: 'We are having an unplugged ceremony, so please keep phones away until we are married. After that, snap away.' },
     { q: 'What if I need to change my RSVP?', a: 'Send the form again with your new answer. We will use the most recent one.' },
   ],
-
-  contact: 'TODO: a phone number or email address guests can use with questions',
 };
