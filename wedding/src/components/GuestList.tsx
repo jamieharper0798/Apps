@@ -49,7 +49,7 @@ function SignIn() {
 
   return (
     <form onSubmit={handleSubmit} className="grid max-w-sm gap-4">
-      <p className="text-ink-soft">Sign in with the same account you use for your to-do app.</p>
+      <p className="text-ink-soft">Sign in with the login you added in the Firebase console (Authentication → Users).</p>
       <input id="gl-email" type="email" required placeholder="Email" autoComplete="email" className="rounded-lg border border-rule bg-card px-3.5 py-2.5" value={email} onChange={(e) => setEmail(e.target.value)} />
       <input id="gl-password" type="password" required placeholder="Password" autoComplete="current-password" className="rounded-lg border border-rule bg-card px-3.5 py-2.5" value={password} onChange={(e) => setPassword(e.target.value)} />
       {error && <p className="text-sm text-[#9b3b3b]">{error}</p>}
@@ -83,7 +83,7 @@ function Replies({ user }: { user: User }) {
       <div className="max-w-xl rounded-2xl border border-gold-soft bg-card p-6">
         <p className="font-medium">This account can't see the replies yet.</p>
         <p className="mt-2 text-ink-soft">
-          Add this account ID to the <code>weddingRsvps</code> rule in the Firebase console (see the README), publish the rules, then refresh this page.
+          Add this User UID to <code>wedding/firestore.rules</code> (or send it to Claude to add). The rules publish automatically, then refresh this page.
         </p>
         <p className="mt-4 select-all break-all rounded-lg bg-paper px-3 py-2 font-mono text-sm">{user.uid}</p>
       </div>
