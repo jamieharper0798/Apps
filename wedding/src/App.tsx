@@ -5,6 +5,7 @@ import { auth } from './lib/firebase';
 import { useAuthUser, useWeddingContent } from './lib/session';
 import { RsvpForm } from './components/RsvpForm';
 import { SignInGate } from './components/SignInGate';
+import { invitedGreeting } from './lib/invite';
 
 // The couple's guest list page loads separately, only when someone opens #guests.
 const GuestList = lazy(() => import('./components/GuestList').then((m) => ({ default: m.GuestList })));
@@ -16,11 +17,6 @@ const isFilled = (...text: string[]) => !text.some((t) => t.includes('TODO'));
 
 function formatLongDate(d: Date) {
   return d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-}
-
-// Personal invite links look like ...?to=Aunt%20Mary and greet that guest by name.
-function invitedGuest() {
-  return new URLSearchParams(window.location.search).get('to')?.trim().slice(0, 80) ?? '';
 }
 
 function useHash() {
@@ -87,7 +83,7 @@ function SignedIn() {
 
 function Site({ wedding }: { wedding: Wedding }) {
   const weddingDate = new Date(wedding.date);
-  const guest = invitedGuest();
+  const guest = invitedGreeting();
   const [first, second] = wedding.couple;
   const rsvpBy = new Date(wedding.rsvpBy).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
   const time = weddingDate.toLocaleTimeString('en-GB', { hour: 'numeric', minute: '2-digit', hour12: true }).replace(':00', '').replace(' ', '');
@@ -287,7 +283,7 @@ function Site({ wedding }: { wedding: Wedding }) {
             <p className="mt-4 text-paper/70">Kindly reply by {rsvpBy}.</p>
           </div>
           <div className="mt-12">
-            <RsvpForm invitedName={guest} />
+            <RsvpForm />
           </div>
         </div>
       </section>

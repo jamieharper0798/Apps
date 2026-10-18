@@ -4,16 +4,9 @@ import { submitRsvp } from '../lib/rsvp';
 const inputClass =
   'w-full rounded-none border-0 border-b border-rule bg-transparent px-0 py-2.5 text-ink placeholder:text-ink-soft/50 focus:border-ink focus:outline-none';
 
-// A personal invite link (?to=Mary Smith) fills in the first word as the first name and the rest as the last name.
-function splitName(full: string) {
-  const [first = '', ...rest] = full.trim().split(/\s+/);
-  return { first, last: rest.join(' ') };
-}
-
-export function RsvpForm({ invitedName }: { invitedName: string }) {
-  const invited = splitName(invitedName);
-  const [firstName, setFirstName] = useState(invited.first);
-  const [lastName, setLastName] = useState(invited.last);
+export function RsvpForm() {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [attending, setAttending] = useState<boolean | null>(null);
   const [partySize, setPartySize] = useState(1);
   const [guestNames, setGuestNames] = useState('');
