@@ -209,6 +209,11 @@ function Site() {
                 <p className="eyebrow">{s.distance}</p>
                 <p className="mt-2 font-display text-2xl">{s.name}</p>
                 <p className="mt-3 text-ink-soft">{s.note}</p>
+                {'url' in s && (
+                  <a href={s.url} target="_blank" rel="noreferrer" className="link-arrow mt-5">
+                    View hotel
+                  </a>
+                )}
               </div>
             ))}
           </div>
@@ -238,11 +243,6 @@ function Site() {
               </details>
             ))}
           </div>
-          {isFilled(wedding.contact) && (
-            <p className="mt-8 text-ink-soft">
-              Anything else? Get in touch: <span className="select-all text-ink">{wedding.contact}</span>
-            </p>
-          )}
         </Section>
       </main>
 
