@@ -11,10 +11,11 @@ service cloud.firestore {
     match /weddingRsvps/{rsvpId} {
       // Anyone with the link can send a reply, but only in the shape the RSVP form sends.
       allow create: if request.resource.data.keys().hasOnly(
-                         ['name', 'email', 'attending', 'partySize', 'guestNames', 'dietary', 'song', 'message', 'createdAt'])
-                    && request.resource.data.name is string
-                    && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 120
-                    && request.resource.data.email is string && request.resource.data.email.size() <= 200
+                         ['firstName', 'lastName', 'attending', 'partySize', 'guestNames', 'dietary', 'song', 'message', 'createdAt'])
+                    && request.resource.data.firstName is string
+                    && request.resource.data.firstName.size() > 0 && request.resource.data.firstName.size() <= 60
+                    && request.resource.data.lastName is string
+                    && request.resource.data.lastName.size() > 0 && request.resource.data.lastName.size() <= 60
                     && request.resource.data.attending is bool
                     && request.resource.data.partySize is int
                     && request.resource.data.partySize >= 0 && request.resource.data.partySize <= 6

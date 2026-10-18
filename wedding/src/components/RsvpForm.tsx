@@ -4,12 +4,20 @@ import { submitRsvp } from '../lib/rsvp';
 const inputClass =
   'w-full rounded-none border-0 border-b border-rule bg-transparent px-0 py-2.5 text-ink placeholder:text-ink-soft/50 focus:border-ink focus:outline-none';
 
+// A personal invite link (?to=Mary Smith) fills in the first word as the first name and the rest as the last name.
+function splitName(full: string) {
+  const [first = '', ...rest] = full.trim().split(/\s+/);
+  return { first, last: rest.join(' ') };
+}
+
 export function RsvpForm({ invitedName }: { invitedName: string }) {
-  const [name, setName] = useState(invitedName);
-  const [email, setEmail] = useState('');
+  const invited = splitName(invitedName);
+  const [firstName, setFirstName] = useState(invited.first);
+  const [lastName, setLastName] = useState(invited.last);
   const [attending, setAttending] = useState<boolean | null>(null);
   const [partySize, setPartySize] = useState(1);
   const [guestNames, setGuestNames] = useState('');
+  const [hasDietary, setHasDietary] = useState(false);
   const [dietary, setDietary] = useState('');
   const [song, setSong] = useState('');
   const [message, setMessage] = useState('');
@@ -21,12 +29,12 @@ export function RsvpForm({ invitedName }: { invitedName: string }) {
     setStatus('sending');
     try {
       await submitRsvp({
-        name: name.trim(),
-        email: email.trim(),
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
         attending,
         partySize: attending ? partySize : 0,
         guestNames: attending ? guestNames.trim() : '',
-        dietary: attending ? dietary.trim() : '',
+        dietary: attending && hasDietary ? dietary.trim() : '',
         song: attending ? song.trim() : '',
         message: message.trim(),
       });
@@ -42,8 +50,8 @@ export function RsvpForm({ invitedName }: { invitedName: string }) {
         <p className="font-display text-3xl italic">{attending ? 'See you there!' : "We'll miss you"}</p>
         <p className="mx-auto mt-3 max-w-sm text-ink-soft">
           {attending
-            ? `Thank you, ${name.split(' ')[0]}. Your reply is saved and we can't wait to celebrate with you.`
-            : `Thank you for letting us know, ${name.split(' ')[0]}. You'll be with us in spirit.`}
+            ? `Thank you, ${firstName.trim()}. Your reply is saved and we can't wait to celebrate with you.`
+            : `Thank you for letting us know, ${firstName.trim()}. You'll be with us in spirit.`}
         </p>
         <button type="button" onClick={() => setStatus('idle')} className="mt-6 text-sm font-medium text-gold underline underline-offset-4 hover:text-ink">
           Change my answer
@@ -58,11 +66,11 @@ export function RsvpForm({ invitedName }: { invitedName: string }) {
       className="grid gap-8 rounded-sm bg-card text-ink p-6 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.6)] sm:p-12"
     >
       <div className="grid gap-6 sm:grid-cols-2">
-        <Field id="rsvp-name" label="Your name">
-          <input id="rsvp-name" required maxLength={120} autoComplete="name" className={inputClass} value={name} onChange={(e) => setName(e.target.value)} />
+        <Field id="rsvp-first" label="First name">
+          <input id="rsvp-first" required maxLength={60} autoComplete="given-name" className={inputClass} value={firstName} onChange={(e) => setFirstName(e.target.value)} />
         </Field>
-        <Field id="rsvp-email" label="Email" hint="So we can send updates">
-          <input id="rsvp-email" type="email" maxLength={200} autoComplete="email" className={inputClass} value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Field id="rsvp-last" label="Last name">
+          <input id="rsvp-last" required maxLength={60} autoComplete="family-name" className={inputClass} value={lastName} onChange={(e) => setLastName(e.target.value)} />
         </Field>
       </div>
 
@@ -92,9 +100,31 @@ export function RsvpForm({ invitedName }: { invitedName: string }) {
               </Field>
             )}
           </div>
-          <Field id="rsvp-diet" label="Dietary needs or allergies">
-            <input id="rsvp-diet" maxLength={300} className={inputClass} placeholder="For example: vegetarian, no nuts" value={dietary} onChange={(e) => setDietary(e.target.value)} />
-          </Field>
+          <div className="grid gap-4">
+            <label className="flex cursor-pointer items-center gap-3 self-start">
+              <input
+                id="rsvp-has-diet"
+                type="checkbox"
+                className="h-5 w-5 shrink-0 cursor-pointer accent-[var(--color-ink)]"
+                checked={hasDietary}
+                onChange={(e) => setHasDietary(e.target.checked)}
+              />
+              <span>{partySize > 1 ? 'Someone in our party has dietary requirements' : 'I have dietary requirements'}</span>
+            </label>
+            {hasDietary && (
+              <Field id="rsvp-diet" label="Dietary requirements">
+                <input
+                  id="rsvp-diet"
+                  required
+                  maxLength={300}
+                  className={inputClass}
+                  placeholder={partySize > 1 ? 'Who needs what, for example: Sam is vegetarian, no nuts' : 'For example: vegetarian, no nuts'}
+                  value={dietary}
+                  onChange={(e) => setDietary(e.target.value)}
+                />
+              </Field>
+            )}
+          </div>
           <Field id="rsvp-song" label="A song that will get you dancing">
             <input id="rsvp-song" maxLength={200} className={inputClass} value={song} onChange={(e) => setSong(e.target.value)} />
           </Field>

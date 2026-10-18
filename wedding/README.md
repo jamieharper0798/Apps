@@ -11,7 +11,7 @@ All the wording is in [`src/wedding.ts`](src/wedding.ts). Anything still contain
 ## Sending invites
 
 - The plain link works for everyone.
-- A **personal link** like `https://jamie-and-hannah-2027.web.app/?to=Aunt%20Mary` greets that guest by name and fills their name in on the RSVP form. The guest list page (below) has a box that makes these for you.
+- A **personal link** like `https://jamie-and-hannah-2027.web.app/?to=Mary%20Smith` greets that guest by name and fills in their first and last name on the RSVP form. The guest list page (below) has a box that makes these for you.
 
 ## Seeing replies
 
