@@ -225,7 +225,13 @@ function Site() {
 
         <Section id="dress" eyebrow="Dress code" title={wedding.dressCode.title}>
           <div className="grid gap-10 md:grid-cols-2">
-            <p className="text-ink-soft">{wedding.dressCode.body}</p>
+            <div className="grid content-start gap-3">
+              {wedding.dressCode.body.split('\n\n').map((para) => (
+                <p key={para} className="text-ink-soft">
+                  {para}
+                </p>
+              ))}
+            </div>
             <div>
               <p className="eyebrow">Gifts</p>
               <p className="mt-2 text-ink-soft">{wedding.gifts}</p>

@@ -40,7 +40,7 @@ export const wedding = {
 
   dressCode: {
     title: 'Classic wedding attire',
-    body: 'Suits and dresses. You know how to dress for a wedding. Just look your best and ready to have fun.',
+    body: "Suits and dresses. You know how to dress for a wedding. Just look your best and ready to have fun.\n\nThere will be parts of the day outside, and it's September in England… so be prepared for anything.",
   },
 
   gifts:
