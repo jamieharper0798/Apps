@@ -169,7 +169,7 @@ function Site() {
                 <p className="font-display text-xl italic tabular-nums text-gold sm:text-2xl">{item.time}</p>
                 <div className="min-w-0">
                   <p className="text-lg font-medium">{item.title}</p>
-                  <p className="mt-0.5 text-ink-soft">{item.detail}</p>
+                  {item.detail && <p className="mt-0.5 text-ink-soft">{item.detail}</p>}
                 </div>
               </li>
             ))}
