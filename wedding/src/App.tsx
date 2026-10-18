@@ -281,6 +281,9 @@ function Site({ wedding }: { wedding: Wedding }) {
             <p className="eyebrow text-gold-light">RSVP</p>
             <h2 className="mt-4 font-display text-4xl sm:text-5xl">Will you join us?</h2>
             <p className="mt-4 text-paper/70">Kindly reply by {rsvpBy}.</p>
+            <p className="mx-auto mt-2 max-w-md text-paper/70">
+              You can reply on behalf of your whole party: choose how many of you are coming and add everyone's names.
+            </p>
           </div>
           <div className="mt-12">
             <RsvpForm />
