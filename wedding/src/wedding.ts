@@ -29,7 +29,12 @@ export const wedding = {
   ],
 
   stay: [
-    { name: 'Cantley House Hotel', distance: 'The venue itself', note: 'The easiest option: no travel home at the end of the night. Rooms are limited, so book early.' },
+    {
+      name: 'Cantley House Hotel',
+      distance: 'The venue itself',
+      note:
+        "The easiest option: no travel home at the end of the night. Rooms are limited and allocated by us. If we haven't let you know you have a room, please find alternative options or ask us if there is space.\n\nYou can book the night before yourself with our preferential rate if you wish.",
+    },
     { name: 'Premier Inn Wokingham Town Centre', distance: 'About a mile away', note: 'A good-value option in the town centre, a few minutes from the venue by taxi.', url: 'https://www.premierinn.com/gb/en/hotels/england/berkshire/wokingham/wokingham-town-centre.html' },
   ],
 
