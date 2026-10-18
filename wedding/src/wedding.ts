@@ -31,7 +31,7 @@ export const wedding = {
 
   stay: [
     { name: 'Cantley House Hotel', distance: 'The venue itself', note: 'The easiest option: no travel home at the end of the night. Rooms are limited, so book early.' },
-    { name: 'Hotel two', distance: 'TODO: distance from the venue', note: 'A cheaper option with easy parking.' },
+    { name: 'Premier Inn Wokingham Town Centre', distance: 'About a mile away', note: 'A good-value option in the town centre, a few minutes from the venue by taxi.' },
   ],
 
   dressCode: {
