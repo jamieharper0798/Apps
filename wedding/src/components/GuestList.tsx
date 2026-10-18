@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut, type User } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { inviteLink } from '../lib/invite';
-import { fetchRsvps, guestName, latestPerGuest, type Rsvp } from '../lib/rsvp';
+import { deleteRsvps, fetchRsvps, guestKey, guestName, latestPerGuest, type Rsvp } from '../lib/rsvp';
 
 // Private page at #guests for the couple: every reply, totals, a CSV export and personal invite links.
 export function GuestList() {
@@ -62,12 +62,29 @@ function SignIn() {
 }
 
 function Replies({ user }: { user: User }) {
-  const [rsvps, setRsvps] = useState<Rsvp[] | null>(null);
+  // Every reply ever sent; the table shows the newest per guest.
+  const [all, setAll] = useState<Rsvp[] | null>(null);
+  const rsvps = all && latestPerGuest(all);
   const [denied, setDenied] = useState(false);
+  const [confirming, setConfirming] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState('');
+
+  // Deleting a guest removes every reply they sent, so an older answer doesn't take its place.
+  const remove = async (r: Rsvp) => {
+    setDeleteError('');
+    const ids = (all ?? []).filter((x) => guestKey(x) === guestKey(r)).map((x) => x.id);
+    try {
+      await deleteRsvps(ids);
+      setAll((prev) => prev && prev.filter((x) => !ids.includes(x.id)));
+    } catch {
+      setDeleteError(`Couldn't delete ${guestName(r)}'s reply. Check your connection and try again.`);
+    }
+    setConfirming(null);
+  };
 
   const load = useCallback(async () => {
     try {
-      setRsvps(latestPerGuest(await fetchRsvps()));
+      setAll(await fetchRsvps());
       setDenied(false);
     } catch (err) {
       if ((err as { code?: string }).code === 'permission-denied') setDenied(true);
@@ -118,6 +135,7 @@ function Replies({ user }: { user: User }) {
             </button>
           </div>
         </div>
+        {deleteError && <p className="mb-3 text-sm text-[#9b3b3b]">{deleteError}</p>}
         {rsvps.length === 0 ? (
           <p className="rounded-2xl border border-dashed border-rule p-8 text-center text-ink-soft">
             No replies yet. Send out some invite links below and they'll appear here.
@@ -133,6 +151,9 @@ function Replies({ user }: { user: User }) {
                   <th className="px-4 py-3 font-medium">Dietary</th>
                   <th className="px-4 py-3 font-medium">Song</th>
                   <th className="px-4 py-3 font-medium">Note</th>
+                  <th className="px-4 py-3 font-medium">
+                    <span className="sr-only">Delete</span>
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-rule align-top">
@@ -153,6 +174,22 @@ function Replies({ user }: { user: User }) {
                     <td className="px-4 py-3">{r.dietary || '–'}</td>
                     <td className="px-4 py-3">{r.song || '–'}</td>
                     <td className="max-w-xs px-4 py-3 text-ink-soft">{r.message || '–'}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-right">
+                      {confirming === r.id ? (
+                        <span className="inline-flex items-center gap-3">
+                          <button type="button" onClick={() => remove(r)} className="rounded-full bg-[#9b3b3b] px-3 py-1 text-xs font-medium text-white hover:bg-[#82302f]">
+                            Delete
+                          </button>
+                          <button type="button" onClick={() => setConfirming(null)} className="text-xs text-ink-soft hover:text-ink">
+                            Cancel
+                          </button>
+                        </span>
+                      ) : (
+                        <button type="button" onClick={() => setConfirming(r.id)} className="text-xs text-ink-soft underline underline-offset-4 hover:text-[#9b3b3b]">
+                          Delete
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
