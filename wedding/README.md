@@ -2,7 +2,13 @@
 
 A one-page wedding website for guests: the date and countdown, the order of the day, venue and travel, where to stay, dress code, gifts, FAQs, and an RSVP form. It has its own Firebase project, `jamie-and-hannah-2027`, separate from the to-do and lead apps.
 
-Live at **https://jamie-and-hannah-2027.web.app**. Every push to `main` that touches `wedding/` publishes the site and the Firestore security rules through [`.github/workflows/deploy-wedding.yml`](../.github/workflows/deploy-wedding.yml), using the `FIREBASE_SERVICE_ACCOUNT_WEDDING` repository secret (a service account key with Firebase Hosting Admin, Firebase Rules Admin, API Keys Viewer, Cloud Run Viewer and Service Usage Consumer roles).
+Live at **https://jamie-and-hannah-2027.web.app**. Every push to `main` that touches `wedding/` publishes the site and the Firestore security rules through [`.github/workflows/deploy-wedding.yml`](../.github/workflows/deploy-wedding.yml), using the `FIREBASE_SERVICE_ACCOUNT_WEDDING` repository secret (a service account key with Firebase Hosting Admin, Firebase Rules Admin, Cloud Datastore User, API Keys Viewer, Cloud Run Viewer and Service Usage Consumer roles).
+
+## Guest login
+
+The whole site sits behind one shared guest login. Guests type the username **JamieandHannah2027** and the password from their invitation. Behind the scenes that username is the Firebase account `jamieandhannah2027@jamie-and-hannah-2027.web.app` (Authentication → Users), and sign-up is turned off so nobody can make their own account. To change the password, reset it on that user in the Firebase console.
+
+The wedding details aren't in the page code at all: the deploy workflow uploads `src/wedding.ts` to Firestore (`site/content`), which only signed-in users can read, and RSVPs are only accepted from signed-in users. Note that this repository is public, so `src/wedding.ts` itself can be read on GitHub.
 
 ## Editing the details
 

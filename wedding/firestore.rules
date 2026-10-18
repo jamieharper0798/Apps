@@ -8,9 +8,16 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid in ['NaERrR3freZ6dtRkePZmXIyuAU33'];
     }
 
+    // The wedding details, uploaded by the deploy workflow. Only signed-in guests can read them.
+    match /site/{docId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
     match /weddingRsvps/{rsvpId} {
-      // Anyone with the link can send a reply, but only in the shape the RSVP form sends.
-      allow create: if request.resource.data.keys().hasOnly(
+      // Signed-in guests can send a reply, but only in the shape the RSVP form sends.
+      allow create: if request.auth != null
+                    && request.resource.data.keys().hasOnly(
                          ['firstName', 'lastName', 'attending', 'partySize', 'guestNames', 'dietary', 'song', 'message', 'createdAt'])
                     && request.resource.data.firstName is string
                     && request.resource.data.firstName.size() > 0 && request.resource.data.firstName.size() <= 60
