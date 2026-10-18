@@ -20,7 +20,7 @@ export const wedding = {
     { time: '1:45pm', title: 'Drinks and canapés', detail: 'Photos on the lawn, weather permitting.' },
     { time: '4:00pm', title: 'Dinner and speeches', detail: 'Tell us about dietary needs in your RSVP.' },
     { time: '7:00pm', title: 'First dance and party', detail: 'Bring your dancing shoes.' },
-    { time: '8:00pm', title: 'Evening snacks' },
+    { time: '8:00pm', title: 'Evening snacks', detail: 'Some light food options.' },
     { time: '12:00am', title: 'Carriages', detail: 'Book your ride home ahead of time, as taxis get busy late at night.' },
   ],
 
