@@ -162,7 +162,7 @@ function Site() {
       </section>
 
       <main className="px-4 sm:px-8">
-        <Section id="day" eyebrow="The day" title="Order of the day">
+        <Section id="day" eyebrow="The day" title="Order of the day" subtitle="Estimate">
           <ol className="divide-y divide-rule border-y border-rule">
             {wedding.schedule.map((item) => (
               <li key={item.time} className="grid grid-cols-[5.5rem_1fr] items-baseline gap-4 py-5 sm:grid-cols-[8rem_1fr] sm:py-6">
@@ -293,12 +293,25 @@ function Unit({ n, label }: { n: number; label: string }) {
   );
 }
 
-function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: string; children: ReactNode }) {
+function Section({
+  id,
+  eyebrow,
+  title,
+  subtitle,
+  children,
+}: {
+  id: string;
+  eyebrow: string;
+  title: string;
+  subtitle?: string;
+  children: ReactNode;
+}) {
   return (
     <section id={id} className="mx-auto grid max-w-6xl scroll-mt-16 gap-8 border-b border-rule py-16 last:border-b-0 sm:py-24 lg:grid-cols-[18rem_1fr] lg:gap-16">
       <div>
         <p className="eyebrow">{eyebrow}</p>
         <h2 className="mt-3 font-display text-4xl leading-tight sm:text-5xl lg:text-[2.75rem]">{title}</h2>
+        {subtitle && <p className="mt-2 font-display text-xl italic text-gold">{subtitle}</p>}
       </div>
       <div className="min-w-0 lg:pt-8">{children}</div>
     </section>
