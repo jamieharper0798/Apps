@@ -1,0 +1,57 @@
+name: Deploy wedding site to Firebase
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "wedding/**"
+      - ".github/workflows/deploy-wedding.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wedding-firebase
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: wedding
+    env:
+      HAS_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_WEDDING != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for the deploy key
+        if: env.HAS_KEY != 'true'
+        run: echo "::warning::Add the FIREBASE_SERVICE_ACCOUNT_WEDDING repository secret to publish the wedding site to Firebase. Skipping."
+
+      - uses: actions/setup-node@v4
+        if: env.HAS_KEY == 'true'
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: wedding/package-lock.json
+
+      - name: Install dependencies
+        if: env.HAS_KEY == 'true'
+        run: npm ci
+
+      - name: Build
+        if: env.HAS_KEY == 'true'
+        run: npm run build
+
+      # Publishes the site to https://jamie-and-hannah-2027.web.app and the RSVP security rules to Firestore.
+      - name: Deploy
+        if: env.HAS_KEY == 'true'
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_WEDDING }}
+        run: |
+          printf '%s' "$SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
+          npx --yes firebase-tools@14 deploy --only hosting,firestore:rules --project jamie-and-hannah-2027 --non-interactive
