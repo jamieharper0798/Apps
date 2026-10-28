@@ -4,6 +4,12 @@ import { useAppState } from './useAppState';
 import { XP_BY_PRIORITY, dayKey, isYesterday, levelFromTotalXp } from '../lib/gamify';
 import { nextDueDate } from '../lib/repeat';
 
+/** Coerces an invalid stored count (undefined, or NaN from the brief window this field
+    could be written as NaN) back to 0, since destructure defaults only catch undefined. */
+function safeCount(n: number | undefined): number {
+  return Number.isFinite(n) ? (n as number) : 0;
+}
+
 const INITIAL_STATE: AppState = {
   tasks: [],
   dopamine: {
@@ -173,9 +179,11 @@ export function useTodos() {
         : -XP_BY_PRIORITY[target.priority];
       const newXp = Math.max(0, state.dopamine.xp + xpDelta);
 
-      // completedToday may be absent on state saved before it existed — default it here since
-      // this reads state.dopamine directly, not the hook's normalized return value below.
-      let { streak, lastCompletedDay, totalCompleted, completedToday = 0 } = state.dopamine;
+      // completedToday may be absent (state saved before it existed) or NaN (state saved
+      // during the brief window it could become NaN) — this reads state.dopamine directly,
+      // not the hook's normalized return value below, so normalize it here too.
+      let { streak, lastCompletedDay, totalCompleted } = state.dopamine;
+      let completedToday = safeCount(state.dopamine.completedToday);
       let streakExtended = false;
 
       if (nowCompleting) {
@@ -244,9 +252,11 @@ export function useTodos() {
     return { ...t, list: t.list ?? 'personal', notes: t.notes ?? '', repeat: t.repeat ?? 'none' };
   });
 
-  // Dopamine state saved before completedToday existed has no such field in storage.
-  const dopamine: AppState['dopamine'] =
-    state.dopamine.completedToday === undefined ? { ...state.dopamine, completedToday: 0 } : state.dopamine;
+  // Dopamine state saved before completedToday existed has no such field in storage, and a
+  // brief window could write it as NaN — normalize either case back to 0.
+  const dopamine: AppState['dopamine'] = Number.isFinite(state.dopamine.completedToday)
+    ? state.dopamine
+    : { ...state.dopamine, completedToday: 0 };
 
   return {
     tasks,
