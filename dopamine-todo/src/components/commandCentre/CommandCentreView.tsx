@@ -159,7 +159,10 @@ export function CommandCentreView({
             scrolling out of view with everything else, with safe-area padding so it isn't
             rendered behind the OS status bar once pinned flush to the top on a notched phone
             (relevant for the installed/standalone PWA, which has no browser chrome of its own). */}
-        <div className="sticky top-0 z-30 pt-[max(1.25rem,env(safe-area-inset-top))]">
+        {/* The extra +0.5rem on top of the raw safe-area-inset-top is deliberate: on an iPhone
+            with a Dynamic Island/notch, sitting flush against the exact safe-area boundary still
+            reads as "touching" it — a bit of breathing room below it looks and feels clear. */}
+        <div className="sticky top-0 z-30 pt-[max(1.25rem,calc(env(safe-area-inset-top)+0.5rem))]">
           {/* Overrides .cc-glass-bar's background/blur: that class is tuned to sit over the page's
               gradient blobs, which stay legible through a light 22%-opacity blur. Once this bar is
               sticky, scrolled task text ends up directly behind it instead, and that same low
