@@ -49,7 +49,7 @@ export function TaskPanel({
   const groups = groupTasksForCommandCentre(filtered);
 
   return (
-    <div className="cc-glass-card flex min-w-0 flex-1 basis-[480px] grow-[999] flex-col gap-4.5 rounded-3xl p-5.5">
+    <div className="cc-glass-card flex min-w-0 flex-1 basis-[480px] grow-[999] flex-col gap-4.5 self-start rounded-3xl p-5.5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex gap-1 rounded-full bg-[rgba(255,255,255,0.45)] p-1">
           {LIST_ORDER.map((list) => (
