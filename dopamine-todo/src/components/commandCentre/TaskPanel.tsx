@@ -15,6 +15,7 @@ interface TaskPanelProps {
   tasks: Task[];
   today: string;
   onToggle: (id: string) => void;
+  onClearCompleted: () => void;
   onAdd: (text: string, priority: Priority) => void;
   onOpenTask: (id: string) => void;
   taskView: 'list' | 'grid';
@@ -29,12 +30,14 @@ export function TaskPanel({
   tasks,
   today,
   onToggle,
+  onClearCompleted,
   onAdd,
   onOpenTask,
   taskView,
 }: TaskPanelProps) {
   const [draft, setDraft] = useState('');
   const [priority, setPriority] = useState<Priority>('medium');
+  const hasDone = tasks.some((t) => t.done);
 
   const submit = () => {
     const trimmed = draft.trim();
@@ -66,18 +69,28 @@ export function TaskPanel({
             </button>
           ))}
         </div>
-        <div className="flex gap-1 rounded-full bg-[rgba(255,255,255,0.4)] p-1">
-          {CC_FILTER_ORDER.map((f) => (
+        <div className="flex items-center gap-2.5">
+          <div className="flex gap-1 rounded-full bg-[rgba(255,255,255,0.4)] p-1">
+            {CC_FILTER_ORDER.map((f) => (
+              <button
+                key={f.value}
+                onClick={() => onFilterChange(f.value)}
+                className={`whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-semibold text-cc-ink transition active:scale-95 ${
+                  filter === f.value ? 'bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)]' : ''
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+          {hasDone && (
             <button
-              key={f.value}
-              onClick={() => onFilterChange(f.value)}
-              className={`whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-semibold text-cc-ink transition active:scale-95 ${
-                filter === f.value ? 'bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)]' : ''
-              }`}
+              onClick={onClearCompleted}
+              className="whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-cc-ink-4 transition active:scale-95 hover:text-cc-red"
             >
-              {f.label}
+              Clear done
             </button>
-          ))}
+          )}
         </div>
       </div>
 

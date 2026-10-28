@@ -209,6 +209,7 @@ function App() {
           onAddTask={addTask}
           onSetNotes={setNotes}
           onToggle={handleToggle}
+          onClearCompleted={() => clearCompleted(activeList)}
           onOpenTask={setOpenTaskId}
           onOpenSettings={() => setEditingBrand(true)}
           onSwitchToClassic={() => setViewMode('classic')}
