@@ -202,6 +202,17 @@ export function useTodos() {
         }
         lastCompletedDay = today;
         totalCompleted += 1;
+      } else {
+        // Undoing a completion: mirror the increment so the counts stay accurate. totalCompleted
+        // is a lifetime count so it always comes back down; completedToday only comes back down
+        // when the completion being undone actually happened today — undoing an old completion
+        // (e.g. from the Done filter) shouldn't touch today's count.
+        totalCompleted = Math.max(0, totalCompleted - 1);
+        const today = dayKey();
+        const wasCompletedToday = target.completedAt !== null && dayKey(new Date(target.completedAt)) === today;
+        if (wasCompletedToday && lastCompletedDay === today) {
+          completedToday = Math.max(0, completedToday - 1);
+        }
       }
 
       const newLevelInfo = levelFromTotalXp(newXp);
