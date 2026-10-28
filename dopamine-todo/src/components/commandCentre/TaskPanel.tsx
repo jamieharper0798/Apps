@@ -129,7 +129,7 @@ export function TaskPanel({
                   return (
                     <div
                       key={task.id}
-                      className={`flex aspect-square flex-col justify-between gap-2 overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.65)] p-3.5 transition hover:bg-[rgba(255,255,255,0.8)] ${
+                      className={`flex h-[104px] flex-col justify-between gap-1.5 overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.65)] p-3 transition hover:bg-[rgba(255,255,255,0.8)] ${
                         late ? 'bg-[rgba(253,227,221,0.75)]' : 'bg-[rgba(255,255,255,0.55)]'
                       }`}
                     >
@@ -160,11 +160,11 @@ export function TaskPanel({
                         className={`flex min-w-0 flex-1 flex-col items-start gap-1 overflow-hidden text-left transition active:scale-[0.98] ${task.done ? 'opacity-50' : ''}`}
                       >
                         <span
-                          className={`line-clamp-2 text-[15px] font-semibold leading-snug tracking-tight text-cc-ink ${task.done ? 'line-through' : ''}`}
+                          className={`w-full truncate text-[15px] font-semibold leading-snug tracking-tight text-cc-ink ${task.done ? 'line-through' : ''}`}
                         >
                           {task.text}
                         </span>
-                        {task.notes && <span className="line-clamp-1 text-[12px] text-cc-ink-3">{task.notes}</span>}
+                        {task.notes && <span className="w-full truncate text-[12px] text-cc-ink-3">{task.notes}</span>}
                       </button>
                     </div>
                   );
