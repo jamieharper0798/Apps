@@ -121,8 +121,15 @@ export function CommandCentreView({
   const greetName = displayName ? `, ${displayName}` : '';
 
   return (
-    <div className="command-centre relative min-h-screen overflow-hidden font-cc" style={{ background: '#b6a38c' }}>
-      <div className="cc-bg-blobs" />
+    <div className="command-centre relative min-h-screen font-cc" style={{ background: '#b6a38c' }}>
+      {/* overflow-hidden is scoped to this wrapper, not the page root — sitting it on the root
+          broke position:sticky for the side rail and Focus Now card below, since any ancestor
+          with overflow other than visible becomes the scroll container sticky positions against,
+          and this div never itself scrolls (the page does), so sticky silently stopped tracking
+          scroll as soon as content grew past one screen. */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="cc-bg-blobs" />
+      </div>
 
       <div className="relative mx-auto flex max-w-[1320px] flex-col gap-4.5 px-5 pb-[120px] pt-5 sm:px-7">
         {/* Top bar */}
@@ -308,7 +315,12 @@ export function CommandCentreView({
             </div>
 
             {/* Task panel + Focus column */}
-            <div className="flex flex-wrap-reverse items-start gap-4">
+            {/* items-stretch (the default) so the focus column's wrapper grows to match the task
+                panel's height — that's what gives its sticky inner card room to travel as you
+                scroll past a long list. The task panel opts back out with self-start below so it
+                never gets stretched taller than its own content on the rare occasion it's the
+                shorter of the two. */}
+            <div className="flex flex-wrap-reverse gap-4">
               <TaskPanel
                 activeList={activeList}
                 onActiveListChange={onActiveListChange}
