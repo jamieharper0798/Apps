@@ -154,7 +154,7 @@ export function CommandCentreView({
         <div className="cc-bg-blobs" />
       </div>
 
-      <div className="relative mx-auto flex max-w-[1320px] flex-col gap-4.5 px-5 pb-8 pt-5 sm:px-7">
+      <div className="relative mx-auto flex max-w-[1320px] flex-col gap-4.5 px-3 pb-8 pt-5 sm:px-7">
         {/* Top bar */}
         <div className="cc-glass-bar flex flex-wrap items-center gap-3 rounded-[28px] p-2 sm:flex-nowrap sm:gap-4 sm:rounded-full">
           <div className="flex min-w-0 flex-1 items-center gap-3">
@@ -233,6 +233,17 @@ export function CommandCentreView({
               </button>
             </div>
             <button
+              onClick={onOpenSettings}
+              aria-label="Settings"
+              title="Settings"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#1d1a16] transition active:scale-90 sm:hidden"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              </svg>
+            </button>
+            <button
               onClick={onSwitchToClassic}
               aria-label="Switch to classic view"
               title="Classic view"
@@ -255,9 +266,11 @@ export function CommandCentreView({
           </div>
         </div>
 
-        <div className="grid grid-cols-[56px_minmax(0,1fr)] items-start gap-4">
-          {/* Side rail */}
-          <div className="cc-glass-bar sticky top-5 mt-10 flex flex-col items-center gap-2.5 rounded-full py-2.5">
+        <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-[56px_minmax(0,1fr)]">
+          {/* Side rail — hidden below sm: a 56px icon column has no room on a phone screen, and
+              was the main reason the content column below got squeezed into overflowing. Its one
+              functional button (Settings) moves into the top bar's icon cluster on mobile instead. */}
+          <div className="cc-glass-bar sticky top-5 mt-10 hidden flex-col items-center gap-2.5 rounded-full py-2.5 sm:flex">
             {RAIL_ICONS.map((icon, i) => {
               const isHome = i === 0;
               const isSettings = icon.label === 'Settings';
@@ -289,7 +302,7 @@ export function CommandCentreView({
           </div>
 
           {/* Main panel */}
-          <div className="cc-glass-panel flex min-w-0 flex-col gap-5.5 rounded-[32px] px-8 pb-8 pt-9">
+          <div className="cc-glass-panel flex min-w-0 flex-col gap-5.5 rounded-[32px] px-4 pb-6 pt-7 sm:px-8 sm:pb-8 sm:pt-9">
             <div className="flex flex-col gap-1.5">
               <span className="text-[clamp(1.75rem,4vw,2.5rem)] font-bold leading-[1.1] tracking-tight text-cc-ink">
                 {greetingForHour(now.getHours())}
