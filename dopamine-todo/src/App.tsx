@@ -34,6 +34,7 @@ import { randomHype, dayKey } from './lib/gamify';
 import { deriveDisplayName } from './lib/commandCentre';
 import { CommandCentreView } from './components/commandCentre/CommandCentreView';
 import { CommandCentreTaskModal } from './components/commandCentre/CommandCentreTaskModal';
+import { CommandCentreLevelUpOverlay } from './components/commandCentre/CommandCentreLevelUpOverlay';
 
 function App() {
   const {
@@ -146,7 +147,11 @@ function App() {
   return (
     <div className="min-h-screen bg-[var(--surface)]">
       <CelebrationToast toast={toast} />
-      <LevelUpOverlay level={levelUp} onClose={() => setLevelUp(null)} />
+      {viewMode === 'command-centre' ? (
+        <CommandCentreLevelUpOverlay level={levelUp} onClose={() => setLevelUp(null)} />
+      ) : (
+        <LevelUpOverlay level={levelUp} onClose={() => setLevelUp(null)} />
+      )}
       <UpdateToast />
       <UndoToast undo={undo} onUndo={handleUndo} />
       <BrandingEditor
