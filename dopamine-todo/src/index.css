@@ -4,6 +4,7 @@
   --font-display: "Inter", ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
   --font-body: "Inter", ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-cc: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --color-ink: var(--ink);
   --color-accent: var(--accent);
   --color-danger: var(--danger);
@@ -11,6 +12,15 @@
   --color-warn: var(--warn);
   --color-prio-low: var(--prio-low);
   --color-prio-medium: var(--prio-medium);
+  --color-cc-ink: var(--cc-ink);
+  --color-cc-ink-2: var(--cc-ink-2);
+  --color-cc-ink-3: var(--cc-ink-3);
+  --color-cc-ink-4: var(--cc-ink-4);
+  --color-cc-teal: var(--cc-teal-solid);
+  --color-cc-red: var(--cc-red-text);
+  --color-cc-red-bg: var(--cc-red-bg);
+  --color-cc-green: var(--cc-green-text);
+  --color-cc-green-bg: var(--cc-green-bg);
 }
 
 /* Theme tokens: dark is the default, [data-theme="light"] overrides below.
@@ -252,11 +262,92 @@ body::after {
   }
 }
 
+/* --- Command Centre: an alternate, toggleable view with its own fixed warm-neutral/teal
+   glass look, deliberately independent of the --ink/--accent theme system above (dark/light
+   mode has no effect on it). These live on :root, not .command-centre, because Tailwind's
+   @theme block registers --color-cc-ink: var(--cc-ink) etc. at :root — a custom property's
+   var() reference resolves against the scope where THAT property is declared, not where it's
+   finally consumed, so --cc-ink has to be visible at :root too or the indirection silently
+   produces nothing. They're only ever read from inside .command-centre in practice. */
+:root {
+  --cc-ink: #1d1a16;
+  --cc-ink-2: #3f3931;
+  --cc-ink-3: #4a443b;
+  --cc-ink-4: #6f675d;
+  --cc-teal-a: oklch(0.7 0.1 172);
+  --cc-teal-b: oklch(0.53 0.09 176);
+  --cc-teal-solid: oklch(0.55 0.1 174);
+  --cc-red-text: #b23a26;
+  --cc-red-bg: #fde3dd;
+  --cc-red-dot: #d2452f;
+  --cc-green-text: #23775c;
+  --cc-green-bg: #dcf2e8;
+  --cc-green-dot: #2f9a72;
+  --cc-amber-dot: #c9a227;
+}
+
+.cc-bg-blobs {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 50% at 18% 8%, #5b4634 0%, transparent 70%),
+    radial-gradient(40% 40% at 78% 4%, #6a5440 0%, transparent 70%),
+    radial-gradient(50% 60% at 92% 70%, #e8ddce 0%, transparent 70%),
+    radial-gradient(45% 45% at 8% 85%, #d9ccba 0%, transparent 70%),
+    radial-gradient(35% 30% at 50% 100%, #8a7560 0%, transparent 70%);
+  filter: blur(30px);
+}
+
+.cc-glass-bar {
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(28px) saturate(150%);
+  -webkit-backdrop-filter: blur(28px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 10px 30px rgba(50, 35, 20, 0.15);
+}
+
+.cc-glass-panel {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(36px) saturate(140%);
+  -webkit-backdrop-filter: blur(36px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 30px 80px rgba(50, 35, 20, 0.22);
+}
+
+.cc-glass-card {
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.cc-glass-tabbar {
+  background: rgba(80, 64, 48, 0.35);
+  backdrop-filter: blur(28px) saturate(150%);
+  -webkit-backdrop-filter: blur(28px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 14px 40px rgba(40, 25, 10, 0.3);
+}
+
 /* A viewer who has turned down system transparency finds blurred/translucent surfaces hard to
    read — make the glass material solid instead of just toning it down. */
 @media (prefers-reduced-transparency: reduce) {
   .panel-glass {
     background: var(--panel);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .cc-glass-bar,
+  .cc-glass-panel {
+    background: #e4dccd;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .cc-glass-tabbar {
+    background: #3a2f23;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
@@ -271,5 +362,19 @@ body::after {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     border-color: color-mix(in srgb, var(--ink) 40%, transparent);
+  }
+  .cc-glass-bar,
+  .cc-glass-panel,
+  .cc-glass-card {
+    background: #e4dccd;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-color: color-mix(in srgb, var(--cc-ink) 45%, transparent);
+  }
+  .cc-glass-tabbar {
+    background: #3a2f23;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-color: rgba(255, 255, 255, 0.6);
   }
 }

@@ -31,6 +31,8 @@ import { DEFAULT_ICON_192 } from './lib/icons';
 import { burstConfetti, burstLevelUp } from './lib/celebrate';
 import { playComplete, playDelete, playLevelUp } from './lib/sound';
 import { randomHype, dayKey } from './lib/gamify';
+import { deriveDisplayName } from './lib/commandCentre';
+import { CommandCentreView } from './components/commandCentre/CommandCentreView';
 
 function App() {
   const {
@@ -56,6 +58,7 @@ function App() {
   useBrandingMeta(branding);
   const { user, signIn, signUp, signOutUser } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const [viewMode, setViewMode] = useLocalStorage<'classic' | 'command-centre'>('dopamine-todo:viewMode', 'classic');
   const [activeList, setActiveList] = useLocalStorage<ListId>('dopamine-todo:activeList', 'personal');
   const [filter, setFilter] = useState<Filter>('all');
   const [toast, setToast] = useState<ToastData | null>(null);
@@ -169,6 +172,24 @@ function App() {
         onRepeatChange={setRepeat}
       />
 
+      {viewMode === 'command-centre' ? (
+        <CommandCentreView
+          tasks={tasks}
+          dopamine={dopamine}
+          levelInfo={levelInfo}
+          activeList={activeList}
+          onActiveListChange={setActiveList}
+          filter={filter}
+          onFilterChange={setFilter}
+          onAddTask={addTask}
+          onSetNotes={setNotes}
+          onToggle={handleToggle}
+          onOpenSettings={() => setEditingBrand(true)}
+          onSwitchToClassic={() => setViewMode('classic')}
+          displayName={deriveDisplayName(user?.email)}
+        />
+      ) : (
+      <>
       <header className="sticky top-0 z-30 border-b border-ink/10 bg-[var(--surface)]/75 pt-[env(safe-area-inset-top)] backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between py-5 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:pl-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))]">
           <button
@@ -207,6 +228,19 @@ function App() {
               />
             )}
             <InstallButton appName={branding.name} />
+            <button
+              onClick={() => setViewMode('command-centre')}
+              className="shrink-0 rounded-lg border border-ink/15 p-2 text-ink/50 transition active:scale-90 hover:border-ink/30 hover:text-ink"
+              aria-label="Switch to Command Centre view"
+              title="Command Centre view"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
+                <rect x="3" y="3" width="7" height="9" rx="1.5" />
+                <rect x="14" y="3" width="7" height="5" rx="1.5" />
+                <rect x="14" y="12" width="7" height="9" rx="1.5" />
+                <rect x="3" y="16" width="7" height="5" rx="1.5" />
+              </svg>
+            </button>
             <button
               onClick={toggleTheme}
               className="shrink-0 rounded-lg border border-ink/15 p-2 text-ink/50 transition active:scale-90 hover:border-ink/30 hover:text-ink"
@@ -315,6 +349,8 @@ function App() {
           </div>
         </aside>
       </div>
+      </>
+      )}
     </div>
   );
 }
