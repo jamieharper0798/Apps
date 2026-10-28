@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import { useTodos } from './hooks/useTodos';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import type { ListId } from './types';
@@ -172,7 +173,7 @@ function App() {
         <div className="mx-auto flex max-w-6xl items-center justify-between py-5 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:pl-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))]">
           <button
             onClick={() => setEditingBrand(true)}
-            className="group flex min-w-0 items-center gap-3 rounded-lg py-1 pr-2 transition hover:bg-ink/5"
+            className="group flex min-w-0 items-center gap-3 rounded-lg py-1 pr-2 transition active:scale-[0.98] hover:bg-ink/5"
             title="Customize name and icon"
           >
             <img
@@ -208,7 +209,7 @@ function App() {
             <InstallButton appName={branding.name} />
             <button
               onClick={toggleTheme}
-              className="shrink-0 rounded-lg border border-ink/15 p-2 text-ink/50 transition hover:border-ink/30 hover:text-ink"
+              className="shrink-0 rounded-lg border border-ink/15 p-2 text-ink/50 transition active:scale-90 hover:border-ink/30 hover:text-ink"
               aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
               title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
             >
@@ -216,7 +217,7 @@ function App() {
             </button>
             <button
               onClick={() => setMuted((m) => !m)}
-              className="shrink-0 rounded-lg border border-ink/15 p-2 text-ink/50 transition hover:border-ink/30 hover:text-ink"
+              className="shrink-0 rounded-lg border border-ink/15 p-2 text-ink/50 transition active:scale-90 hover:border-ink/30 hover:text-ink"
               aria-label={muted ? 'Unmute sound' : 'Mute sound'}
               title={muted ? 'Unmute' : 'Mute'}
             >
@@ -239,22 +240,32 @@ function App() {
             <div className="flex items-center gap-4">
               {FILTERS.map((f) => {
                 const isOverdue = f.value === 'overdue';
+                const isActive = filter === f.value;
                 return (
                   <button
                     key={f.value}
                     onClick={() => setFilter(f.value)}
-                    className={`flex items-center gap-1 border-b-2 pb-1 text-xs font-semibold uppercase tracking-wide transition ${
-                      filter === f.value
+                    className={`relative flex items-center gap-1 pb-1.5 text-xs font-semibold uppercase tracking-wide transition active:scale-95 ${
+                      isActive
                         ? isOverdue
-                          ? 'border-danger text-danger'
-                          : 'border-accent text-ink'
+                          ? 'text-danger'
+                          : 'text-ink'
                         : isOverdue
-                          ? 'border-transparent text-danger/70 hover:text-danger'
-                          : 'border-transparent text-ink/35 hover:text-ink/60'
+                          ? 'text-danger/70 hover:text-danger'
+                          : 'text-ink/35 hover:text-ink/60'
                     }`}
                   >
                     {isOverdue && <span aria-hidden>⚠</span>}
                     {f.label} <span className={`font-mono tabular-nums ${isOverdue ? 'text-danger/70' : 'text-ink/25'}`}>· {f.count}</span>
+                    {isActive && (
+                      <motion.div
+                        layoutId="filter-tab-underline"
+                        transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                        className={`absolute inset-x-0 -bottom-px h-0.5 rounded-full ${
+                          isOverdue ? 'bg-danger' : 'bg-accent shadow-[0_0_10px_-1px_var(--accent)]'
+                        }`}
+                      />
+                    )}
                   </button>
                 );
               })}
@@ -264,7 +275,7 @@ function App() {
               {completed > 0 && (
                 <button
                   onClick={() => clearCompleted(activeList)}
-                  className="font-medium uppercase tracking-wide text-ink/40 hover:text-danger"
+                  className="font-medium uppercase tracking-wide text-ink/40 transition active:scale-95 hover:text-danger"
                 >
                   Clear done
                 </button>

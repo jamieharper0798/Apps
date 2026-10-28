@@ -240,7 +240,7 @@ export function TaskItem({
           <button
             onClick={() => onToggle(task.id)}
             aria-label={task.done ? 'Mark as not done' : 'Mark as done'}
-            className={`relative flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border-2 font-mono text-2xl font-bold transition-all duration-200 sm:h-[72px] sm:w-[72px] sm:text-3xl ${
+            className={`relative flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border-2 font-mono text-2xl font-bold transition-all duration-200 active:scale-[0.96] active:duration-100 sm:h-[72px] sm:w-[72px] sm:text-3xl ${
               task.done
                 ? 'border-accent bg-accent text-[#0a0a0a] shadow-[0_0_28px_-6px_var(--accent)]'
                 : `bg-ink/[0.03] hover:-translate-y-0.5 hover:brightness-125 ${PRIORITY_NUMBER_CLASSES[task.priority]}`
@@ -284,7 +284,7 @@ export function TaskItem({
               onClick={() => onOpen(task.id)}
               aria-label={task.notes ? 'View notes' : 'Add notes'}
               title={task.notes ? 'View notes' : 'Add notes'}
-              className={`relative shrink-0 rounded-md p-1.5 transition hover:text-ink/60 ${
+              className={`relative shrink-0 rounded-md p-1.5 transition active:scale-90 hover:text-ink/60 ${
                 task.notes ? 'text-accent' : 'text-ink/25'
               }`}
             >
@@ -297,7 +297,7 @@ export function TaskItem({
             <button
               onClick={() => onDelete(task.id)}
               aria-label="Delete task"
-              className="shrink-0 rounded-md p-1.5 text-ink/25 opacity-0 transition hover:border-danger/40 hover:text-danger group-hover:opacity-100 focus-visible:opacity-100"
+              className="shrink-0 rounded-md p-1.5 text-ink/25 opacity-0 transition active:scale-90 hover:border-danger/40 hover:text-danger group-hover:opacity-100 focus-visible:opacity-100"
             >
               <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />

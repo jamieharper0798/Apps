@@ -147,7 +147,7 @@ export function TaskDetailModal({ task, onClose, onEditTitle, onEditNotes, onRep
                   key={r}
                   type="button"
                   onClick={() => onRepeatChange(task.id, r)}
-                  className={`flex-1 rounded-md px-2.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition ${
+                  className={`flex-1 rounded-md px-2.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition active:scale-95 ${
                     task.repeat === r ? 'bg-ink/10 text-ink' : 'text-ink/35 hover:text-ink/70'
                   }`}
                 >
@@ -170,7 +170,7 @@ export function TaskDetailModal({ task, onClose, onEditTitle, onEditNotes, onRep
             <div className="mt-5 flex justify-end">
               <button
                 onClick={handleClose}
-                className="rounded-lg border border-accent/60 px-4 py-2 text-sm font-bold uppercase tracking-wide text-accent transition hover:bg-accent/10 hover:shadow-[0_0_16px_-6px_var(--accent)]"
+                className="rounded-lg border border-accent/60 px-4 py-2 text-sm font-bold uppercase tracking-wide text-accent transition active:scale-[0.98] hover:bg-accent/10 hover:shadow-[0_0_16px_-6px_var(--accent)]"
               >
                 Done
               </button>

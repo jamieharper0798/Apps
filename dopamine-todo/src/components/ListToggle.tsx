@@ -18,7 +18,7 @@ export function ListToggle({ active, counts, onChange }: ListToggleProps) {
           <button
             key={list}
             onClick={() => onChange(list)}
-            className="relative flex items-center gap-1.5 pb-2.5 text-sm font-semibold uppercase tracking-wide transition"
+            className="relative flex items-center gap-1.5 pb-2.5 text-sm font-semibold uppercase tracking-wide transition active:scale-95"
           >
             <span className={isActive ? 'text-ink' : 'text-ink/35 hover:text-ink/60'}>
               {meta.label} <span className="font-mono tabular-nums text-ink/30">· {counts[list] ?? 0}</span>

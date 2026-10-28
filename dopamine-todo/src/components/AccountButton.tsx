@@ -29,7 +29,7 @@ export function AccountButton({ user, syncing, syncError, onSignInClick, onSignO
     return (
       <button
         onClick={onSignInClick}
-        className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border border-ink/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-ink/70 transition hover:border-ink/30 hover:text-ink"
+        className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border border-ink/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-ink/70 transition active:scale-95 hover:border-ink/30 hover:text-ink"
         title="Sign in to sync across devices"
       >
         <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -48,7 +48,7 @@ export function AccountButton({ user, syncing, syncError, onSignInClick, onSignO
     <div ref={rootRef} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className={`flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition hover:border-ink/30 ${
+        className={`flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition active:scale-95 hover:border-ink/30 ${
           syncError ? 'border-danger/50 text-danger' : 'border-ink/15 text-ink/70 hover:text-ink'
         }`}
         title={syncError ? 'Sync error — your changes may not be saved. Click for details.' : user.email ?? 'Account'}
@@ -70,6 +70,7 @@ export function AccountButton({ user, syncing, syncError, onSignInClick, onSignO
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: -4 }}
             transition={{ type: 'spring', stiffness: 400, damping: 24 }}
+            style={{ transformOrigin: 'top right' }}
             className="panel absolute right-0 top-full z-20 mt-1.5 w-44 rounded-xl p-1"
           >
             <p className="px-2.5 pb-1.5 pt-1 text-[11px] normal-case text-ink/40">

@@ -103,7 +103,7 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
               <button
                 type="submit"
                 disabled={submitting}
-                className="mt-1 rounded-lg border border-accent/60 px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-accent transition hover:shadow-[0_0_16px_-6px_var(--accent)] hover:bg-accent/10 disabled:opacity-50 disabled:hover:shadow-none"
+                className="mt-1 rounded-lg border border-accent/60 px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-accent transition active:scale-[0.98] hover:shadow-[0_0_16px_-6px_var(--accent)] hover:bg-accent/10 disabled:opacity-50 disabled:hover:shadow-none"
               >
                 {submitting ? 'Please wait…' : mode === 'signin' ? 'Sign in' : 'Create account'}
               </button>

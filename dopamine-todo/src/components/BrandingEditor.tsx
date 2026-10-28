@@ -122,7 +122,7 @@ export function BrandingEditor({
                   key={color}
                   onClick={() => onAccentColorChange(color)}
                   aria-label={`Use ${color} as the accent color`}
-                  className="h-7 w-7 shrink-0 rounded-full transition hover:scale-110"
+                  className="h-7 w-7 shrink-0 rounded-full transition active:scale-95 hover:scale-110"
                   style={{
                     backgroundColor: color,
                     boxShadow: accentColor.toLowerCase() === color ? `0 0 0 2px var(--panel), 0 0 0 4px ${color}` : 'none',
@@ -133,7 +133,7 @@ export function BrandingEditor({
                 onClick={() => colorInputRef.current?.click()}
                 aria-label="Choose a custom accent color"
                 title="Custom color"
-                className="relative flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-dashed border-ink/25 text-ink/40 transition hover:border-ink/40 hover:text-ink/70"
+                className="relative flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-dashed border-ink/25 text-ink/40 transition active:scale-95 hover:border-ink/40 hover:text-ink/70"
               >
                 <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" />
@@ -166,7 +166,7 @@ export function BrandingEditor({
               </button>
               <button
                 onClick={handleSave}
-                className="rounded-lg border border-accent/60 px-4 py-2 text-sm font-bold uppercase tracking-wide text-accent transition hover:shadow-[0_0_16px_-6px_var(--accent)] hover:bg-accent/10"
+                className="rounded-lg border border-accent/60 px-4 py-2 text-sm font-bold uppercase tracking-wide text-accent transition active:scale-95 hover:shadow-[0_0_16px_-6px_var(--accent)] hover:bg-accent/10"
               >
                 Save
               </button>

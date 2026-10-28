@@ -5,22 +5,36 @@ function getAccentColor(): string {
   return value || '#c6ff4a';
 }
 
+// Reduced motion keeps the feedback (a burst still fires, so completion still feels
+// confirmed) but drops the continuous side-cannon loop and cuts particle counts, since
+// a screen full of moving confetti is exactly the kind of motion that setting asks to avoid.
+function prefersReducedMotion(): boolean {
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+}
+
 export function burstConfetti(originX = 0.5, originY = 0.5) {
+  const reduced = prefersReducedMotion();
   confetti({
-    particleCount: 60,
+    particleCount: reduced ? 18 : 60,
     spread: 70,
-    startVelocity: 35,
+    startVelocity: reduced ? 20 : 35,
     origin: { x: originX, y: originY },
     colors: [getAccentColor(), '#ffffff', '#eaffb0', '#8fd13f'],
     scalar: 0.9,
-    ticks: 150,
+    ticks: reduced ? 80 : 150,
   });
 }
 
 export function burstLevelUp() {
+  const colors = [getAccentColor(), '#ffffff', '#eaffb0', '#8fd13f', '#4ade80'];
+
+  if (prefersReducedMotion()) {
+    confetti({ particleCount: 40, spread: 90, startVelocity: 25, origin: { x: 0.5, y: 0.5 }, colors, ticks: 80 });
+    return;
+  }
+
   const duration = 900;
   const end = Date.now() + duration;
-  const colors = [getAccentColor(), '#ffffff', '#eaffb0', '#8fd13f', '#4ade80'];
 
   (function frame() {
     confetti({
