@@ -33,6 +33,7 @@ import { playComplete, playDelete, playLevelUp } from './lib/sound';
 import { randomHype, dayKey } from './lib/gamify';
 import { deriveDisplayName } from './lib/commandCentre';
 import { CommandCentreView } from './components/commandCentre/CommandCentreView';
+import { CommandCentreTaskModal } from './components/commandCentre/CommandCentreTaskModal';
 
 function App() {
   const {
@@ -164,17 +165,31 @@ function App() {
           onSignUp={signUp}
         />
       )}
-      <TaskDetailModal
-        task={openTask}
-        onClose={() => setOpenTaskId(null)}
-        onEditTitle={editTask}
-        onEditNotes={setNotes}
-        onRepeatChange={setRepeat}
-        onPriorityChange={setPriority}
-        onOwnerChange={setOwner}
-        onDueDateChange={setDueDate}
-        onDelete={handleDelete}
-      />
+      {viewMode === 'command-centre' ? (
+        <CommandCentreTaskModal
+          task={openTask}
+          onClose={() => setOpenTaskId(null)}
+          onEditTitle={editTask}
+          onEditNotes={setNotes}
+          onRepeatChange={setRepeat}
+          onPriorityChange={setPriority}
+          onOwnerChange={setOwner}
+          onDueDateChange={setDueDate}
+          onDelete={handleDelete}
+        />
+      ) : (
+        <TaskDetailModal
+          task={openTask}
+          onClose={() => setOpenTaskId(null)}
+          onEditTitle={editTask}
+          onEditNotes={setNotes}
+          onRepeatChange={setRepeat}
+          onPriorityChange={setPriority}
+          onOwnerChange={setOwner}
+          onDueDateChange={setDueDate}
+          onDelete={handleDelete}
+        />
+      )}
 
       {viewMode === 'command-centre' ? (
         <CommandCentreView
