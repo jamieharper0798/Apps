@@ -154,115 +154,133 @@ export function CommandCentreView({
         <div className="cc-bg-blobs" />
       </div>
 
-      <div className="relative mx-auto flex max-w-[1320px] flex-col gap-4.5 px-3 pb-8 pt-5 sm:px-7">
-        {/* Top bar */}
-        <div className="cc-glass-bar flex flex-wrap items-center gap-3 rounded-[28px] p-2 sm:flex-nowrap sm:gap-4 sm:rounded-full">
-          <div className="flex min-w-0 flex-1 items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1d1a16] text-[15px] font-bold text-white">
-              {avatarInitial}
+      <div className="relative mx-auto flex max-w-[1320px] flex-col gap-4.5 px-3 pb-8 sm:px-7">
+        {/* Top bar — sticky so it stays reachable while scrolling a long task list instead of
+            scrolling out of view with everything else, with safe-area padding so it isn't
+            rendered behind the OS status bar once pinned flush to the top on a notched phone
+            (relevant for the installed/standalone PWA, which has no browser chrome of its own). */}
+        <div className="sticky top-0 z-30 pt-[max(1.25rem,env(safe-area-inset-top))]">
+          {/* Overrides .cc-glass-bar's background/blur: that class is tuned to sit over the page's
+              gradient blobs, which stay legible through a light 22%-opacity blur. Once this bar is
+              sticky, scrolled task text ends up directly behind it instead, and that same low
+              opacity lets enough contrast through to read as ghosting. A darker, more opaque tint
+              hides it reliably — and needs no text-color changes, since the bar's text is already
+              white for contrast against the gradient. */}
+          <div
+            className="cc-glass-bar flex flex-wrap items-center gap-3 rounded-[28px] p-2 sm:flex-nowrap sm:gap-4 sm:rounded-full"
+            style={{
+              background: 'rgba(20, 16, 12, 0.6)',
+              backdropFilter: 'blur(28px) saturate(150%)',
+              WebkitBackdropFilter: 'blur(28px) saturate(150%)',
+            }}
+          >
+            <div className="flex min-w-0 flex-1 items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1d1a16] text-[15px] font-bold text-white">
+                {avatarInitial}
+              </div>
+              <span className="truncate text-[15px] font-semibold text-white">Welcome{greetName}</span>
             </div>
-            <span className="truncate text-[15px] font-semibold text-white">Welcome{greetName}</span>
-          </div>
-          <div className="order-3 flex w-full basis-full items-center gap-3 rounded-full border border-[rgba(255,255,255,0.3)] bg-[rgba(255,255,255,0.18)] py-1.5 pl-1.5 pr-2 sm:order-none sm:w-auto sm:flex-1 sm:basis-[460px]">
-            <div
-              className="h-7 w-7 shrink-0 rounded-full"
-              style={{
-                background: 'radial-gradient(circle at 35% 30%, #fff 0%, oklch(0.8 0.1 172) 35%, oklch(0.5 0.1 200) 100%)',
-                boxShadow: '0 0 14px oklch(0.8 0.1 172 / 0.7)',
-              }}
-            />
-            <input
-              ref={quickInputRef}
-              value={quickDraft}
-              onChange={(e) => setQuickDraft(e.target.value)}
-              onKeyDown={handleQuickKeyDown}
-              placeholder="Add a task"
-              className="min-w-0 flex-1 bg-transparent text-sm font-medium text-white placeholder-white/60 outline-none"
-            />
-            <div className="flex shrink-0 gap-0.5 rounded-full bg-white/10 p-0.5">
-              {PRIORITY_ORDER.map((p) => (
+            <div className="order-3 flex w-full basis-full items-center gap-3 rounded-full border border-[rgba(255,255,255,0.3)] bg-[rgba(255,255,255,0.18)] py-1.5 pl-1.5 pr-2 sm:order-none sm:w-auto sm:flex-1 sm:basis-[460px]">
+              <div
+                className="h-7 w-7 shrink-0 rounded-full"
+                style={{
+                  background: 'radial-gradient(circle at 35% 30%, #fff 0%, oklch(0.8 0.1 172) 35%, oklch(0.5 0.1 200) 100%)',
+                  boxShadow: '0 0 14px oklch(0.8 0.1 172 / 0.7)',
+                }}
+              />
+              <input
+                ref={quickInputRef}
+                value={quickDraft}
+                onChange={(e) => setQuickDraft(e.target.value)}
+                onKeyDown={handleQuickKeyDown}
+                placeholder="Add a task"
+                className="min-w-0 flex-1 bg-transparent text-sm font-medium text-white placeholder-white/60 outline-none"
+              />
+              <div className="flex shrink-0 gap-0.5 rounded-full bg-white/10 p-0.5">
+                {PRIORITY_ORDER.map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setQuickPriority(p)}
+                    className={`rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-wide transition active:scale-90 ${
+                      quickPriority === p ? 'bg-white text-[#1d1a16]' : 'text-white/70'
+                    }`}
+                  >
+                    {PRIORITY_CODE[p]}
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={() => {
+                  handleAdd(quickDraft, quickPriority);
+                  setQuickDraft('');
+                }}
+                className="shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-semibold transition active:scale-95"
+                style={{
+                  background: quickDraft.trim() ? '#fff' : 'rgba(255,255,255,0.2)',
+                  color: quickDraft.trim() ? '#1d1a16' : 'rgba(255,255,255,0.8)',
+                }}
+              >
+                Add Task
+              </button>
+            </div>
+            <div className="flex flex-1 items-center justify-end gap-2">
+              <div className="flex shrink-0 gap-0.5 rounded-full bg-white/15 p-1">
                 <button
-                  key={p}
-                  type="button"
-                  onClick={() => setQuickPriority(p)}
-                  className={`rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-wide transition active:scale-90 ${
-                    quickPriority === p ? 'bg-white text-[#1d1a16]' : 'text-white/70'
+                  onClick={() => onTaskViewChange('list')}
+                  aria-label="List view"
+                  aria-pressed={taskView === 'list'}
+                  title="List view"
+                  className={`flex h-8 w-8 items-center justify-center rounded-full transition active:scale-90 ${
+                    taskView === 'list' ? 'bg-white text-[#1d1a16]' : 'text-white/70'
                   }`}
                 >
-                  {PRIORITY_CODE[p]}
+                  <ListIcon />
                 </button>
-              ))}
-            </div>
-            <button
-              onClick={() => {
-                handleAdd(quickDraft, quickPriority);
-                setQuickDraft('');
-              }}
-              className="shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-semibold transition active:scale-95"
-              style={{
-                background: quickDraft.trim() ? '#fff' : 'rgba(255,255,255,0.2)',
-                color: quickDraft.trim() ? '#1d1a16' : 'rgba(255,255,255,0.8)',
-              }}
-            >
-              Add Task
-            </button>
-          </div>
-          <div className="flex flex-1 items-center justify-end gap-2">
-            <div className="flex shrink-0 gap-0.5 rounded-full bg-white/15 p-1">
+                <button
+                  onClick={() => onTaskViewChange('grid')}
+                  aria-label="Grid view"
+                  aria-pressed={taskView === 'grid'}
+                  title="Grid view"
+                  className={`flex h-8 w-8 items-center justify-center rounded-full transition active:scale-90 ${
+                    taskView === 'grid' ? 'bg-white text-[#1d1a16]' : 'text-white/70'
+                  }`}
+                >
+                  <GridIcon />
+                </button>
+              </div>
               <button
-                onClick={() => onTaskViewChange('list')}
-                aria-label="List view"
-                aria-pressed={taskView === 'list'}
-                title="List view"
-                className={`flex h-8 w-8 items-center justify-center rounded-full transition active:scale-90 ${
-                  taskView === 'list' ? 'bg-white text-[#1d1a16]' : 'text-white/70'
-                }`}
+                onClick={onOpenSettings}
+                aria-label="Settings"
+                title="Settings"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#1d1a16] transition active:scale-90 sm:hidden"
               >
-                <ListIcon />
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg>
               </button>
               <button
-                onClick={() => onTaskViewChange('grid')}
-                aria-label="Grid view"
-                aria-pressed={taskView === 'grid'}
-                title="Grid view"
-                className={`flex h-8 w-8 items-center justify-center rounded-full transition active:scale-90 ${
-                  taskView === 'grid' ? 'bg-white text-[#1d1a16]' : 'text-white/70'
-                }`}
+                onClick={onSwitchToClassic}
+                aria-label="Switch to classic view"
+                title="Classic view"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#1d1a16] transition active:scale-90"
               >
-                <GridIcon />
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
+                  <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                aria-label="Notifications"
+                className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white"
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#1d1a16" strokeWidth={2} strokeLinecap="round">
+                  <path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                  <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                </svg>
+                <span className="absolute right-[9px] top-2 h-2 w-2 rounded-full border-2 border-white bg-[#e0533d]" />
               </button>
             </div>
-            <button
-              onClick={onOpenSettings}
-              aria-label="Settings"
-              title="Settings"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#1d1a16] transition active:scale-90 sm:hidden"
-            >
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-              </svg>
-            </button>
-            <button
-              onClick={onSwitchToClassic}
-              aria-label="Switch to classic view"
-              title="Classic view"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#1d1a16] transition active:scale-90"
-            >
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
-                <path d="M19 12H5M12 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <button
-              aria-label="Notifications"
-              className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white"
-            >
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#1d1a16" strokeWidth={2} strokeLinecap="round">
-                <path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-              </svg>
-              <span className="absolute right-[9px] top-2 h-2 w-2 rounded-full border-2 border-white bg-[#e0533d]" />
-            </button>
           </div>
         </div>
 
