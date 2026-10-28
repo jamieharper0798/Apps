@@ -26,10 +26,11 @@ export interface CompleteResult {
 export function useTodos() {
   const [state, setState, { syncing, syncError }] = useAppState(INITIAL_STATE);
 
+  /** Returns the new task's id (or undefined if the text was blank), so a caller can chain a follow-up write like setNotes. */
   const addTask = useCallback(
-    (text: string, priority: Priority, list: ListId) => {
+    (text: string, priority: Priority, list: ListId): string | undefined => {
       const trimmed = text.trim();
-      if (!trimmed) return;
+      if (!trimmed) return undefined;
       const task: Task = {
         id: crypto.randomUUID(),
         text: trimmed,
@@ -44,6 +45,7 @@ export function useTodos() {
         completedAt: null,
       };
       setState((prev) => ({ ...prev, tasks: [task, ...prev.tasks] }));
+      return task.id;
     },
     [setState],
   );
