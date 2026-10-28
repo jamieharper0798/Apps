@@ -85,7 +85,7 @@ export function TaskPanel({
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={`Add a ${LIST_META[activeList].label.toLowerCase()} task  (use | to split subject and action)`}
+          placeholder="Add a task"
           className="min-w-0 flex-1 bg-transparent text-[15px] font-medium text-cc-ink outline-none placeholder-cc-ink-4"
         />
         <div className="flex shrink-0 gap-0.5 rounded-lg bg-[rgba(255,255,255,0.6)] p-0.5">
