@@ -1,5 +1,6 @@
 import type { Task } from '../types';
 import type { Filter } from '../components/TaskList';
+import { PRIORITY_ORDER, PRIORITY_SHORT_LABELS } from './priority';
 
 /** Same underlying filter state as the classic view, just displayed as labeled chips in this order. */
 export const CC_FILTER_ORDER: { value: Filter; label: string }[] = [
@@ -34,10 +35,6 @@ export function isOverdue(task: Task, today: string): boolean {
   return !task.done && !!task.dueDate && task.dueDate < today;
 }
 
-function isTomorrow(task: Task, today: string): boolean {
-  return !task.done && !!task.dueDate && dayDiff(task.dueDate, today) === 1;
-}
-
 /** Narrows a task list down to one filter chip's semantics — identical rules to the classic view's. */
 export function filterTasksForCommandCentre(tasks: Task[], filter: Filter, today: string): Task[] {
   if (filter === 'active') return tasks.filter((t) => !t.done);
@@ -47,26 +44,27 @@ export function filterTasksForCommandCentre(tasks: Task[], filter: Filter, today
 }
 
 export interface CCGroup {
-  key: 'overdue' | 'tomorrow' | 'later' | 'completed';
+  key: Task['priority'];
   label: string;
   dotClassName: string;
   headerClassName: string;
   tasks: Task[];
 }
 
-/** Buckets an already-filtered task list into Overdue / Tomorrow / Later / Completed, in that order, skipping empty groups. */
-export function groupTasksForCommandCentre(tasks: Task[], today: string): CCGroup[] {
-  const overdue = tasks.filter((t) => isOverdue(t, today));
-  const tomorrow = tasks.filter((t) => isTomorrow(t, today));
-  const completed = tasks.filter((t) => t.done);
-  const later = tasks.filter((t) => !t.done && !isOverdue(t, today) && !isTomorrow(t, today));
+const PRIORITY_GROUP_STYLE: Record<Task['priority'], { dotClassName: string; headerClassName: string }> = {
+  high: { dotClassName: 'bg-cc-teal', headerClassName: 'text-cc-teal' },
+  medium: { dotClassName: 'bg-cc-ink', headerClassName: 'text-cc-ink' },
+  low: { dotClassName: 'bg-cc-ink-4', headerClassName: 'text-cc-ink-3' },
+};
 
-  const groups: CCGroup[] = [
-    { key: 'overdue', label: 'Overdue', dotClassName: 'bg-[var(--cc-red-dot)]', headerClassName: 'text-cc-red', tasks: overdue },
-    { key: 'tomorrow', label: 'Tomorrow', dotClassName: 'bg-cc-ink', headerClassName: 'text-cc-ink', tasks: tomorrow },
-    { key: 'later', label: 'Later', dotClassName: 'bg-cc-ink', headerClassName: 'text-cc-ink', tasks: later },
-    { key: 'completed', label: 'Completed', dotClassName: 'bg-[var(--cc-green-dot)]', headerClassName: 'text-cc-green', tasks: completed },
-  ];
+/** Buckets an already-filtered task list into High / Medium / Low priority, in that order, skipping empty groups — matching the classic view's own grouping. */
+export function groupTasksForCommandCentre(tasks: Task[]): CCGroup[] {
+  const groups: CCGroup[] = PRIORITY_ORDER.map((priority) => ({
+    key: priority,
+    label: `${PRIORITY_SHORT_LABELS[priority]} Priority`,
+    ...PRIORITY_GROUP_STYLE[priority],
+    tasks: tasks.filter((t) => t.priority === priority),
+  }));
 
   return groups.filter((g) => g.tasks.length > 0);
 }
