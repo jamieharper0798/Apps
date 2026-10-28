@@ -3,6 +3,7 @@ import type { KeyboardEvent, ReactNode } from 'react';
 import type { DopamineState, ListId, Priority, Task } from '../../types';
 import type { Filter } from '../TaskList';
 import { LIST_ORDER } from '../../lib/lists';
+import { PRIORITY_ORDER, PRIORITY_CODE } from '../../lib/priority';
 import { dayKey } from '../../lib/gamify';
 import { greetingForHour } from '../../lib/commandCentre';
 import { TaskPanel } from './TaskPanel';
@@ -77,6 +78,7 @@ export function CommandCentreView({
   displayName,
 }: CommandCentreViewProps) {
   const [quickDraft, setQuickDraft] = useState('');
+  const [quickPriority, setQuickPriority] = useState<Priority>('medium');
   const quickInputRef = useRef<HTMLInputElement>(null);
 
   const today = dayKey();
@@ -110,7 +112,7 @@ export function CommandCentreView({
 
   const handleQuickKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleAdd(quickDraft);
+      handleAdd(quickDraft, quickPriority);
       setQuickDraft('');
     }
   };
@@ -147,9 +149,23 @@ export function CommandCentreView({
               placeholder="Add a task… e.g. Email Sandra about travel tomorrow"
               className="min-w-0 flex-1 bg-transparent text-sm font-medium text-white placeholder-white/60 outline-none"
             />
+            <div className="flex shrink-0 gap-0.5 rounded-full bg-white/10 p-0.5">
+              {PRIORITY_ORDER.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setQuickPriority(p)}
+                  className={`rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-wide transition active:scale-90 ${
+                    quickPriority === p ? 'bg-white text-[#1d1a16]' : 'text-white/70'
+                  }`}
+                >
+                  {PRIORITY_CODE[p]}
+                </button>
+              ))}
+            </div>
             <button
               onClick={() => {
-                handleAdd(quickDraft);
+                handleAdd(quickDraft, quickPriority);
                 setQuickDraft('');
               }}
               className="shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-semibold transition active:scale-95"
