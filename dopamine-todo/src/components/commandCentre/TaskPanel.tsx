@@ -106,7 +106,7 @@ export function TaskPanel({
           onClick={submit}
           className="shrink-0 rounded-xl bg-[#1d1a16] px-4.5 py-2.5 text-[13px] font-semibold text-white transition active:scale-95"
         >
-          Add task
+          Add Task
         </button>
       </div>
 
