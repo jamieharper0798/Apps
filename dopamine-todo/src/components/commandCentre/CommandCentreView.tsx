@@ -20,6 +20,7 @@ interface CommandCentreViewProps {
   onAddTask: (text: string, priority: Priority, list: ListId) => string | undefined;
   onSetNotes: (id: string, notes: string) => void;
   onToggle: (id: string) => void;
+  onClearCompleted: () => void;
   onOpenTask: (id: string) => void;
   onOpenSettings: () => void;
   onSwitchToClassic: () => void;
@@ -91,6 +92,7 @@ export function CommandCentreView({
   onAddTask,
   onSetNotes,
   onToggle,
+  onClearCompleted,
   onOpenTask,
   onOpenSettings,
   onSwitchToClassic,
@@ -375,6 +377,7 @@ export function CommandCentreView({
                 tasks={listTasks}
                 today={today}
                 onToggle={onToggle}
+                onClearCompleted={onClearCompleted}
                 onAdd={handleAdd}
                 onOpenTask={onOpenTask}
                 taskView={taskView}
