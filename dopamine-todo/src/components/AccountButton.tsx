@@ -90,7 +90,7 @@ export function AccountButton({ user, syncing, syncError, onSignInClick, onSignO
                 setOpen(false);
                 onSignOut();
               }}
-              className="w-full rounded-md px-2.5 py-1.5 text-left text-xs font-medium uppercase tracking-wide text-ink/70 transition hover:bg-ink/10 hover:text-ink"
+              className="w-full rounded-md px-2.5 py-1.5 text-left text-xs font-medium uppercase tracking-wide text-ink/70 transition hover:bg-ink/10 hover:text-ink active:bg-ink/15"
             >
               Sign out
             </button>

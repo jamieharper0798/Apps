@@ -251,3 +251,25 @@ body::after {
     animation: none;
   }
 }
+
+/* A viewer who has turned down system transparency finds blurred/translucent surfaces hard to
+   read — make the glass material solid instead of just toning it down. */
+@media (prefers-reduced-transparency: reduce) {
+  .panel-glass {
+    background: var(--panel);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* A viewer who has asked for more contrast gets solid fills and a clearly defined border
+   instead of the soft gradient + low-opacity hairline .panel/.panel-glass normally use. */
+@media (prefers-contrast: more) {
+  .panel,
+  .panel-glass {
+    background: var(--panel);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-color: color-mix(in srgb, var(--ink) 40%, transparent);
+  }
+}

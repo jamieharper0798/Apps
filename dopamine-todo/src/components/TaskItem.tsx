@@ -184,7 +184,7 @@ export function TaskItem({
   ) : (
     <button
       onClick={startEditingOwner}
-      className={`flex min-w-0 flex-1 items-center gap-1.5 truncate rounded-md border px-2 py-1 text-left text-[11px] font-medium uppercase tracking-wide transition hover:border-ink/30 ${
+      className={`flex min-w-0 flex-1 items-center gap-1.5 truncate rounded-md border px-2 py-1 text-left text-[11px] font-medium uppercase tracking-wide transition active:scale-[0.97] hover:border-ink/30 ${
         owner ? `border ${ownerSwatch}` : 'border-ink/10 text-ink/25'
       }`}
     >

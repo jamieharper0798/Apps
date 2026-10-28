@@ -43,7 +43,7 @@ export function AddTaskForm({ onAdd, listLabel }: AddTaskFormProps) {
               key={p}
               type="button"
               onClick={() => setPriority(p)}
-              className={`rounded-md px-2.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition ${
+              className={`rounded-md px-2.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition active:scale-90 ${
                 priority === p ? 'bg-ink/10 text-ink' : 'text-ink/35 hover:text-ink/70'
               }`}
               title={PRIORITY_CODE[p]}

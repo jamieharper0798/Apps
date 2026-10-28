@@ -114,14 +114,14 @@ export function AuthModal({ open, onClose, onSignIn, onSignUp }: AuthModalProps)
                 setMode((m) => (m === 'signin' ? 'signup' : 'signin'));
                 setError(null);
               }}
-              className="mt-4 w-full text-center text-xs font-medium text-ink/40 hover:text-ink"
+              className="mt-4 w-full text-center text-xs font-medium text-ink/40 transition hover:text-ink active:text-ink"
             >
               {mode === 'signin' ? "Don't have an account? Create one" : 'Already have an account? Sign in'}
             </button>
 
             <button
               onClick={handleClose}
-              className="mt-4 w-full text-center text-xs font-medium uppercase tracking-wide text-ink/25 hover:text-ink/50"
+              className="mt-4 w-full text-center text-xs font-medium uppercase tracking-wide text-ink/25 transition hover:text-ink/50 active:text-ink/50"
             >
               Cancel
             </button>
