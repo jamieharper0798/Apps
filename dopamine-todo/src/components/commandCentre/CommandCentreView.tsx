@@ -146,7 +146,7 @@ export function CommandCentreView({
               value={quickDraft}
               onChange={(e) => setQuickDraft(e.target.value)}
               onKeyDown={handleQuickKeyDown}
-              placeholder="Add a task… e.g. Email Sandra about travel tomorrow"
+              placeholder="Add a task"
               className="min-w-0 flex-1 bg-transparent text-sm font-medium text-white placeholder-white/60 outline-none"
             />
             <div className="flex shrink-0 gap-0.5 rounded-full bg-white/10 p-0.5">
