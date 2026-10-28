@@ -80,8 +80,6 @@ const RAIL_ICONS: { label: string; path: ReactNode }[] = [
   },
 ];
 
-const BOTTOM_TABS = ['Overview', 'Tasks', 'Calendar', 'Stats', 'Personal'];
-
 export function CommandCentreView({
   tasks,
   dopamine,
@@ -154,7 +152,7 @@ export function CommandCentreView({
         <div className="cc-bg-blobs" />
       </div>
 
-      <div className="relative mx-auto flex max-w-[1320px] flex-col gap-4.5 px-5 pb-[120px] pt-5 sm:px-7">
+      <div className="relative mx-auto flex max-w-[1320px] flex-col gap-4.5 px-5 pb-8 pt-5 sm:px-7">
         {/* Top bar */}
         <div className="cc-glass-bar flex flex-wrap items-center gap-3 rounded-[28px] p-2 sm:flex-nowrap sm:gap-4 sm:rounded-full">
           <div className="flex min-w-0 flex-1 items-center gap-3">
@@ -389,28 +387,6 @@ export function CommandCentreView({
         </div>
       </div>
 
-      {/* Bottom tab bar */}
-      <div className="cc-glass-tabbar fixed bottom-[22px] left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full p-1.5">
-        {BOTTOM_TABS.map((tab) => {
-          const active = tab === 'Overview';
-          return (
-            <button
-              key={tab}
-              className="whitespace-nowrap rounded-full px-4.5 py-2.5 text-[13px] font-semibold transition active:scale-95"
-              style={{ background: active ? '#fff' : 'transparent', color: active ? '#1d1a16' : '#fff' }}
-            >
-              {tab}
-            </button>
-          );
-        })}
-        <button
-          onClick={() => quickInputRef.current?.focus()}
-          aria-label="Add a task"
-          className="ml-1 flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-white text-xl text-[#1d1a16] transition active:scale-90"
-        >
-          +
-        </button>
-      </div>
     </div>
   );
 }
