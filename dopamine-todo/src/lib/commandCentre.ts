@@ -69,9 +69,16 @@ export function groupTasksForCommandCentre(tasks: Task[]): CCGroup[] {
   return groups.filter((g) => g.tasks.length > 0);
 }
 
-/** A human-presentable first name from a sign-in email, since the app has no dedicated name field. */
+/** Known sign-ins whose email local-part doesn't cleanly split into a readable name. */
+const KNOWN_DISPLAY_NAMES: Record<string, string> = {
+  'jamieharper07@gmail.com': 'Jamie Harper',
+};
+
+/** A human-presentable name from a sign-in email, since the app has no dedicated name field. */
 export function deriveDisplayName(email: string | null | undefined): string | null {
   if (!email) return null;
+  const known = KNOWN_DISPLAY_NAMES[email.toLowerCase()];
+  if (known) return known;
   const local = email.split('@')[0];
   if (!local) return null;
   const first = local.split(/[._-]/)[0];
