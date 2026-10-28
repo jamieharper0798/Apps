@@ -307,7 +307,7 @@ export function TaskItem({
         </div>
 
         <div>
-          <p className="font-mono text-[10px] font-medium uppercase tracking-widest text-ink/25">{ordinalWord(index)}</p>
+          <p className="font-mono text-[10px] font-medium uppercase tracking-widest text-ink/20">{ordinalWord(index)}</p>
           {editingText ? (
             <input
               ref={textInputRef}
@@ -316,13 +316,13 @@ export function TaskItem({
               onBlur={commitText}
               onKeyDown={handleTextKeyDown}
               maxLength={200}
-              className="mt-1 w-full min-w-0 rounded-md border border-accent/50 bg-ink/5 px-2 py-1 text-[15px] font-semibold text-ink outline-none"
+              className="mt-1 w-full min-w-0 rounded-md border border-accent/50 bg-ink/5 px-2 py-1 text-lg font-bold tracking-tight text-ink outline-none"
             />
           ) : (
             <p
               onClick={startEditingText}
               title="Click to rename"
-              className={`mt-1 cursor-text rounded-md px-0.5 text-[15px] font-semibold leading-snug transition-colors hover:bg-ink/5 ${
+              className={`mt-1 cursor-text rounded-md px-0.5 text-lg font-bold leading-snug tracking-tight transition-colors hover:bg-ink/5 ${
                 task.done ? 'text-ink/30 line-through' : 'text-ink/90'
               }`}
             >
@@ -331,7 +331,7 @@ export function TaskItem({
           )}
         </div>
 
-        <div className="mt-auto flex items-center gap-2 pt-1 text-xs">
+        <div className="mt-auto flex items-center gap-2 pt-1.5 text-xs">
           {ownerPill}
           {dueDatePill}
         </div>
