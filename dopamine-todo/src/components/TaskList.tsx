@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   DndContext,
   KeyboardSensor,
@@ -123,6 +123,7 @@ export function TaskList({
   onReorder,
   onOpen,
 }: TaskListProps) {
+  const reduceMotion = useReducedMotion();
   const today = dayKey();
   const filtered = tasks.filter((t) => {
     if (filter === 'active') return !t.done;
@@ -139,8 +140,8 @@ export function TaskList({
         className="panel flex flex-col items-center gap-3 rounded-xl py-16 text-center"
       >
         <motion.span
-          animate={{ y: [0, -6, 0] }}
-          transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+          animate={reduceMotion ? undefined : { y: [0, -6, 0] }}
+          transition={reduceMotion ? undefined : { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
           className="text-5xl"
         >
           {filter === 'done' ? '🏁' : filter === 'overdue' ? '🎉' : '✨'}
