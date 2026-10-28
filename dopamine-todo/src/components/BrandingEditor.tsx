@@ -80,7 +80,7 @@ export function BrandingEditor({
             <div className="mt-5 flex items-center gap-4">
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="group relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-accent/40 bg-ink/5"
+                className="group relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-accent/40 bg-ink/5 transition active:scale-95"
                 aria-label="Upload icon image"
               >
                 <img src={branding.icon512 ?? DEFAULT_ICON_512} alt="" className="h-full w-full object-cover" />
@@ -92,14 +92,14 @@ export function BrandingEditor({
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
-                  className="rounded-lg border border-ink/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-ink transition hover:border-ink/30 disabled:opacity-50"
+                  className="rounded-lg border border-ink/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-ink transition active:scale-95 hover:border-ink/30 disabled:opacity-50"
                 >
                   {uploading ? 'Uploading…' : 'Upload image'}
                 </button>
                 {branding.icon512 && (
                   <button
                     onClick={onResetIcon}
-                    className="rounded-lg px-3 py-1.5 text-xs font-medium text-ink/40 transition hover:text-danger"
+                    className="rounded-lg px-3 py-1.5 text-xs font-medium text-ink/40 transition hover:text-danger active:text-danger"
                   >
                     Remove image
                   </button>
@@ -160,7 +160,7 @@ export function BrandingEditor({
             <div className="mt-6 flex justify-end gap-2">
               <button
                 onClick={onClose}
-                className="rounded-lg px-4 py-2 text-sm font-medium uppercase tracking-wide text-ink/50 transition hover:text-ink"
+                className="rounded-lg px-4 py-2 text-sm font-medium uppercase tracking-wide text-ink/50 transition hover:text-ink active:text-ink"
               >
                 Cancel
               </button>

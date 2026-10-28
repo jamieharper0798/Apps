@@ -33,6 +33,7 @@ export function InstallButton({ appName }: InstallButtonProps) {
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
+            style={{ transformOrigin: 'top right' }}
             className="panel absolute right-0 top-full z-10 mt-2 w-56 rounded-xl p-3 text-left text-xs normal-case text-ink/70"
           >
             Tap the Share icon <span className="text-ink">⬆️</span> then{' '}

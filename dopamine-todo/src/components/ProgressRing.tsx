@@ -18,7 +18,7 @@ export function ProgressRing({ progress, size = 64, stroke = 6 }: ProgressRingPr
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="rgba(255,255,255,0.08)"
+          stroke="color-mix(in srgb, var(--ink) 10%, transparent)"
           strokeWidth={stroke}
         />
         <circle
@@ -33,7 +33,7 @@ export function ProgressRing({ progress, size = 64, stroke = 6 }: ProgressRingPr
           strokeDashoffset={offset}
           style={{
             transition: 'stroke-dashoffset 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
-            filter: 'drop-shadow(0 0 5px rgba(198, 255, 74, 0.65))',
+            filter: 'drop-shadow(0 0 5px color-mix(in srgb, var(--accent) 65%, transparent))',
           }}
         />
       </svg>

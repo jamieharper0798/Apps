@@ -104,12 +104,12 @@ export function TaskDetailModal({ task, onClose, onEditTitle, onEditNotes, onRep
                 onBlur={commitTitle}
                 onKeyDown={handleTitleKeyDown}
                 maxLength={200}
-                className="-mx-2 -my-1 min-w-0 flex-1 rounded-lg bg-transparent px-2 py-1 text-xl font-bold text-ink outline-none transition focus:bg-ink/5"
+                className="-mx-2 -my-1 min-w-0 flex-1 rounded-lg bg-transparent px-2 py-1 text-xl font-bold tracking-tight text-ink outline-none transition focus:bg-ink/5"
               />
               <button
                 onClick={handleClose}
                 aria-label="Close"
-                className="shrink-0 rounded-lg p-1.5 text-ink/40 transition hover:bg-ink/10 hover:text-ink"
+                className="shrink-0 rounded-lg p-1.5 text-ink/40 transition active:scale-90 hover:bg-ink/10 hover:text-ink"
               >
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
