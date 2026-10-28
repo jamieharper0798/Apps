@@ -25,6 +25,10 @@ export interface DopamineState {
   streak: number;
   lastCompletedDay: string | null;
   totalCompleted: number;
+  /** Completions logged on lastCompletedDay. Persisted independently of the tasks list, so
+      clearing done tasks (which deletes them) never affects it. Only meaningful when
+      lastCompletedDay is today — otherwise treat it as 0. */
+  completedToday: number;
 }
 
 export interface AppState {

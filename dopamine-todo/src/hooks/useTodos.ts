@@ -12,6 +12,7 @@ const INITIAL_STATE: AppState = {
     streak: 0,
     lastCompletedDay: null,
     totalCompleted: 0,
+    completedToday: 0,
   },
 };
 
@@ -172,19 +173,22 @@ export function useTodos() {
         : -XP_BY_PRIORITY[target.priority];
       const newXp = Math.max(0, state.dopamine.xp + xpDelta);
 
-      let { streak, lastCompletedDay, totalCompleted } = state.dopamine;
+      let { streak, lastCompletedDay, totalCompleted, completedToday } = state.dopamine;
       let streakExtended = false;
 
       if (nowCompleting) {
         const today = dayKey();
         if (lastCompletedDay === today) {
           // already logged today, streak unchanged
+          completedToday += 1;
         } else if (lastCompletedDay && isYesterday(today, lastCompletedDay)) {
           streak += 1;
           streakExtended = true;
+          completedToday = 1;
         } else {
           streak = 1;
           streakExtended = true;
+          completedToday = 1;
         }
         lastCompletedDay = today;
         totalCompleted += 1;
@@ -212,6 +216,7 @@ export function useTodos() {
           streak,
           lastCompletedDay,
           totalCompleted,
+          completedToday,
         },
       }));
 
@@ -237,9 +242,13 @@ export function useTodos() {
     return { ...t, list: t.list ?? 'personal', notes: t.notes ?? '', repeat: t.repeat ?? 'none' };
   });
 
+  // Dopamine state saved before completedToday existed has no such field in storage.
+  const dopamine: AppState['dopamine'] =
+    state.dopamine.completedToday === undefined ? { ...state.dopamine, completedToday: 0 } : state.dopamine;
+
   return {
     tasks,
-    dopamine: state.dopamine,
+    dopamine,
     levelInfo,
     syncing,
     syncError,

@@ -48,6 +48,8 @@ function GridIcon() {
   );
 }
 
+const DAILY_TASK_TARGET = 5;
+
 const RAIL_ICONS: { label: string; path: ReactNode }[] = [
   { label: 'Overview', path: <path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z" fill="currentColor" stroke="none" /> },
   {
@@ -109,12 +111,10 @@ export function CommandCentreView({
   const listTasks = tasks.filter((t) => t.list === activeList);
   const activeCount = listTasks.filter((t) => !t.done).length;
   const overdueCount = listTasks.filter((t) => !t.done && t.dueDate && t.dueDate < today).length;
-  const completedToday = listTasks.filter((t) => t.completedAt && dayKey(new Date(t.completedAt)) === today).length;
-  // The All-time-cleared tile pairs with dopamine.totalCompleted, which is global (not per-list),
-  // so its "+today" badge is computed globally too, unlike the per-list Today tile above it.
-  const completedTodayGlobal = tasks.filter((t) => t.completedAt && dayKey(new Date(t.completedAt)) === today).length;
-  const todayTotal = activeCount + completedToday;
-  const dayPct = todayTotal ? (completedToday / todayTotal) * 100 : 0;
+  // Persisted in dopamine state (not derived from the tasks list) so it survives Clear done,
+  // which deletes completed tasks outright. Only meaningful when lastCompletedDay is today.
+  const completedTodayCount = dopamine.lastCompletedDay === today ? dopamine.completedToday : 0;
+  const dayPct = Math.min(100, (completedTodayCount / DAILY_TASK_TARGET) * 100);
   const xpPct = levelInfo.xpForNextLevel ? (levelInfo.xpIntoLevel / levelInfo.xpForNextLevel) * 100 : 0;
   const streakSafe = dopamine.lastCompletedDay === today;
 
@@ -307,8 +307,8 @@ export function CommandCentreView({
                 <div className="flex items-baseline justify-between">
                   <span className="text-[13px] font-medium text-cc-ink-2">Today</span>
                   <span className="text-xl font-bold tracking-tight text-cc-ink">
-                    {completedToday}
-                    <span className="text-sm font-normal text-cc-ink-4"> / {todayTotal}</span>
+                    {completedTodayCount}
+                    <span className="text-sm font-normal text-cc-ink-4"> / {DAILY_TASK_TARGET}</span>
                   </span>
                 </div>
                 <div className="h-1.5 overflow-hidden rounded-full bg-[rgba(255,255,255,0.8)]">
@@ -356,7 +356,7 @@ export function CommandCentreView({
                   <span className="text-xl font-bold tracking-tight text-cc-ink">{dopamine.totalCompleted}</span>
                 </div>
                 <span className="rounded-md bg-cc-green-bg px-2.5 py-1 text-[11px] font-bold text-cc-green">
-                  +{completedTodayGlobal} today
+                  +{completedTodayCount} today
                 </span>
               </div>
             </div>
