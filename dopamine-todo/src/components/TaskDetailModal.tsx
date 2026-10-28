@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import type { KeyboardEvent } from 'react';
+import type { ChangeEvent, KeyboardEvent } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import type { Repeat, Task } from '../types';
+import type { Priority, Repeat, Task } from '../types';
 import { dueDatePillClasses } from '../lib/dueDate';
 import { formatDueDate } from '../lib/formatDueDate';
 import { ownerSwatchClasses, ownerAvatarClasses } from '../lib/ownerColor';
-import { PRIORITY_BADGE_CLASSES, PRIORITY_CODE } from '../lib/priority';
 import { LIST_META } from '../lib/lists';
 import { REPEAT_ORDER, REPEAT_CODE } from '../lib/repeat';
+import { PriorityPicker } from './PriorityPicker';
 
 interface TaskDetailModalProps {
   task: Task | null;
@@ -15,6 +15,10 @@ interface TaskDetailModalProps {
   onEditTitle: (id: string, text: string) => void;
   onEditNotes: (id: string, notes: string) => void;
   onRepeatChange: (id: string, repeat: Repeat) => void;
+  onPriorityChange: (id: string, priority: Priority) => void;
+  onOwnerChange: (id: string, owner: string) => void;
+  onDueDateChange: (id: string, dueDate: string | null) => void;
+  onDelete: (id: string) => void;
 }
 
 function CalendarIcon() {
@@ -26,16 +30,38 @@ function CalendarIcon() {
   );
 }
 
-export function TaskDetailModal({ task, onClose, onEditTitle, onEditNotes, onRepeatChange }: TaskDetailModalProps) {
+export function TaskDetailModal({
+  task,
+  onClose,
+  onEditTitle,
+  onEditNotes,
+  onRepeatChange,
+  onPriorityChange,
+  onOwnerChange,
+  onDueDateChange,
+  onDelete,
+}: TaskDetailModalProps) {
   const [titleDraft, setTitleDraft] = useState('');
   const [notesDraft, setNotesDraft] = useState('');
   const titleRef = useRef<HTMLInputElement>(null);
+
+  const [editingOwner, setEditingOwner] = useState(false);
+  const [ownerDraft, setOwnerDraft] = useState('');
+  const ownerInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!task) return;
     setTitleDraft(task.text);
     setNotesDraft(task.notes ?? '');
+    setEditingOwner(false);
   }, [task]);
+
+  useEffect(() => {
+    if (editingOwner) {
+      ownerInputRef.current?.focus();
+      ownerInputRef.current?.select();
+    }
+  }, [editingOwner]);
 
   if (!task) return null;
 
@@ -78,6 +104,44 @@ export function TaskDetailModal({ task, onClose, onEditTitle, onEditNotes, onRep
     }
   };
 
+  const startEditingOwner = () => {
+    setOwnerDraft(owner);
+    setEditingOwner(true);
+  };
+
+  const commitOwner = () => {
+    onOwnerChange(task.id, ownerDraft.trim().slice(0, 40));
+    setEditingOwner(false);
+  };
+
+  const handleOwnerKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      commitOwner();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      setOwnerDraft(owner);
+      setEditingOwner(false);
+    }
+  };
+
+  const handleDueDate = (e: ChangeEvent<HTMLInputElement>) => {
+    onDueDateChange(task.id, e.target.value || null);
+  };
+
+  const openDatePicker = (e: { currentTarget: HTMLInputElement }) => {
+    try {
+      e.currentTarget.showPicker?.();
+    } catch {
+      // showPicker isn't available/allowed here — the input is still focused and usable.
+    }
+  };
+
+  const handleDelete = () => {
+    onDelete(task.id);
+    onClose();
+  };
+
   return (
     <AnimatePresence>
       {task && (
@@ -118,26 +182,61 @@ export function TaskDetailModal({ task, onClose, onEditTitle, onEditNotes, onRep
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              <span className={`rounded-md border px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider ${PRIORITY_BADGE_CLASSES[task.priority]}`}>
-                {PRIORITY_CODE[task.priority]}
-              </span>
+              <PriorityPicker priority={task.priority} onChange={(p) => onPriorityChange(task.id, p)} align="left" />
               <span className="rounded-md border border-ink/10 px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-ink/40">
                 {LIST_META[task.list].label}
               </span>
-              {owner && (
-                <span className={`flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-medium ${ownerSwatch}`}>
-                  <span className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full text-[8px] font-bold ${ownerAvatar}`}>
-                    {initial}
-                  </span>
-                  {owner}
-                </span>
+
+              {editingOwner ? (
+                <input
+                  ref={ownerInputRef}
+                  value={ownerDraft}
+                  onChange={(e) => setOwnerDraft(e.target.value)}
+                  onBlur={commitOwner}
+                  onKeyDown={handleOwnerKeyDown}
+                  maxLength={40}
+                  placeholder="Owner"
+                  className="w-28 rounded-md border border-accent/50 bg-ink/5 px-2 py-1 text-[11px] text-ink outline-none"
+                />
+              ) : (
+                <button
+                  onClick={startEditingOwner}
+                  className={`flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-medium transition active:scale-[0.97] hover:border-ink/30 ${
+                    owner ? ownerSwatch : 'border-ink/10 text-ink/25'
+                  }`}
+                >
+                  {owner ? (
+                    <>
+                      <span
+                        className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full text-[8px] font-bold normal-case ${ownerAvatar}`}
+                      >
+                        {initial}
+                      </span>
+                      {owner}
+                    </>
+                  ) : (
+                    '+ Owner'
+                  )}
+                </button>
               )}
-              {task.dueDate && (
-                <span className={`flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[11px] font-medium uppercase tracking-wide ${duePillClasses}`}>
+
+              <div className="relative">
+                <div
+                  className={`pointer-events-none flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[11px] font-medium uppercase tracking-wide transition active:scale-[0.97] ${duePillClasses}`}
+                >
                   <CalendarIcon />
-                  {formatDueDate(task.dueDate)}
-                </span>
-              )}
+                  {task.dueDate ? formatDueDate(task.dueDate) : 'No due'}
+                </div>
+                <input
+                  type="date"
+                  value={task.dueDate ?? ''}
+                  onChange={handleDueDate}
+                  onClick={openDatePicker}
+                  onFocus={openDatePicker}
+                  aria-label="Due date"
+                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                />
+              </div>
             </div>
 
             <label className="mt-5 block text-xs font-medium uppercase tracking-wide text-ink/40">Repeat</label>
@@ -167,7 +266,13 @@ export function TaskDetailModal({ task, onClose, onEditTitle, onEditNotes, onRep
               className="mt-1.5 w-full resize-y rounded-lg border border-ink/10 bg-ink/5 px-3 py-2.5 text-sm leading-relaxed text-ink placeholder-ink/30 outline-none transition focus:border-accent/50 focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--accent)_10%,transparent)]"
             />
 
-            <div className="mt-5 flex justify-end">
+            <div className="mt-5 flex items-center justify-between">
+              <button
+                onClick={handleDelete}
+                className="rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wide text-ink/40 transition active:scale-95 hover:text-danger"
+              >
+                Delete task
+              </button>
               <button
                 onClick={handleClose}
                 className="rounded-lg border border-accent/60 px-4 py-2 text-sm font-bold uppercase tracking-wide text-accent transition active:scale-[0.98] hover:bg-accent/10 hover:shadow-[0_0_16px_-6px_var(--accent)]"

@@ -7,6 +7,7 @@ interface FocusCardProps {
   tasks: Task[];
   today: string;
   onToggle: (id: string) => void;
+  onOpenTask: (id: string) => void;
 }
 
 function focusTag(task: Task, today: string): string {
@@ -17,7 +18,7 @@ function focusTag(task: Task, today: string): string {
   return `Due ${due}`;
 }
 
-export function FocusCard({ tasks, today, onToggle }: FocusCardProps) {
+export function FocusCard({ tasks, today, onToggle, onOpenTask }: FocusCardProps) {
   const { focus, then } = pickFocusTasks(tasks, today);
 
   return (
@@ -35,10 +36,10 @@ export function FocusCard({ tasks, today, onToggle }: FocusCardProps) {
             </span>
             <span className="text-xs opacity-60">{PRIORITY_SHORT_LABELS[focus.priority]} priority</span>
           </div>
-          <div className="flex flex-col gap-1">
+          <button onClick={() => onOpenTask(focus.id)} className="flex flex-col gap-1 text-left transition active:scale-[0.98]">
             <span className="text-[22px] font-bold leading-tight tracking-tight">{focus.text}</span>
             {focus.notes && <span className="text-sm opacity-75">{focus.notes}</span>}
-          </div>
+          </button>
           <button
             onClick={() => onToggle(focus.id)}
             className="rounded-[14px] border-none p-3.5 text-[14px] font-bold text-white transition active:scale-[0.97]"
@@ -56,16 +57,17 @@ export function FocusCard({ tasks, today, onToggle }: FocusCardProps) {
       )}
 
       {then.map((task) => (
-        <div
+        <button
           key={task.id}
-          className="cc-glass-card flex items-center justify-between gap-2.5 rounded-2xl px-3.5 py-3"
+          onClick={() => onOpenTask(task.id)}
+          className="cc-glass-card flex items-center justify-between gap-2.5 rounded-2xl px-3.5 py-3 text-left transition active:scale-[0.98]"
         >
           <div className="flex min-w-0 flex-col">
             <span className="text-[11px] font-semibold text-cc-ink-4">THEN</span>
             <span className="truncate text-sm font-semibold text-cc-ink">{task.text}</span>
           </div>
           <span className="whitespace-nowrap text-xs text-cc-ink-3">{formatCCDue(task.dueDate, today)}</span>
-        </div>
+        </button>
       ))}
     </div>
   );

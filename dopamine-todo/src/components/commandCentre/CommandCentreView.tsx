@@ -19,6 +19,7 @@ interface CommandCentreViewProps {
   onAddTask: (text: string, priority: Priority, list: ListId) => string | undefined;
   onSetNotes: (id: string, notes: string) => void;
   onToggle: (id: string) => void;
+  onOpenTask: (id: string) => void;
   onOpenSettings: () => void;
   onSwitchToClassic: () => void;
   displayName: string | null;
@@ -70,6 +71,7 @@ export function CommandCentreView({
   onAddTask,
   onSetNotes,
   onToggle,
+  onOpenTask,
   onOpenSettings,
   onSwitchToClassic,
   displayName,
@@ -96,12 +98,12 @@ export function CommandCentreView({
     {} as Record<ListId, number>,
   );
 
-  const handleAdd = (raw: string) => {
+  const handleAdd = (raw: string, priority: Priority = 'medium') => {
     const [subjectPart, ...rest] = raw.split('|');
     const subject = subjectPart.trim();
     if (!subject) return;
     const action = rest.join('|').trim();
-    const id = onAddTask(subject, 'medium', activeList);
+    const id = onAddTask(subject, priority, activeList);
     if (id && action) onSetNotes(id, action);
     onFilterChange('active');
   };
@@ -301,9 +303,10 @@ export function CommandCentreView({
                 today={today}
                 onToggle={onToggle}
                 onAdd={handleAdd}
+                onOpenTask={onOpenTask}
               />
               <div className="w-full basis-[260px] sm:w-auto sm:flex-1">
-                <FocusCard tasks={listTasks} today={today} onToggle={onToggle} />
+                <FocusCard tasks={listTasks} today={today} onToggle={onToggle} onOpenTask={onOpenTask} />
               </div>
             </div>
           </div>
