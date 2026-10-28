@@ -173,7 +173,9 @@ export function useTodos() {
         : -XP_BY_PRIORITY[target.priority];
       const newXp = Math.max(0, state.dopamine.xp + xpDelta);
 
-      let { streak, lastCompletedDay, totalCompleted, completedToday } = state.dopamine;
+      // completedToday may be absent on state saved before it existed — default it here since
+      // this reads state.dopamine directly, not the hook's normalized return value below.
+      let { streak, lastCompletedDay, totalCompleted, completedToday = 0 } = state.dopamine;
       let streakExtended = false;
 
       if (nowCompleting) {
