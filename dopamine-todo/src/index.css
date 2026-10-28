@@ -324,14 +324,6 @@ body::after {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-.cc-glass-tabbar {
-  background: rgba(80, 64, 48, 0.35);
-  backdrop-filter: blur(28px) saturate(150%);
-  -webkit-backdrop-filter: blur(28px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 14px 40px rgba(40, 25, 10, 0.3);
-}
-
 /* A viewer who has turned down system transparency finds blurred/translucent surfaces hard to
    read — make the glass material solid instead of just toning it down. */
 @media (prefers-reduced-transparency: reduce) {
@@ -343,11 +335,6 @@ body::after {
   .cc-glass-bar,
   .cc-glass-panel {
     background: #e4dccd;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-  .cc-glass-tabbar {
-    background: #3a2f23;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
@@ -370,11 +357,5 @@ body::after {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     border-color: color-mix(in srgb, var(--cc-ink) 45%, transparent);
-  }
-  .cc-glass-tabbar {
-    background: #3a2f23;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border-color: rgba(255, 255, 255, 0.6);
   }
 }
