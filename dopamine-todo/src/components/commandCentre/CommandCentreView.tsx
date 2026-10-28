@@ -174,7 +174,7 @@ export function CommandCentreView({
                 color: quickDraft.trim() ? '#1d1a16' : 'rgba(255,255,255,0.8)',
               }}
             >
-              Add
+              Add Task
             </button>
           </div>
           <div className="flex flex-1 items-center justify-end gap-2">
