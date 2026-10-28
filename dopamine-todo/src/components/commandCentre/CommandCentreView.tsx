@@ -24,6 +24,27 @@ interface CommandCentreViewProps {
   onOpenSettings: () => void;
   onSwitchToClassic: () => void;
   displayName: string | null;
+  taskView: 'list' | 'grid';
+  onTaskViewChange: (view: 'list' | 'grid') => void;
+}
+
+function ListIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
+      <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+    </svg>
+  );
+}
+
+function GridIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7" rx="1.5" />
+      <rect x="14" y="3" width="7" height="7" rx="1.5" />
+      <rect x="3" y="14" width="7" height="7" rx="1.5" />
+      <rect x="14" y="14" width="7" height="7" rx="1.5" />
+    </svg>
+  );
 }
 
 const RAIL_ICONS: { label: string; path: ReactNode }[] = [
@@ -76,6 +97,8 @@ export function CommandCentreView({
   onOpenSettings,
   onSwitchToClassic,
   displayName,
+  taskView,
+  onTaskViewChange,
 }: CommandCentreViewProps) {
   const [quickDraft, setQuickDraft] = useState('');
   const [quickPriority, setQuickPriority] = useState<Priority>('medium');
@@ -185,6 +208,30 @@ export function CommandCentreView({
             </button>
           </div>
           <div className="flex flex-1 items-center justify-end gap-2">
+            <div className="flex shrink-0 gap-0.5 rounded-full bg-white/15 p-1">
+              <button
+                onClick={() => onTaskViewChange('list')}
+                aria-label="List view"
+                aria-pressed={taskView === 'list'}
+                title="List view"
+                className={`flex h-8 w-8 items-center justify-center rounded-full transition active:scale-90 ${
+                  taskView === 'list' ? 'bg-white text-[#1d1a16]' : 'text-white/70'
+                }`}
+              >
+                <ListIcon />
+              </button>
+              <button
+                onClick={() => onTaskViewChange('grid')}
+                aria-label="Grid view"
+                aria-pressed={taskView === 'grid'}
+                title="Grid view"
+                className={`flex h-8 w-8 items-center justify-center rounded-full transition active:scale-90 ${
+                  taskView === 'grid' ? 'bg-white text-[#1d1a16]' : 'text-white/70'
+                }`}
+              >
+                <GridIcon />
+              </button>
+            </div>
             <button
               onClick={onSwitchToClassic}
               aria-label="Switch to classic view"
@@ -332,6 +379,7 @@ export function CommandCentreView({
                 onToggle={onToggle}
                 onAdd={handleAdd}
                 onOpenTask={onOpenTask}
+                taskView={taskView}
               />
               <div className="w-full basis-[260px] sm:w-auto sm:flex-1">
                 <FocusCard tasks={listTasks} today={today} onToggle={onToggle} onOpenTask={onOpenTask} />

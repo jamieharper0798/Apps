@@ -60,6 +60,7 @@ function App() {
   const { user, signIn, signUp, signOutUser } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [viewMode, setViewMode] = useLocalStorage<'classic' | 'command-centre'>('dopamine-todo:viewMode', 'classic');
+  const [ccTaskView, setCcTaskView] = useLocalStorage<'list' | 'grid'>('dopamine-todo:ccTaskView', 'list');
   const [activeList, setActiveList] = useLocalStorage<ListId>('dopamine-todo:activeList', 'personal');
   const [filter, setFilter] = useState<Filter>('all');
   const [toast, setToast] = useState<ToastData | null>(null);
@@ -207,6 +208,8 @@ function App() {
           onOpenSettings={() => setEditingBrand(true)}
           onSwitchToClassic={() => setViewMode('classic')}
           displayName={deriveDisplayName(user?.email)}
+          taskView={ccTaskView}
+          onTaskViewChange={setCcTaskView}
         />
       ) : (
       <>

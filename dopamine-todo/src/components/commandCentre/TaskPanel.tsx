@@ -17,6 +17,7 @@ interface TaskPanelProps {
   onToggle: (id: string) => void;
   onAdd: (text: string, priority: Priority) => void;
   onOpenTask: (id: string) => void;
+  taskView: 'list' | 'grid';
 }
 
 export function TaskPanel({
@@ -30,6 +31,7 @@ export function TaskPanel({
   onToggle,
   onAdd,
   onOpenTask,
+  taskView,
 }: TaskPanelProps) {
   const [draft, setDraft] = useState('');
   const [priority, setPriority] = useState<Priority>('medium');
@@ -120,49 +122,99 @@ export function TaskPanel({
               {group.label}
               <span className="font-medium text-cc-ink-4">{group.tasks.length}</span>
             </div>
-            {group.tasks.map((task) => {
-              const late = isOverdue(task, today);
-              return (
-                <div
-                  key={task.id}
-                  className={`grid grid-cols-[26px_minmax(0,1fr)_auto] items-center gap-3.5 rounded-2xl border border-[rgba(255,255,255,0.65)] px-4 py-3.5 transition hover:bg-[rgba(255,255,255,0.8)] ${
-                    late ? 'bg-[rgba(253,227,221,0.75)]' : 'bg-[rgba(255,255,255,0.55)]'
-                  }`}
-                >
-                  <button
-                    onClick={() => onToggle(task.id)}
-                    className="flex h-6 w-6 items-center justify-center rounded-full border-[1.5px] text-xs font-extrabold text-white transition active:scale-[0.88]"
-                    style={{
-                      background: task.done ? 'var(--cc-teal-solid)' : 'rgba(255,255,255,0.8)',
-                      borderColor: task.done ? 'var(--cc-teal-solid)' : 'rgba(29,26,22,0.25)',
-                    }}
-                    aria-label={task.done ? 'Mark as not done' : 'Mark as done'}
-                  >
-                    {task.done && '✓'}
-                  </button>
-                  <button
-                    onClick={() => onOpenTask(task.id)}
-                    className={`flex min-w-0 flex-col gap-0.5 text-left transition active:scale-[0.98] ${task.done ? 'opacity-50' : ''}`}
-                  >
-                    <span
-                      className={`truncate text-[16px] font-semibold tracking-tight text-cc-ink ${task.done ? 'line-through' : ''}`}
+            {taskView === 'grid' ? (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {group.tasks.map((task) => {
+                  const late = isOverdue(task, today);
+                  return (
+                    <div
+                      key={task.id}
+                      className={`flex aspect-square flex-col justify-between gap-2 overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.65)] p-3.5 transition hover:bg-[rgba(255,255,255,0.8)] ${
+                        late ? 'bg-[rgba(253,227,221,0.75)]' : 'bg-[rgba(255,255,255,0.55)]'
+                      }`}
                     >
-                      {task.text}
-                    </span>
-                    {task.notes && <span className="truncate text-[13px] text-cc-ink-3">{task.notes}</span>}
-                  </button>
-                  <span
-                    className="whitespace-nowrap rounded-full px-2.5 py-1.5 text-xs font-semibold"
-                    style={{
-                      background: late ? '#fff' : 'rgba(255,255,255,0.85)',
-                      color: late ? 'var(--cc-red-text)' : 'var(--cc-ink)',
-                    }}
+                      <div className="flex items-start justify-between gap-2">
+                        <button
+                          onClick={() => onToggle(task.id)}
+                          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-[1.5px] text-xs font-extrabold text-white transition active:scale-[0.88]"
+                          style={{
+                            background: task.done ? 'var(--cc-teal-solid)' : 'rgba(255,255,255,0.8)',
+                            borderColor: task.done ? 'var(--cc-teal-solid)' : 'rgba(29,26,22,0.25)',
+                          }}
+                          aria-label={task.done ? 'Mark as not done' : 'Mark as done'}
+                        >
+                          {task.done && '✓'}
+                        </button>
+                        <span
+                          className="whitespace-nowrap rounded-full px-2 py-1 text-[11px] font-semibold"
+                          style={{
+                            background: late ? '#fff' : 'rgba(255,255,255,0.85)',
+                            color: late ? 'var(--cc-red-text)' : 'var(--cc-ink)',
+                          }}
+                        >
+                          {formatCCDue(task.dueDate, today)}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => onOpenTask(task.id)}
+                        className={`flex min-w-0 flex-1 flex-col items-start gap-1 overflow-hidden text-left transition active:scale-[0.98] ${task.done ? 'opacity-50' : ''}`}
+                      >
+                        <span
+                          className={`line-clamp-2 text-[15px] font-semibold leading-snug tracking-tight text-cc-ink ${task.done ? 'line-through' : ''}`}
+                        >
+                          {task.text}
+                        </span>
+                        {task.notes && <span className="line-clamp-1 text-[12px] text-cc-ink-3">{task.notes}</span>}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              group.tasks.map((task) => {
+                const late = isOverdue(task, today);
+                return (
+                  <div
+                    key={task.id}
+                    className={`grid grid-cols-[26px_minmax(0,1fr)_auto] items-center gap-3.5 rounded-2xl border border-[rgba(255,255,255,0.65)] px-4 py-3.5 transition hover:bg-[rgba(255,255,255,0.8)] ${
+                      late ? 'bg-[rgba(253,227,221,0.75)]' : 'bg-[rgba(255,255,255,0.55)]'
+                    }`}
                   >
-                    {formatCCDue(task.dueDate, today)}
-                  </span>
-                </div>
-              );
-            })}
+                    <button
+                      onClick={() => onToggle(task.id)}
+                      className="flex h-6 w-6 items-center justify-center rounded-full border-[1.5px] text-xs font-extrabold text-white transition active:scale-[0.88]"
+                      style={{
+                        background: task.done ? 'var(--cc-teal-solid)' : 'rgba(255,255,255,0.8)',
+                        borderColor: task.done ? 'var(--cc-teal-solid)' : 'rgba(29,26,22,0.25)',
+                      }}
+                      aria-label={task.done ? 'Mark as not done' : 'Mark as done'}
+                    >
+                      {task.done && '✓'}
+                    </button>
+                    <button
+                      onClick={() => onOpenTask(task.id)}
+                      className={`flex min-w-0 flex-col gap-0.5 text-left transition active:scale-[0.98] ${task.done ? 'opacity-50' : ''}`}
+                    >
+                      <span
+                        className={`truncate text-[16px] font-semibold tracking-tight text-cc-ink ${task.done ? 'line-through' : ''}`}
+                      >
+                        {task.text}
+                      </span>
+                      {task.notes && <span className="truncate text-[13px] text-cc-ink-3">{task.notes}</span>}
+                    </button>
+                    <span
+                      className="whitespace-nowrap rounded-full px-2.5 py-1.5 text-xs font-semibold"
+                      style={{
+                        background: late ? '#fff' : 'rgba(255,255,255,0.85)',
+                        color: late ? 'var(--cc-red-text)' : 'var(--cc-ink)',
+                      }}
+                    >
+                      {formatCCDue(task.dueDate, today)}
+                    </span>
+                  </div>
+                );
+              })
+            )}
           </div>
         ))
       )}
