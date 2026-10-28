@@ -6,9 +6,11 @@ import { PRIORITY_ORDER, PRIORITY_CODE, PRIORITY_BADGE_CLASSES } from '../lib/pr
 interface PriorityPickerProps {
   priority: Priority;
   onChange: (priority: Priority) => void;
+  /** Which side the dropdown hangs from — 'right' (default) suits a trigger near a card's right edge, 'left' suits one near a container's left edge. */
+  align?: 'left' | 'right';
 }
 
-export function PriorityPicker({ priority, onChange }: PriorityPickerProps) {
+export function PriorityPicker({ priority, onChange, align = 'right' }: PriorityPickerProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -47,8 +49,8 @@ export function PriorityPicker({ priority, onChange }: PriorityPickerProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: -4 }}
             transition={{ type: 'spring', stiffness: 400, damping: 24 }}
-            style={{ transformOrigin: 'top right' }}
-            className="panel absolute right-0 top-full z-20 mt-1.5 flex gap-1 rounded-xl p-1"
+            style={{ transformOrigin: align === 'left' ? 'top left' : 'top right' }}
+            className={`panel absolute top-full z-20 mt-1.5 flex gap-1 rounded-xl p-1 ${align === 'left' ? 'left-0' : 'right-0'}`}
           >
             {PRIORITY_ORDER.map((p) => (
               <button

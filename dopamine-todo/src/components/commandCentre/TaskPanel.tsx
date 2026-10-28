@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import type { KeyboardEvent } from 'react';
-import type { ListId, Task } from '../../types';
+import type { ListId, Priority, Task } from '../../types';
 import type { Filter } from '../TaskList';
 import { LIST_ORDER, LIST_META } from '../../lib/lists';
+import { PRIORITY_ORDER, PRIORITY_CODE } from '../../lib/priority';
 import { CC_FILTER_ORDER, formatCCDue, groupTasksForCommandCentre, filterTasksForCommandCentre } from '../../lib/commandCentre';
 
 interface TaskPanelProps {
@@ -14,7 +15,8 @@ interface TaskPanelProps {
   tasks: Task[];
   today: string;
   onToggle: (id: string) => void;
-  onAdd: (text: string) => void;
+  onAdd: (text: string, priority: Priority) => void;
+  onOpenTask: (id: string) => void;
 }
 
 export function TaskPanel({
@@ -27,13 +29,15 @@ export function TaskPanel({
   today,
   onToggle,
   onAdd,
+  onOpenTask,
 }: TaskPanelProps) {
   const [draft, setDraft] = useState('');
+  const [priority, setPriority] = useState<Priority>('medium');
 
   const submit = () => {
     const trimmed = draft.trim();
     if (!trimmed) return;
-    onAdd(trimmed);
+    onAdd(trimmed, priority);
     setDraft('');
   };
 
@@ -84,6 +88,20 @@ export function TaskPanel({
           placeholder={`Add a ${LIST_META[activeList].label.toLowerCase()} task  (use | to split subject and action)`}
           className="min-w-0 flex-1 bg-transparent text-[15px] font-medium text-cc-ink outline-none placeholder-cc-ink-4"
         />
+        <div className="flex shrink-0 gap-0.5 rounded-lg bg-[rgba(255,255,255,0.6)] p-0.5">
+          {PRIORITY_ORDER.map((p) => (
+            <button
+              key={p}
+              type="button"
+              onClick={() => setPriority(p)}
+              className={`rounded-md px-2 py-1.5 text-[10px] font-bold uppercase tracking-wide transition active:scale-90 ${
+                priority === p ? 'bg-[#1d1a16] text-white' : 'text-cc-ink-3'
+              }`}
+            >
+              {PRIORITY_CODE[p]}
+            </button>
+          ))}
+        </div>
         <button
           onClick={submit}
           className="shrink-0 rounded-xl bg-[#1d1a16] px-4.5 py-2.5 text-[13px] font-semibold text-white transition active:scale-95"
@@ -122,14 +140,17 @@ export function TaskPanel({
                   >
                     {task.done && '✓'}
                   </button>
-                  <div className={`flex min-w-0 flex-col gap-0.5 ${task.done ? 'opacity-50' : ''}`}>
+                  <button
+                    onClick={() => onOpenTask(task.id)}
+                    className={`flex min-w-0 flex-col gap-0.5 text-left transition active:scale-[0.98] ${task.done ? 'opacity-50' : ''}`}
+                  >
                     <span
                       className={`truncate text-[16px] font-semibold tracking-tight text-cc-ink ${task.done ? 'line-through' : ''}`}
                     >
                       {task.text}
                     </span>
                     {task.notes && <span className="truncate text-[13px] text-cc-ink-3">{task.notes}</span>}
-                  </div>
+                  </button>
                   <span
                     className="whitespace-nowrap rounded-full px-2.5 py-1.5 text-xs font-semibold"
                     style={{

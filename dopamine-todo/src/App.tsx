@@ -170,6 +170,10 @@ function App() {
         onEditTitle={editTask}
         onEditNotes={setNotes}
         onRepeatChange={setRepeat}
+        onPriorityChange={setPriority}
+        onOwnerChange={setOwner}
+        onDueDateChange={setDueDate}
+        onDelete={handleDelete}
       />
 
       {viewMode === 'command-centre' ? (
@@ -184,6 +188,7 @@ function App() {
           onAddTask={addTask}
           onSetNotes={setNotes}
           onToggle={handleToggle}
+          onOpenTask={setOpenTaskId}
           onOpenSettings={() => setEditingBrand(true)}
           onSwitchToClassic={() => setViewMode('classic')}
           displayName={deriveDisplayName(user?.email)}
