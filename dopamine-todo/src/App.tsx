@@ -230,16 +230,17 @@ function App() {
             <InstallButton appName={branding.name} />
             <button
               onClick={() => setViewMode('command-centre')}
-              className="shrink-0 rounded-lg border border-ink/15 p-2 text-ink/50 transition active:scale-90 hover:border-ink/30 hover:text-ink"
+              className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border border-accent/60 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-accent transition active:scale-95 hover:bg-accent/10 hover:shadow-[0_0_16px_-6px_var(--accent)]"
               aria-label="Switch to Command Centre view"
               title="Command Centre view"
             >
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2}>
                 <rect x="3" y="3" width="7" height="9" rx="1.5" />
                 <rect x="14" y="3" width="7" height="5" rx="1.5" />
                 <rect x="14" y="12" width="7" height="9" rx="1.5" />
                 <rect x="3" y="16" width="7" height="5" rx="1.5" />
               </svg>
+              <span className="hidden sm:inline">Command Centre</span>
             </button>
             <button
               onClick={toggleTheme}
