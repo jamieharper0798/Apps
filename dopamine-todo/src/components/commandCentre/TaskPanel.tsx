@@ -54,7 +54,7 @@ export function TaskPanel({
   const groups = groupTasksForCommandCentre(filtered);
 
   return (
-    <div className="cc-glass-card flex min-w-0 flex-1 basis-[480px] grow-[999] flex-col gap-4.5 self-start rounded-3xl p-5.5">
+    <div className="cc-glass-card flex min-w-0 flex-1 basis-[480px] grow-[999] flex-col gap-4.5 self-start rounded-3xl p-4 sm:p-5.5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex gap-1 rounded-full bg-[rgba(255,255,255,0.45)] p-1">
           {LIST_ORDER.map((list) => (
@@ -69,8 +69,8 @@ export function TaskPanel({
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-2.5">
-          <div className="flex gap-1 rounded-full bg-[rgba(255,255,255,0.4)] p-1">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap gap-1 rounded-full bg-[rgba(255,255,255,0.4)] p-1">
             {CC_FILTER_ORDER.map((f) => (
               <button
                 key={f.value}
@@ -94,35 +94,42 @@ export function TaskPanel({
         </div>
       </div>
 
-      <div className="flex items-center gap-3 rounded-2xl border border-[rgba(255,255,255,0.8)] bg-[rgba(255,255,255,0.7)] py-2 pl-4.5 pr-2">
-        <span className="text-lg text-cc-ink-4">+</span>
-        <input
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Add a task"
-          className="min-w-0 flex-1 bg-transparent text-[15px] font-medium text-cc-ink outline-none placeholder-cc-ink-4"
-        />
-        <div className="flex shrink-0 gap-0.5 rounded-lg bg-[rgba(255,255,255,0.6)] p-0.5">
-          {PRIORITY_ORDER.map((p) => (
-            <button
-              key={p}
-              type="button"
-              onClick={() => setPriority(p)}
-              className={`rounded-md px-2 py-1.5 text-[10px] font-bold uppercase tracking-wide transition active:scale-90 ${
-                priority === p ? 'bg-[#1d1a16] text-white' : 'text-cc-ink-3'
-              }`}
-            >
-              {PRIORITY_CODE[p]}
-            </button>
-          ))}
+      <div className="flex flex-wrap items-center gap-y-2 gap-x-2 rounded-2xl border border-[rgba(255,255,255,0.8)] bg-[rgba(255,255,255,0.7)] py-2 pl-3 pr-2 sm:gap-x-3 sm:pl-4.5">
+        {/* Icon+input and priority+button are grouped so flex-wrap falls back to two clean rows
+            (input on its own line, controls on the next) instead of each element reflowing
+            individually — the fix for this overflowing off the right edge on narrow phones. */}
+        <div className="flex min-w-[120px] flex-1 items-center gap-2">
+          <span className="text-lg text-cc-ink-4">+</span>
+          <input
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Add a task"
+            className="min-w-0 flex-1 bg-transparent text-[15px] font-medium text-cc-ink outline-none placeholder-cc-ink-4"
+          />
         </div>
-        <button
-          onClick={submit}
-          className="shrink-0 rounded-xl bg-[#1d1a16] px-4.5 py-2.5 text-[13px] font-semibold text-white transition active:scale-95"
-        >
-          Add Task
-        </button>
+        <div className="flex shrink-0 items-center gap-2">
+          <div className="flex shrink-0 gap-0.5 rounded-lg bg-[rgba(255,255,255,0.6)] p-0.5">
+            {PRIORITY_ORDER.map((p) => (
+              <button
+                key={p}
+                type="button"
+                onClick={() => setPriority(p)}
+                className={`rounded-md px-2 py-1.5 text-[10px] font-bold uppercase tracking-wide transition active:scale-90 ${
+                  priority === p ? 'bg-[#1d1a16] text-white' : 'text-cc-ink-3'
+                }`}
+              >
+                {PRIORITY_CODE[p]}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={submit}
+            className="shrink-0 rounded-xl bg-[#1d1a16] px-4.5 py-2.5 text-[13px] font-semibold text-white transition active:scale-95"
+          >
+            Add Task
+          </button>
+        </div>
       </div>
 
       {groups.length === 0 ? (
