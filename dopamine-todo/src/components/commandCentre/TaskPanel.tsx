@@ -4,7 +4,7 @@ import type { ListId, Priority, Task } from '../../types';
 import type { Filter } from '../TaskList';
 import { LIST_ORDER, LIST_META } from '../../lib/lists';
 import { PRIORITY_ORDER, PRIORITY_CODE } from '../../lib/priority';
-import { CC_FILTER_ORDER, formatCCDue, groupTasksForCommandCentre, filterTasksForCommandCentre } from '../../lib/commandCentre';
+import { CC_FILTER_ORDER, formatCCDue, groupTasksForCommandCentre, filterTasksForCommandCentre, isOverdue } from '../../lib/commandCentre';
 
 interface TaskPanelProps {
   activeList: ListId;
@@ -46,7 +46,7 @@ export function TaskPanel({
   };
 
   const filtered = filterTasksForCommandCentre(tasks, filter, today);
-  const groups = groupTasksForCommandCentre(filtered, today);
+  const groups = groupTasksForCommandCentre(filtered);
 
   return (
     <div className="cc-glass-card flex min-w-0 flex-1 basis-[480px] grow-[999] flex-col gap-4.5 rounded-3xl p-5.5">
@@ -121,7 +121,7 @@ export function TaskPanel({
               <span className="font-medium text-cc-ink-4">{group.tasks.length}</span>
             </div>
             {group.tasks.map((task) => {
-              const late = group.key === 'overdue';
+              const late = isOverdue(task, today);
               return (
                 <div
                   key={task.id}
