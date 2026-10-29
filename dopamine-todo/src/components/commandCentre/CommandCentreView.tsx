@@ -155,28 +155,13 @@ export function CommandCentreView({
       </div>
 
       <div className="relative mx-auto flex max-w-[1320px] flex-col gap-4.5 px-3 pb-8 sm:px-7">
-        {/* Top bar — sticky so it stays reachable while scrolling a long task list instead of
-            scrolling out of view with everything else, with safe-area padding so it isn't
-            rendered behind the OS status bar once pinned flush to the top on a notched phone
-            (relevant for the installed/standalone PWA, which has no browser chrome of its own). */}
-        {/* The extra +0.5rem on top of the raw safe-area-inset-top is deliberate: on an iPhone
-            with a Dynamic Island/notch, sitting flush against the exact safe-area boundary still
-            reads as "touching" it — a bit of breathing room below it looks and feels clear. */}
-        <div className="sticky top-0 z-30 pt-[max(1.25rem,calc(env(safe-area-inset-top)+0.5rem))]">
-          {/* Overrides .cc-glass-bar's background/blur: that class is tuned to sit over the page's
-              gradient blobs, which stay legible through a light 22%-opacity blur. Once this bar is
-              sticky, scrolled task text ends up directly behind it instead, and that same low
-              opacity lets enough contrast through to read as ghosting. A darker, more opaque tint
-              hides it reliably — and needs no text-color changes, since the bar's text is already
-              white for contrast against the gradient. */}
-          <div
-            className="cc-glass-bar flex flex-wrap items-center gap-3 rounded-[28px] p-2 sm:flex-nowrap sm:gap-4 sm:rounded-full"
-            style={{
-              background: 'rgba(20, 16, 12, 0.6)',
-              backdropFilter: 'blur(28px) saturate(150%)',
-              WebkitBackdropFilter: 'blur(28px) saturate(150%)',
-            }}
-          >
+        {/* Top bar — not sticky (by request). Safe-area padding stays: it's still the first
+            thing at the top of the page, so still needs clearance from the OS status bar /
+            Dynamic Island on a notched phone in the installed/standalone PWA. The extra +0.5rem
+            on top of the raw safe-area-inset-top gives a bit of breathing room below the notch
+            rather than sitting flush against its exact boundary. */}
+        <div className="pt-[max(1.25rem,calc(env(safe-area-inset-top)+0.5rem))]">
+          <div className="cc-glass-bar flex flex-wrap items-center gap-3 rounded-[28px] p-2 sm:flex-nowrap sm:gap-4 sm:rounded-full">
             <div className="flex min-w-0 flex-1 items-center gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1d1a16] text-[15px] font-bold text-white">
                 {avatarInitial}
