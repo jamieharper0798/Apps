@@ -64,9 +64,17 @@ export function useCloudState<T extends object>(uid: string | null, collection: 
     valueRef.current = next;
     setValueState(next);
     setExists(true);
-    setDoc(doc(db, collection, uid), next).catch((err) => {
-      console.error('Failed to sync to cloud', err);
-    });
+    setDoc(doc(db, collection, uid), next)
+      .then(() => setErrored(false))
+      .catch((err) => {
+        // Without this, a failing write (e.g. Security Rules silently denying it) left the UI
+        // showing the change as saved — optimistic local state looks identical to a real save —
+        // while nothing ever reached Firestore. The next reload would then show genuinely empty
+        // data with no warning this had been happening. Surfacing it as `errored` routes it
+        // through the same visible "Sync error" indicator a failed read already uses.
+        console.error('Failed to sync to cloud', err);
+        setErrored(true);
+      });
   };
 
   return { value, setValue, ready, exists, errored };
