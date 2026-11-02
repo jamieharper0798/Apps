@@ -35,6 +35,16 @@ export function isOverdue(task: Task, today: string): boolean {
   return !task.done && !!task.dueDate && task.dueDate < today;
 }
 
+/** Soonest due date first (which naturally puts overdue tasks first too, since their dates are
+    in the past), with undated tasks pushed to the end since they carry no urgency signal. */
+function sortByDueDate(tasks: Task[]): Task[] {
+  const withDate = tasks
+    .filter((t) => t.dueDate !== null)
+    .sort((a, b) => (a.dueDate! < b.dueDate! ? -1 : a.dueDate! > b.dueDate! ? 1 : 0));
+  const withoutDate = tasks.filter((t) => t.dueDate === null);
+  return [...withDate, ...withoutDate];
+}
+
 /** Narrows a task list down to one filter chip's semantics — identical rules to the classic view's. */
 export function filterTasksForCommandCentre(tasks: Task[], filter: Filter, today: string): Task[] {
   if (filter === 'active') return tasks.filter((t) => !t.done);
@@ -57,13 +67,15 @@ const PRIORITY_GROUP_STYLE: Record<Task['priority'], { dotClassName: string; hea
   low: { dotClassName: 'bg-cc-ink-4', headerClassName: 'text-cc-ink-3' },
 };
 
-/** Buckets an already-filtered task list into High / Medium / Low priority, in that order, skipping empty groups — matching the classic view's own grouping. */
+/** Buckets an already-filtered task list into High / Medium / Low priority, in that order,
+    skipping empty groups — matching the classic view's own grouping — with each group's tasks
+    sorted by due date. */
 export function groupTasksForCommandCentre(tasks: Task[]): CCGroup[] {
   const groups: CCGroup[] = PRIORITY_ORDER.map((priority) => ({
     key: priority,
     label: `${PRIORITY_SHORT_LABELS[priority]} Priority`,
     ...PRIORITY_GROUP_STYLE[priority],
-    tasks: tasks.filter((t) => t.priority === priority),
+    tasks: sortByDueDate(tasks.filter((t) => t.priority === priority)),
   }));
 
   return groups.filter((g) => g.tasks.length > 0);
@@ -93,16 +105,9 @@ export function greetingForHour(hour: number): string {
   return 'Good evening';
 }
 
-/** The single next task to act on, plus up to two more as "then" preview rows — ordered by due
-    date (soonest first, which naturally puts overdue tasks first since their dates are in the
-    past), with undated tasks pushed to the end since they carry no urgency signal. */
+/** The single next task to act on, plus up to two more as "then" preview rows — ordered by due date. */
 export function pickFocusTasks(tasks: Task[]): { focus: Task | null; then: Task[] } {
-  const pending = tasks.filter((t) => !t.done);
-  const withDate = pending
-    .filter((t) => t.dueDate !== null)
-    .sort((a, b) => (a.dueDate! < b.dueDate! ? -1 : a.dueDate! > b.dueDate! ? 1 : 0));
-  const withoutDate = pending.filter((t) => t.dueDate === null);
-  const ordered = [...withDate, ...withoutDate];
+  const ordered = sortByDueDate(tasks.filter((t) => !t.done));
   const [focus, ...then] = ordered;
   return { focus: focus ?? null, then: then.slice(0, 2) };
 }
