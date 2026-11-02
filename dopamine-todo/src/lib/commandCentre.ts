@@ -93,14 +93,16 @@ export function greetingForHour(hour: number): string {
   return 'Good evening';
 }
 
-/** The single next task to act on (overdue first), plus up to two more as "then" preview rows. */
-export function pickFocusTasks(tasks: Task[], today: string): { focus: Task | null; then: Task[] } {
+/** The single next task to act on, plus up to two more as "then" preview rows — ordered by due
+    date (soonest first, which naturally puts overdue tasks first since their dates are in the
+    past), with undated tasks pushed to the end since they carry no urgency signal. */
+export function pickFocusTasks(tasks: Task[]): { focus: Task | null; then: Task[] } {
   const pending = tasks.filter((t) => !t.done);
-  const overdue = pending
-    .filter((t) => isOverdue(t, today))
+  const withDate = pending
+    .filter((t) => t.dueDate !== null)
     .sort((a, b) => (a.dueDate! < b.dueDate! ? -1 : a.dueDate! > b.dueDate! ? 1 : 0));
-  const rest = pending.filter((t) => !isOverdue(t, today));
-  const ordered = [...overdue, ...rest];
+  const withoutDate = pending.filter((t) => t.dueDate === null);
+  const ordered = [...withDate, ...withoutDate];
   const [focus, ...then] = ordered;
   return { focus: focus ?? null, then: then.slice(0, 2) };
 }

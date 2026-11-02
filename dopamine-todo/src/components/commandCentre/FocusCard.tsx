@@ -19,7 +19,7 @@ function focusTag(task: Task, today: string): string {
 }
 
 export function FocusCard({ tasks, today, onToggle, onOpenTask }: FocusCardProps) {
-  const { focus, then } = pickFocusTasks(tasks, today);
+  const { focus, then } = pickFocusTasks(tasks);
 
   return (
     <div className="flex w-full flex-col gap-3.5 sm:sticky sm:top-5 sm:w-auto">
