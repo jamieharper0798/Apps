@@ -17,7 +17,7 @@ interface CommandCentreViewProps {
   onActiveListChange: (list: ListId) => void;
   filter: Filter;
   onFilterChange: (f: Filter) => void;
-  onAddTask: (text: string, priority: Priority, list: ListId) => string | undefined;
+  onAddTask: (text: string, priority: Priority, list: ListId, dueDate: string | null) => string | undefined;
   onSetNotes: (id: string, notes: string) => void;
   onToggle: (id: string) => void;
   onClearCompleted: () => void;
@@ -102,11 +102,11 @@ export function CommandCentreView({
   taskView,
   onTaskViewChange,
 }: CommandCentreViewProps) {
+  const today = dayKey();
   const [quickDraft, setQuickDraft] = useState('');
   const [quickPriority, setQuickPriority] = useState<Priority>('medium');
   const quickInputRef = useRef<HTMLInputElement>(null);
 
-  const today = dayKey();
   const now = new Date();
   const listTasks = tasks.filter((t) => t.list === activeList);
   const activeCount = listTasks.filter((t) => !t.done).length;
@@ -123,12 +123,12 @@ export function CommandCentreView({
     {} as Record<ListId, number>,
   );
 
-  const handleAdd = (raw: string, priority: Priority = 'medium') => {
+  const handleAdd = (raw: string, priority: Priority = 'medium', dueDate: string | null = today) => {
     const [subjectPart, ...rest] = raw.split('|');
     const subject = subjectPart.trim();
     if (!subject) return;
     const action = rest.join('|').trim();
-    const id = onAddTask(subject, priority, activeList);
+    const id = onAddTask(subject, priority, activeList, dueDate);
     if (id && action) onSetNotes(id, action);
     onFilterChange('active');
   };

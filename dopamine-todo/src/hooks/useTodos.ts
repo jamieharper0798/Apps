@@ -33,9 +33,11 @@ export interface CompleteResult {
 export function useTodos() {
   const [state, setState, { syncing, syncError }] = useAppState(INITIAL_STATE);
 
-  /** Returns the new task's id (or undefined if the text was blank), so a caller can chain a follow-up write like setNotes. */
+  /** Returns the new task's id (or undefined if the text was blank), so a caller can chain a
+      follow-up write like setNotes. `dueDate` left unspecified (not passed at all) defaults to
+      today; pass `null` explicitly for a task with no due date. */
   const addTask = useCallback(
-    (text: string, priority: Priority, list: ListId): string | undefined => {
+    (text: string, priority: Priority, list: ListId, dueDate?: string | null): string | undefined => {
       const trimmed = text.trim();
       if (!trimmed) return undefined;
       const task: Task = {
@@ -45,7 +47,7 @@ export function useTodos() {
         priority,
         owner: '',
         list,
-        dueDate: null,
+        dueDate: dueDate === undefined ? dayKey() : dueDate,
         notes: '',
         repeat: 'none',
         createdAt: Date.now(),
