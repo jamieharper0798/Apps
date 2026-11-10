@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { KeyboardEvent } from 'react';
+import type { ChangeEvent, KeyboardEvent } from 'react';
 import type { ListId, Priority, Task } from '../../types';
 import type { Filter } from '../TaskList';
 import { LIST_ORDER, LIST_META } from '../../lib/lists';
@@ -16,9 +16,18 @@ interface TaskPanelProps {
   today: string;
   onToggle: (id: string) => void;
   onClearCompleted: () => void;
-  onAdd: (text: string, priority: Priority) => void;
+  onAdd: (text: string, priority: Priority, dueDate: string | null) => void;
   onOpenTask: (id: string) => void;
   taskView: 'list' | 'grid';
+}
+
+function CalendarIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-3 w-3 shrink-0" fill="none" stroke="currentColor" strokeWidth={2}>
+      <rect x="3" y="5" width="18" height="16" rx="3" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M8 3v4M16 3v4M3 10h18" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
 }
 
 export function TaskPanel({
@@ -37,17 +46,32 @@ export function TaskPanel({
 }: TaskPanelProps) {
   const [draft, setDraft] = useState('');
   const [priority, setPriority] = useState<Priority>('medium');
+  // Defaults to today — left untouched, a new task is due today; pick another date to override.
+  const [dueDate, setDueDate] = useState(today);
   const hasDone = tasks.some((t) => t.done);
 
   const submit = () => {
     const trimmed = draft.trim();
     if (!trimmed) return;
-    onAdd(trimmed, priority);
+    onAdd(trimmed, priority, dueDate || null);
     setDraft('');
+    setDueDate(today);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') submit();
+  };
+
+  const handleDueDate = (e: ChangeEvent<HTMLInputElement>) => {
+    setDueDate(e.target.value);
+  };
+
+  const openDatePicker = (e: { currentTarget: HTMLInputElement }) => {
+    try {
+      e.currentTarget.showPicker?.();
+    } catch {
+      // showPicker isn't available/allowed here — the input is still focused and usable.
+    }
   };
 
   const filtered = filterTasksForCommandCentre(tasks, filter, today);
@@ -95,9 +119,11 @@ export function TaskPanel({
       </div>
 
       <div className="flex flex-wrap items-center gap-y-2 gap-x-2 rounded-2xl border border-[rgba(255,255,255,0.8)] bg-[rgba(255,255,255,0.7)] py-2 pl-3 pr-2 sm:gap-x-3 sm:pl-4.5">
-        {/* Icon+input and priority+button are grouped so flex-wrap falls back to two clean rows
-            (input on its own line, controls on the next) instead of each element reflowing
-            individually — the fix for this overflowing off the right edge on narrow phones. */}
+        {/* Each control is its own flex-wrap item (not nested in an intermediate shrink-0 group)
+            so narrow screens get a normal, independent wrap of whichever controls don't fit on
+            the current line — a shrink-0 item that's also a flex-wrap container doesn't shrink
+            below its own unwrapped width no matter how it's nested, so grouping them instead
+            overflowed past the right edge on narrow phones. */}
         <div className="flex min-w-[120px] flex-1 items-center gap-2">
           <span className="text-lg text-cc-ink-4">+</span>
           <input
@@ -108,28 +134,41 @@ export function TaskPanel({
             className="min-w-0 flex-1 bg-transparent text-[15px] font-medium text-cc-ink outline-none placeholder-cc-ink-4"
           />
         </div>
-        <div className="flex shrink-0 items-center gap-2">
-          <div className="flex shrink-0 gap-0.5 rounded-lg bg-[rgba(255,255,255,0.6)] p-0.5">
-            {PRIORITY_ORDER.map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => setPriority(p)}
-                className={`rounded-md px-2 py-1.5 text-[10px] font-bold uppercase tracking-wide transition active:scale-90 ${
-                  priority === p ? 'bg-[#1d1a16] text-white' : 'text-cc-ink-3'
-                }`}
-              >
-                {PRIORITY_CODE[p]}
-              </button>
-            ))}
-          </div>
-          <button
-            onClick={submit}
-            className="shrink-0 rounded-xl bg-[#1d1a16] px-4.5 py-2.5 text-[13px] font-semibold text-white transition active:scale-95"
-          >
-            Add Task
-          </button>
+        <div className="flex shrink-0 gap-0.5 rounded-lg bg-[rgba(255,255,255,0.6)] p-0.5">
+          {PRIORITY_ORDER.map((p) => (
+            <button
+              key={p}
+              type="button"
+              onClick={() => setPriority(p)}
+              className={`rounded-md px-2 py-1.5 text-[10px] font-bold uppercase tracking-wide transition active:scale-90 ${
+                priority === p ? 'bg-[#1d1a16] text-white' : 'text-cc-ink-3'
+              }`}
+            >
+              {PRIORITY_CODE[p]}
+            </button>
+          ))}
         </div>
+        <div className="relative shrink-0">
+          <div className="pointer-events-none flex items-center gap-1.5 rounded-lg bg-[rgba(255,255,255,0.6)] px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-cc-ink-3">
+            <CalendarIcon />
+            {formatCCDue(dueDate || null, today)}
+          </div>
+          <input
+            type="date"
+            value={dueDate}
+            onChange={handleDueDate}
+            onClick={openDatePicker}
+            onFocus={openDatePicker}
+            aria-label="Due date"
+            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+          />
+        </div>
+        <button
+          onClick={submit}
+          className="shrink-0 rounded-xl bg-[#1d1a16] px-4.5 py-2.5 text-[13px] font-semibold text-white transition active:scale-95"
+        >
+          Add Task
+        </button>
       </div>
 
       {groups.length === 0 ? (

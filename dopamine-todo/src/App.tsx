@@ -296,7 +296,7 @@ function App() {
           <ListToggle active={activeList} counts={listCounts} onChange={setActiveList} />
 
           <AddTaskForm
-            onAdd={(text, priority) => addTask(text, priority, activeList)}
+            onAdd={(text, priority, dueDate) => addTask(text, priority, activeList, dueDate)}
             listLabel={LIST_META[activeList].label}
           />
 
