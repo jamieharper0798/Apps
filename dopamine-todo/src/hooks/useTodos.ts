@@ -99,6 +99,16 @@ export function useTodos() {
     [setState],
   );
 
+  const setList = useCallback(
+    (id: string, list: ListId) => {
+      setState((prev) => ({
+        ...prev,
+        tasks: prev.tasks.map((t) => (t.id === id ? { ...t, list } : t)),
+      }));
+    },
+    [setState],
+  );
+
   const setOwner = useCallback(
     (id: string, owner: string) => {
       setState((prev) => ({
@@ -283,6 +293,7 @@ export function useTodos() {
     editTask,
     toggleTask,
     setPriority,
+    setList,
     setOwner,
     setDueDate,
     setNotes,

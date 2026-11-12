@@ -8,11 +8,17 @@ export interface UndoData {
 interface UndoToastProps {
   undo: UndoData | null;
   onUndo: () => void;
+  /** Mobile Command Centre's floating tab bar sits ~96px tall at the bottom of the screen —
+      lift the toast above it instead of letting the two overlap. */
+  liftBottom?: boolean;
 }
 
-export function UndoToast({ undo, onUndo }: UndoToastProps) {
+export function UndoToast({ undo, onUndo, liftBottom }: UndoToastProps) {
   return (
-    <div className="pointer-events-none fixed inset-x-0 z-50 flex justify-center px-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+    <div
+      className="pointer-events-none fixed inset-x-0 z-50 flex justify-center px-4"
+      style={{ paddingBottom: liftBottom ? 'calc(max(1rem, env(safe-area-inset-bottom)) + 92px)' : 'max(1rem, env(safe-area-inset-bottom))' }}
+    >
       <AnimatePresence>
         {undo && (
           <motion.div

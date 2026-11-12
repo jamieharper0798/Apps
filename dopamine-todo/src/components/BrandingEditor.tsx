@@ -3,8 +3,7 @@ import type { ChangeEvent } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Branding } from '../types';
 import { DEFAULT_ICON_512 } from '../lib/icons';
-
-const ACCENT_PRESETS = ['#c6ff4a', '#4cc9f0', '#ffb703', '#ff4fa3', '#5b8cff', '#ff6b5b'];
+import { ACCENT_SWATCHES, DEFAULT_ACCENT_HEX } from '../lib/accent';
 
 interface BrandingEditorProps {
   open: boolean;
@@ -30,7 +29,7 @@ export function BrandingEditor({
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const colorInputRef = useRef<HTMLInputElement>(null);
-  const accentColor = branding.accentColor ?? '#c6ff4a';
+  const accentColor = branding.accentColor ?? DEFAULT_ACCENT_HEX;
 
   const handleFile = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -117,15 +116,15 @@ export function BrandingEditor({
 
             <label className="mt-5 block text-xs font-medium uppercase tracking-wide text-ink/40">Accent color</label>
             <div className="mt-1.5 flex flex-wrap items-center gap-2">
-              {ACCENT_PRESETS.map((color) => (
+              {ACCENT_SWATCHES.map(({ name, hex }) => (
                 <button
-                  key={color}
-                  onClick={() => onAccentColorChange(color)}
-                  aria-label={`Use ${color} as the accent color`}
+                  key={hex}
+                  onClick={() => onAccentColorChange(hex)}
+                  aria-label={`Use ${name} as the accent color`}
                   className="h-7 w-7 shrink-0 rounded-full transition active:scale-95 hover:scale-110"
                   style={{
-                    backgroundColor: color,
-                    boxShadow: accentColor.toLowerCase() === color ? `0 0 0 2px var(--panel), 0 0 0 4px ${color}` : 'none',
+                    backgroundColor: hex,
+                    boxShadow: accentColor.toLowerCase() === hex ? `0 0 0 2px var(--panel), 0 0 0 4px ${hex}` : 'none',
                   }}
                 />
               ))}

@@ -26,6 +26,7 @@ import { useBranding } from './hooks/useBranding';
 import { useBrandingMeta } from './hooks/useBrandingMeta';
 import { useAuth } from './hooks/useAuth';
 import { useTheme } from './hooks/useTheme';
+import { useIsMobile } from './hooks/useIsMobile';
 import { isFirebaseConfigured } from './lib/firebase';
 import { DEFAULT_ICON_192 } from './lib/icons';
 import { burstConfetti, burstLevelUp } from './lib/celebrate';
@@ -35,6 +36,7 @@ import { deriveDisplayName } from './lib/commandCentre';
 import { CommandCentreView } from './components/commandCentre/CommandCentreView';
 import { CommandCentreTaskModal } from './components/commandCentre/CommandCentreTaskModal';
 import { CommandCentreLevelUpOverlay } from './components/commandCentre/CommandCentreLevelUpOverlay';
+import { MobileCommandCentreShell } from './components/mobileCommandCentre/MobileCommandCentreShell';
 
 function App() {
   const {
@@ -49,6 +51,7 @@ function App() {
     editTask,
     toggleTask,
     setPriority,
+    setList,
     setOwner,
     setDueDate,
     setNotes,
@@ -60,6 +63,7 @@ function App() {
   useBrandingMeta(branding);
   const { user, signIn, signUp, signOutUser } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const isMobile = useIsMobile();
   const [viewMode, setViewMode] = useLocalStorage<'classic' | 'command-centre'>('dopamine-todo:viewMode', 'classic');
   const [ccTaskView, setCcTaskView] = useLocalStorage<'list' | 'grid'>('dopamine-todo:ccTaskView', 'list');
   const [activeList, setActiveList] = useLocalStorage<ListId>('dopamine-todo:activeList', 'personal');
@@ -153,7 +157,7 @@ function App() {
         <LevelUpOverlay level={levelUp} onClose={() => setLevelUp(null)} />
       )}
       <UpdateToast />
-      <UndoToast undo={undo} onUndo={handleUndo} />
+      <UndoToast undo={undo} onUndo={handleUndo} liftBottom={viewMode === 'command-centre' && isMobile} />
       <BrandingEditor
         open={editingBrand}
         branding={branding}
@@ -171,7 +175,7 @@ function App() {
           onSignUp={signUp}
         />
       )}
-      {viewMode === 'command-centre' ? (
+      {viewMode === 'command-centre' && !isMobile ? (
         <CommandCentreTaskModal
           task={openTask}
           onClose={() => setOpenTaskId(null)}
@@ -183,7 +187,7 @@ function App() {
           onDueDateChange={setDueDate}
           onDelete={handleDelete}
         />
-      ) : (
+      ) : viewMode === 'classic' ? (
         <TaskDetailModal
           task={openTask}
           onClose={() => setOpenTaskId(null)}
@@ -195,9 +199,45 @@ function App() {
           onDueDateChange={setDueDate}
           onDelete={handleDelete}
         />
-      )}
+      ) : null}
 
-      {viewMode === 'command-centre' ? (
+      {viewMode === 'command-centre' && isMobile ? (
+        <MobileCommandCentreShell
+          tasks={tasks}
+          dopamine={dopamine}
+          levelInfo={levelInfo}
+          activeList={activeList}
+          onActiveListChange={setActiveList}
+          onAddTask={addTask}
+          onEditTitle={editTask}
+          onSetNotes={setNotes}
+          onToggle={handleToggle}
+          onDelete={handleDelete}
+          onPriorityChange={setPriority}
+          onOwnerChange={setOwner}
+          onDueDateChange={setDueDate}
+          onRepeatChange={setRepeat}
+          onListChange={setList}
+          onReorder={reorderTasks}
+          onClearCompleted={() => clearCompleted(activeList)}
+          taskView={ccTaskView}
+          onTaskViewChange={setCcTaskView}
+          displayName={deriveDisplayName(user?.email)}
+          branding={branding}
+          onSaveName={setName}
+          onUploadIcon={setIconFromFile}
+          onResetIcon={resetIcon}
+          onAccentColorChange={setAccentColor}
+          user={user}
+          onSignIn={signIn}
+          onSignUp={signUp}
+          onSignOut={signOutUser}
+          syncing={syncing}
+          syncError={syncError}
+          soundOn={!muted}
+          onToggleSound={() => setMuted((m) => !m)}
+        />
+      ) : viewMode === 'command-centre' ? (
         <CommandCentreView
           tasks={tasks}
           dopamine={dopamine}
