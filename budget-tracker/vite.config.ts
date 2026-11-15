@@ -31,6 +31,8 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // Adds the push and notification-click handlers to the generated service worker.
+        importScripts: ['push-sw.js'],
         globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
         navigateFallback: 'index.html',
         // The habit tracker is a separate app served from /habits/ with its own service worker.

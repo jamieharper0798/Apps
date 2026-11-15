@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
-import type { BudgetState, Settings } from '../../types';
+import type { BudgetState, PushDevice, Settings } from '../../types';
+import { PushReminders } from '../PushReminders';
 
 const CURRENCIES = ['$', '£', '€', '¥', '₹', 'A$', 'C$'];
 
@@ -12,6 +13,9 @@ interface Props {
   onLogOut: () => void;
   exportState: BudgetState;
   onImportState: (next: BudgetState) => void;
+  pushDevices: PushDevice[];
+  onSavePushDevice: (device: PushDevice) => void;
+  onRemovePushDevice: (id: string) => void;
 }
 
 function isBudgetStateShaped(value: unknown): value is BudgetState {
@@ -29,7 +33,10 @@ function isBudgetStateShaped(value: unknown): value is BudgetState {
   );
 }
 
-export function MobileSettings({ email, settings, onUpdateSettings, onManageAccounts, onManageCategories, onLogOut, exportState, onImportState }: Props) {
+export function MobileSettings({
+  email, settings, onUpdateSettings, onManageAccounts, onManageCategories, onLogOut, exportState, onImportState,
+  pushDevices, onSavePushDevice, onRemovePushDevice,
+}: Props) {
   const fileInput = useRef<HTMLInputElement>(null);
   const [importError, setImportError] = useState('');
   const [importedAt, setImportedAt] = useState<number | null>(null);
@@ -82,6 +89,11 @@ export function MobileSettings({ email, settings, onUpdateSettings, onManageAcco
             </button>
           ))}
         </div>
+      </section>
+
+      <section className="card flex flex-col gap-3 p-[18px]">
+        <h2 className="text-[16px] font-semibold text-ink">Bill reminders</h2>
+        <PushReminders devices={pushDevices} onSave={onSavePushDevice} onRemove={onRemovePushDevice} />
       </section>
 
       <section className="card flex flex-col p-[18px]">

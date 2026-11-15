@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
-import type { Account, Bill, BudgetState, Category, Deposit, Frequency, Income, SavingsPot, Settings } from '../types';
+import type { Account, Bill, BudgetState, Category, Deposit, Frequency, Income, PushDevice, SavingsPot, Settings } from '../types';
 import { db } from '../lib/firebase';
 import { ACCOUNT_COLORS, CATEGORY_COLORS, DEFAULT_CATEGORIES } from '../lib/categories';
 import { toISODate, todayUTC } from '../lib/frequency';
@@ -17,6 +17,7 @@ const INITIAL_STATE: BudgetState = {
   deposits: [],
   payments: [],
   plannedTransfers: [],
+  pushDevices: [],
 };
 
 /** Data from the pre-login, localStorage-only version of this app, adopted on first sync. */
@@ -42,6 +43,7 @@ function normalize(data: Partial<BudgetState> | undefined): BudgetState {
     deposits: data?.deposits ?? [],
     payments: data?.payments ?? [],
     plannedTransfers: data?.plannedTransfers ?? [],
+    pushDevices: data?.pushDevices ?? [],
   };
 }
 
@@ -374,10 +376,24 @@ export function useBudget(uid: string) {
     [commit],
   );
 
-  /** Overwrites the whole budget document — used by the Export/Import JSON backup feature. */
+  /** Overwrites the budget from a JSON backup, keeping the devices that have reminders on. */
   const replaceState = useCallback(
     (next: BudgetState) => {
-      commit(() => next);
+      commit((prev) => ({ ...normalize(next), pushDevices: prev.pushDevices ?? [] }));
+    },
+    [commit],
+  );
+
+  const savePushDevice = useCallback(
+    (device: PushDevice) => {
+      commit((prev) => ({ ...prev, pushDevices: [...(prev.pushDevices ?? []).filter((d) => d.id !== device.id), device] }));
+    },
+    [commit],
+  );
+
+  const removePushDevice = useCallback(
+    (id: string) => {
+      commit((prev) => ({ ...prev, pushDevices: (prev.pushDevices ?? []).filter((d) => d.id !== id) }));
     },
     [commit],
   );
@@ -393,6 +409,7 @@ export function useBudget(uid: string) {
     deposits: state.deposits,
     payments: state.payments,
     plannedTransfers: state.plannedTransfers,
+    pushDevices: state.pushDevices ?? [],
     addBill,
     updateBill,
     deleteBill,
@@ -416,5 +433,7 @@ export function useBudget(uid: string) {
     setPlannedTransfer,
     removePlannedTransfer,
     replaceState,
+    savePushDevice,
+    removePushDevice,
   };
 }

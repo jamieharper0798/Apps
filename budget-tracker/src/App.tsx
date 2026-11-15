@@ -28,6 +28,7 @@ import { LogSavingForm } from './components/LogSavingForm';
 import { AdjustBalanceForm } from './components/AdjustBalanceForm';
 import { AccountManager } from './components/AccountManager';
 import { CategoryManager } from './components/CategoryManager';
+import { PushReminders } from './components/PushReminders';
 import { Modal } from './components/Modal';
 import { InstallButton } from './components/InstallButton';
 import { UpdateToast } from './components/UpdateToast';
@@ -84,6 +85,16 @@ function ComingSoon() {
 }
 
 function App() {
+  return (
+    <>
+      {/* Registers the service worker, so it has to be mounted on every screen (phone layout included). */}
+      <UpdateToast />
+      <Screen />
+    </>
+  );
+}
+
+function Screen() {
   const { user, loading, signUp, logIn, logOut, resetPassword } = useAuth();
   const isMobile = useIsMobile();
 
@@ -133,6 +144,9 @@ function Dashboard({ uid, email, onLogOut }: DashboardProps) {
     importBills,
     setPlannedTransfer,
     removePlannedTransfer,
+    pushDevices,
+    savePushDevice,
+    removePushDevice,
   } = useBudget(uid);
 
   const today = todayUTC();
@@ -148,6 +162,7 @@ function Dashboard({ uid, email, onLogOut }: DashboardProps) {
   const [addBillPrefillDate, setAddBillPrefillDate] = useState<string | null>(null);
   const [accountsOpen, setAccountsOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const [remindersOpen, setRemindersOpen] = useState(false);
   const [bulkImportOpen, setBulkImportOpen] = useState(false);
 
   const [potFormOpen, setPotFormOpen] = useState(false);
@@ -340,8 +355,6 @@ function Dashboard({ uid, email, onLogOut }: DashboardProps) {
 
   return (
     <div className="min-h-screen bg-bg">
-      <UpdateToast />
-
       <div className="app-shell mx-auto flex w-full max-w-[1360px] flex-col gap-5 px-4 sm:px-6">
         <header className="card flex flex-wrap items-center justify-between gap-3 !rounded-[22px] py-2.5 pl-4 pr-2.5">
           <div className="flex items-center gap-2.5 font-display text-[19px] font-bold tracking-tight text-ink">
@@ -372,8 +385,9 @@ function Dashboard({ uid, email, onLogOut }: DashboardProps) {
           <div className="flex items-center gap-2">
             <InstallButton />
             <button
+              onClick={() => setRemindersOpen(true)}
               className="flex h-11 w-11 items-center justify-center rounded-[14px] bg-surface-2 text-muted"
-              title="Bill reminders — coming soon"
+              title="Bill reminders"
               aria-label="Bill reminders"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -886,6 +900,10 @@ function Dashboard({ uid, email, onLogOut }: DashboardProps) {
 
       <Modal open={accountsOpen} onClose={() => setAccountsOpen(false)} title="Accounts">
         <AccountManager accounts={accounts} billCounts={billCounts} onAdd={addAccount} onUpdate={updateAccount} onDelete={deleteAccount} />
+      </Modal>
+
+      <Modal open={remindersOpen} onClose={() => setRemindersOpen(false)} title="Bill reminders">
+        <PushReminders devices={pushDevices} onSave={savePushDevice} onRemove={removePushDevice} />
       </Modal>
 
       <Modal open={categoriesOpen} onClose={() => setCategoriesOpen(false)} title="Categories">

@@ -52,7 +52,7 @@ export function MobileApp({ uid, email, onLogOut }: Props) {
     addCategory, updateCategory, deleteCategory,
     updateSettings, togglePaid,
     addPot, updatePot, deletePot, addDeposit, adjustPotBalance,
-    replaceState,
+    replaceState, pushDevices, savePushDevice, removePushDevice,
   } = useBudget(uid);
 
   const today = todayUTC();
@@ -252,6 +252,9 @@ export function MobileApp({ uid, email, onLogOut }: Props) {
           onLogOut={onLogOut}
           exportState={{ bills, accounts, categories, settings, income, pots, deposits, payments, plannedTransfers }}
           onImportState={replaceState}
+          pushDevices={pushDevices}
+          onSavePushDevice={savePushDevice}
+          onRemovePushDevice={removePushDevice}
         />
       )}
 

@@ -1,0 +1,14 @@
+{
+  "name": "ledgerly-reminders",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Daily bill-reminder push sender, run by .github/workflows/bill-reminders.yml",
+  "scripts": {
+    "send": "node send.mjs"
+  },
+  "dependencies": {
+    "firebase-admin": "^14.5.1",
+    "web-push": "^4.0.0"
+  }
+}

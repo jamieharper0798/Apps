@@ -88,6 +88,17 @@ export interface PlannedTransfer {
   amount: number;
 }
 
+/** One browser or installed app that has turned bill reminders on. The reminder sender pushes to each of these. */
+export interface PushDevice {
+  /** Short hash of the endpoint, so a device can find its own entry. */
+  id: string;
+  endpoint: string;
+  keys: { p256dh: string; auth: string };
+  /** IANA zone, so "due today" is worked out in the device's local date. */
+  timeZone: string;
+  createdAt: number;
+}
+
 export interface BudgetState {
   bills: Bill[];
   accounts: Account[];
@@ -98,4 +109,6 @@ export interface BudgetState {
   deposits: Deposit[];
   payments: BillPayment[];
   plannedTransfers: PlannedTransfer[];
+  /** Left out of JSON backups: a subscription only means something on the device that made it. */
+  pushDevices?: PushDevice[];
 }

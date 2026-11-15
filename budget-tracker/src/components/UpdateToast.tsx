@@ -9,7 +9,7 @@ export function UpdateToast() {
   if (!needRefresh) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center px-4">
+    <div className="pointer-events-none fixed inset-x-0 bottom-[calc(96px+env(safe-area-inset-bottom))] z-50 flex justify-center px-4 md:bottom-4">
       <div className="animate-rise card pointer-events-auto flex items-center gap-3 !rounded-full py-2 pl-4 pr-2 text-sm text-ink">
         <span>A new version is ready</span>
         <button onClick={() => updateServiceWorker(true)} className="rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-ink">

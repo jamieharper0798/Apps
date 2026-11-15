@@ -16,6 +16,7 @@ A personal bills & savings dashboard: what's due, what's left over each month, a
 - Currency symbol picker ($, £, €, ¥, ₹, A$, C$)
 - Log in with email/password and your data syncs live across every device — powered by Firebase Auth + Firestore, with offline support (Firestore's local cache keeps the app usable offline and syncs once back online)
 - Installable PWA: manifest, offline-capable service worker, an in-app "Install App" button, and an update toast when a new version is deployed
+- Bill reminders: an optional push notification each morning for bills that are coming up or due that day (see [Bill reminders](#bill-reminders))
 
 ## Getting started
 
@@ -39,6 +40,28 @@ The app requires a free Firebase project to handle login and to store your data 
 7. Commit and push; the site redeploys automatically and the login screen goes live.
 
 If you were already using this app before login was added, the first time you log in on the device that has your existing data, it's automatically imported into your new account.
+
+## Bill reminders
+
+Ledgerly can send a push notification each morning when a bill is coming up: a few days before it's due (the "Remind me" setting on each bill, 2 days by default) and again on the day. Bills already marked paid are skipped, and several bills on the same day arrive as one notification.
+
+How it works: turning reminders on in the app saves that device's push subscription to your account. `.github/workflows/bill-reminders.yml` runs [`reminders/send.mjs`](./reminders/send.mjs) once a day; it reads the bills from Firestore and sends the notifications. Nothing is sent while the app is closed other than by that workflow, so there is no server to run.
+
+One-time setup:
+
+1. In the [Firebase console](https://console.firebase.google.com), open **Project settings (gear icon) → Service accounts** and click **Generate new private key**. A `.json` file downloads. It gives full access to your Firebase project, so don't commit it or share it.
+2. In this repo on GitHub, open **Settings → Secrets and variables → Actions → New repository secret** and add two secrets:
+   - `FIREBASE_SERVICE_ACCOUNT` — the entire contents of that `.json` file.
+   - `VAPID_PRIVATE_KEY` — the private half of the push key pair. Its public half is in [`src/lib/pushConfig.ts`](./src/lib/pushConfig.ts).
+3. On each device, open Ledgerly and turn reminders on: **Settings → Bill reminders** on a phone, or the bell in the top bar on a computer. On iPhone and iPad this only works from the Home Screen app (Share → Add to Home Screen), on iOS 16.4 or later.
+4. To check it end to end, open the **Actions** tab, choose **Bill reminders → Run workflow**, pick `test`, and run it. Every device with reminders on should get a "Test from Ledgerly" notification.
+
+Good to know:
+
+- The schedule is `17 7 * * *` in UTC: about 7:17am in a UK winter and 8:17am in summer. Change the `cron` line in the workflow to move it. GitHub can start scheduled runs late when it's busy.
+- GitHub turns off scheduled workflows in a public repo after 60 days with no commits. It emails you first, and **Actions → Bill reminders → Enable workflow** turns it back on.
+- The workflow's logs are public, so the sender only logs counts (never bill names or amounts).
+- To replace the key pair, run `npx web-push generate-vapid-keys`, put the public key in `src/lib/pushConfig.ts` and the private key in the `VAPID_PRIVATE_KEY` secret, then turn reminders off and on again on each device.
 
 ## Scripts
 
